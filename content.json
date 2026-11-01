@@ -35,15 +35,11 @@
     "aboutB": "umvxg5c6jr2h",
     "join": [
       {
-        "id": "7816",
+        "id": "umvxg6izrrbw",
         "show": true
       },
       {
-        "id": "7838",
-        "show": true
-      },
-      {
-        "id": "7724",
+        "id": "umvxg6n24m8r",
         "show": true
       }
     ],
@@ -384,6 +380,24 @@
   ],
   "reviews": [],
   "library": [
+    {
+      "id": "umvxg6n24m8r",
+      "alt": "1000479105",
+      "w": 731,
+      "h": 800
+    },
+    {
+      "id": "umvxg6izrrbw",
+      "alt": "1000479103",
+      "w": 600,
+      "h": 800
+    },
+    {
+      "id": "umvxg68z7wje",
+      "alt": "1000480165",
+      "w": 600,
+      "h": 800
+    },
     {
       "id": "umvxg5c6jr2h",
       "alt": "1000480160",
