@@ -106,7 +106,7 @@
       "cat": "beginner",
       "badge": "Beginner Level",
       "title": "Kathak – Beginner Level",
-      "img": "7768",
+      "img": "c01",
       "desc": "Foundations of Kathak – tatkar, hastak, basic chakkar and the first taals.",
       "duration": "",
       "group": "1,000",
@@ -119,7 +119,7 @@
       "cat": "intermediate",
       "badge": "Intermediate Level",
       "title": "Kathak – Intermediate Level",
-      "img": "7727",
+      "img": "c02",
       "desc": "Longer compositions, layakari and abhinaya, with stage pieces.",
       "duration": "",
       "group": "1,500",
@@ -132,7 +132,7 @@
       "cat": "advanced",
       "badge": "Advanced Level",
       "title": "Kathak – Advanced Level",
-      "img": "7816",
+      "img": "c03",
       "desc": "Advanced repertoire and preparation for diploma examinations and performance.",
       "duration": "",
       "group": "2,000",
@@ -380,6 +380,30 @@
   ],
   "reviews": [],
   "library": [
+    {
+      "id": "c01",
+      "alt": "Illustration – Kathak dancer in namaskar (Beginner)",
+      "w": 800,
+      "h": 500
+    },
+    {
+      "id": "c02",
+      "alt": "Illustration – Kathak dancer with raised arm (Intermediate)",
+      "w": 800,
+      "h": 500
+    },
+    {
+      "id": "c03",
+      "alt": "Illustration – Kathak dancer in a chakkar spin (Advanced)",
+      "w": 800,
+      "h": 500
+    },
+    {
+      "id": "c04",
+      "alt": "Illustration – ghungroo, lotus and diya",
+      "w": 800,
+      "h": 500
+    },
     {
       "id": "umvxgcbusup1",
       "alt": "1000480517",
