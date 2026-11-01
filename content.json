@@ -6,17 +6,17 @@
     "join": true,
     "courses": true,
     "mentor": true,
-    "stats": true,
+    "stats": false,
     "explore": true,
     "live": true,
     "why": true,
     "gallery": true,
     "videos": true,
     "contact": true,
-    "reviews": true,
+    "reviews": false,
     "whatsappButton": true,
     "chatButton": true,
-    "events": true
+    "events": false
   },
   "popup": {
     "enabled": true,
@@ -58,12 +58,12 @@
     "trainedUnder": "Learnt Kathak from Guru Shri Jay Karan Kawa Ji and Guru Dr. Swati Agarwal. Also trained in vocal music under Dr. Shekhar Saxena and in tabla under Dr. R. D. Agarwal."
   },
   "numbers": {
-    "students": 0,
-    "cities": 0,
-    "years": 0,
-    "performances": 0,
-    "workshops": 0,
-    "awards": 0
+    "students": 2,
+    "cities": 2,
+    "years": 3,
+    "performances": 20,
+    "workshops": 2,
+    "awards": 10
   },
   "courses": [
     {
