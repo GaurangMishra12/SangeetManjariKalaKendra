@@ -19,7 +19,8 @@
     "events": false
   },
   "parts": {
-    "explore.workshops": false
+    "explore.workshops": false,
+    "join.buttons": false
   },
   "images": {
     "hero": [
