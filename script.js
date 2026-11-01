@@ -76,6 +76,21 @@ function render(C) {
     el.classList.toggle("ph", !v);
   });
 
+  /* ---------- meet the guru ---------- */
+  const G = C.guru || {};
+  $$("[data-guru]").forEach((el) => {
+    const k = el.dataset.guru;
+    if (k === "photo") { if (G.photo) el.src = `assets/img/gallery/${G.photo}.jpg`; el.alt = G.name || ""; }
+    else if (k === "credentials") {
+      const list = (G.credentials || []).filter(Boolean);
+      el.innerHTML = list.map((c) => `<li>${esc(c)}</li>`).join("");
+      el.hidden = !list.length;
+    } else {
+      el.textContent = G[k] || "";
+      el.hidden = !G[k];
+    }
+  });
+
   /* ---------- social icons ---------- */
   const ICONS = {
     instagram: '<path d="M12 7a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 8.2A3.2 3.2 0 1 1 15.2 12 3.2 3.2 0 0 1 12 15.2zM17.3 5.5a1.2 1.2 0 1 0 1.2 1.2 1.2 1.2 0 0 0-1.2-1.2zM21 7.6a5.7 5.7 0 0 0-1.6-4A5.7 5.7 0 0 0 15.4 2C13.8 2 10.2 2 8.6 2a5.7 5.7 0 0 0-4 1.6A5.7 5.7 0 0 0 3 7.6C3 9.2 3 14.8 3 16.4a5.7 5.7 0 0 0 1.6 4A5.7 5.7 0 0 0 8.6 22c1.6 0 7.2 0 8.8 0a5.7 5.7 0 0 0 4-1.6 5.7 5.7 0 0 0 1.6-4c0-1.6 0-7.2 0-8.8z"/>',

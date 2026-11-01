@@ -2,6 +2,7 @@
   "sections": {
     "topbar": true,
     "about": true,
+    "guru": true,
     "join": true,
     "courses": true,
     "mentor": true,
@@ -21,22 +22,36 @@
     "delaySeconds": 6
   },
   "site": {
-    "guru": "",
-    "phone": "",
+    "guru": "Akshita Sharma",
+    "phone": "+91 84400 64551",
     "whatsapp": "",
     "formEndpoint": "",
-    "email": "",
-    "address": "",
+    "email": "akshitas1008@gmail.com",
+    "address": "Santosh Sagar Colony, Brahampuri, Jaipur 302002",
     "googleReviews": "",
-    "instagram": "",
+    "instagram": "https://www.instagram.com/sangeetmanjarikalakendra/",
     "youtube": "",
     "facebook": ""
   },
   "text": {
     "heroSubtitle": "Kathak classes for kids and adults, online and at the Kendra.",
     "aboutText": "Sangeet Manjari Kala Kendra is a home for Kathak, the storytelling dance of North India. We teach in the guru–shishya way – footwork, spins, gestures and expression, with the music and taal behind them – so every student dances with confidence and understanding.",
-    "guruBio": "",
+    "guruBio": "Akshita Sharma – Doordarshan B Grade Kathak artist with Visharad, Nipun and Bhaskar qualifications in Kathak.",
     "upcomingEvents": ""
+  },
+  "guru": {
+    "name": "Akshita Sharma",
+    "title": "Founder & Kathak Guru · Kathak Artist & Vocalist",
+    "photo": "7838",
+    "bio": "Akshita Sharma is a Kathak artist and vocalist from Jaipur with about nine years of training in Kathak, alongside Hindustani classical vocal music and tabla. She founded Sangeet Manjari Kala Kendra to teach Kathak in a structured, traditional way – building both practical skill and theoretical understanding – and prepares students for grade examinations. She has a deep interest in Indian cultural heritage, temple art and architecture, and how music and dance have evolved over time.",
+    "credentials": [
+      "B Grade Artist in Kathak – Doordarshan Kendra, Jaipur",
+      "Visharad & Nipun in Kathak – Bhatkhande Sangeet Vidyapeeth, Lucknow",
+      "Bhaskar, Advanced Diploma in Kathak – Pracheen Kala Kendra, Chandigarh",
+      "M.A. in Vocal Music (pursuing) – University of Rajasthan, Jaipur",
+      "Diploma in Tabla (Madhyama Part I cleared) – Bhatkhande Sangeet Vidyapeeth"
+    ],
+    "trainedUnder": "Trained in Kathak under Dr. Swati Agarwal and Shri Jay Karan Kawa Ji, in vocal music under Dr. Shekhar Saxena, and in tabla under Dr. R. D. Agarwal."
   },
   "numbers": {
     "students": 0,

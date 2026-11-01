@@ -175,6 +175,7 @@ const gh = { token: store.get("smkk-gh-token") || "", repo: store.get("smkk-gh-r
 const SECTIONS = [
   ["topbar", "Top bar", "Phone, email and “Book Demo Class” strip at the very top"],
   ["about", "About us", "Photo collage, intro text and four features"],
+  ["guru", "Meet the Guru", "Guru's photo, bio, qualifications and teachers"],
   ["join", "Join banner", "“Begin your journey with our Guru” with image slider"],
   ["courses", "Courses", "Course cards with prices and filter tabs"],
   ["mentor", "One-to-one banner", "Green banner for personal classes"],
@@ -210,7 +211,7 @@ const TEXTS = [
 const NUMBERS = [["students", "Students trained"], ["cities", "Cities reached"], ["years", "Years experience"], ["performances", "Performances"], ["workshops", "Workshops held"], ["awards", "Awards & honours"]];
 const CATS = [["kids", "Kids (Age 5+)"], ["beginner", "Beginners"], ["intermediate", "Intermediate"], ["advanced", "Advanced"], ["adults", "Adults"], ["hobby", "Hobby"]];
 const TABS = [
-  ["sections", "👁 Sections"], ["details", "📇 Contact & links"], ["text", "✏️ Text"], ["numbers", "🔢 Numbers"],
+  ["sections", "👁 Sections"], ["guru", "🙏 Guru"], ["details", "📇 Contact & links"], ["text", "✏️ Text"], ["numbers", "🔢 Numbers"],
   ["courses", "🎓 Courses"], ["photos", "🖼 Photos"], ["videos", "🎬 Videos"], ["reviews", "⭐ Reviews"], ["popup", "💬 Popup"],
 ];
 
@@ -254,6 +255,7 @@ async function load() {
 function normalise() {
   C.sections ||= {}; C.popup ||= { enabled: true, delaySeconds: 6 }; C.site ||= {}; C.text ||= {}; C.numbers ||= {};
   C.courses ||= []; C.photos ||= []; C.videos ||= []; C.reviews ||= [];
+  C.guru ||= { name: "", title: "", photo: "", bio: "", credentials: [], trainedUnder: "" };
 }
 
 /* ---------------- UI ---------------- */
@@ -295,6 +297,27 @@ function renderTab() {
         SECTIONS.map(([k, l, d]) => `<div class="card row ${C.sections[k] === false ? "off" : ""}"><div class="grow"><b>${l}</b><small>${d}</small></div>${sw(C.sections[k] !== false, `data-sec="${k}" aria-label="${l}"`)}</div>`).join("") +
         `<p class="hint" style="margin-top:16px">The header, main banner and footer are always shown.</p>`;
       $$("[data-sec]").forEach((i) => i.onchange = () => { C.sections[i.dataset.sec] = i.checked; i.closest(".card").classList.toggle("off", !i.checked); changed(); });
+    },
+    guru() {
+      const G = C.guru;
+      const imgOpts = C.photos.map((p) => `<option value="${p.id}" ${p.id === G.photo ? "selected" : ""}>${p.id} – ${esc(p.alt)}</option>`).join("");
+      m.innerHTML = `<h2>Meet the Guru</h2><p class="hint">Shown in the green “Meet the Guru” section. Turn the section on/off under Sections.</p>
+        <div class="card grid2">
+          <label class="f">Name<input data-g="name" value="${esc(G.name)}"></label>
+          <label class="f">Title<input data-g="title" value="${esc(G.title)}"></label>
+          <label class="f full">Photo<select data-g="photo">${imgOpts}</select></label>
+          <label class="f full">Bio<textarea data-g="bio" rows="6">${esc(G.bio)}</textarea></label>
+          <label class="f full">Qualifications (one per line)<textarea data-g="credentials" rows="6">${esc((G.credentials || []).join("\n"))}</textarea></label>
+          <label class="f full">Trained under<textarea data-g="trainedUnder" rows="2">${esc(G.trainedUnder)}</textarea></label>
+        </div>
+        <div class="card"><img id="g-prev" src="assets/img/gallery/${esc(G.photo)}-sm.jpg" alt="" style="width:120px;border-radius:10px"></div>`;
+      $$("[data-g]").forEach((i) => i.oninput = i.onchange = () => {
+        const k = i.dataset.g;
+        G[k] = k === "credentials" ? i.value.split("\n").map((x) => x.trim()).filter(Boolean) : i.value.trim();
+        if (k === "name") C.site.guru = G.name;
+        if (k === "photo") $("#g-prev").src = `assets/img/gallery/${G.photo}-sm.jpg`;
+        changed();
+      });
     },
     details() {
       m.innerHTML = `<h2>Contact & links</h2><p class="hint">Leave a box empty to hide it or show a placeholder. Enquiry form setup guide: <a href="https://github.com/${esc(gh.repo)}/blob/${esc(gh.branch)}/FORM-SETUP.md" target="_blank" rel="noopener">FORM-SETUP.md</a></p><div class="card grid2">` +
