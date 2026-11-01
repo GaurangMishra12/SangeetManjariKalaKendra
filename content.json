@@ -53,7 +53,12 @@
     "live": "7836",
     "liveFlip": true,
     "contact": "umvxi4jukpoj",
-    "popup": "7820"
+    "popup": "7820",
+    "heroVideo": {
+      "show": true,
+      "src": "assets/video/hero.mp4",
+      "poster": "assets/video/hero-poster.jpg"
+    }
   },
   "popup": {
     "enabled": true,

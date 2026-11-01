@@ -647,6 +647,10 @@ function renderTab() {
   let h = `<h2>${M.icon} ${M.label}</h2>${M.hint ? `<p class="hint">${M.hint}</p>` : `<p class="hint"></p>`}`;
   if (M.section) h += `<div class="card row ${C.sections[M.section] === false ? "off" : ""}"><div class="grow"><b>Show ${esc(M.sectionLabel || "this section")} on the website</b><small>Switch off to hide the whole section (and its menu link).</small></div>${sw(C.sections[M.section] !== false, `data-sec="${M.section}" aria-label="Show section"`)}</div>`;
   if (M.sectionList) h += `<div class="card"><h3>Show on the website</h3>` + M.sectionList.map((k) => { const s = SECTIONS.find((x) => x[0] === k); return `<div class="row prow"><div class="grow"><b>${s[1]}</b><small>${s[2]}</small></div>${sw(C.sections[k] !== false, `data-sec="${k}" aria-label="${s[1]}"`)}</div>`; }).join("") + `</div>`;
+  if (tab === "hero" && C.images.heroVideo) {
+    const hv = C.images.heroVideo;
+    h += `<div class="card"><h3>Banner video</h3><div class="row prow"><img src="${esc(hv.poster)}" alt="" style="width:120px;border-radius:8px"><div class="grow"><b>Play the video instead of the photos</b><small>Loops silently. Switch off to show the photo slideshow below.</small></div>${sw(hv.show !== false, 'id="hv-on" aria-label="Play banner video"')}</div></div>`;
+  }
   if (M.slides) h += slideEditor(M.slides[0], M.slides[1]);
   if (M.images || tab === "guru") {
     h += `<div class="card"><h3>Photos</h3>` + (tab === "guru" ? slot("guru.photo", "Guru's photo", C.guru.photo) : "") +
@@ -662,6 +666,7 @@ function renderTab() {
   $$("[data-part]", m).forEach((i) => i.onchange = () => { if (i.checked) delete C.parts[i.dataset.part]; else C.parts[i.dataset.part] = false; i.closest(".prow").classList.toggle("off", !i.checked); changed(); });
   $$("[data-text]", m).forEach((i) => i.oninput = () => { C.text[i.dataset.text] = i.value.trim(); changed(); });
   if ($("#flip")) $("#flip").onchange = (e) => { C.images.liveFlip = e.target.checked; changed(); };
+  if ($("#hv-on")) $("#hv-on").onchange = (e) => { C.images.heroVideo.show = e.target.checked; changed(); };
   if (M.slides) bindSlides(M.slides[0]);
   bindSlots((k) => (k === "guru.photo" ? C.guru.photo : C.images[k]), (k, id) => { if (k === "guru.photo") C.guru.photo = id; else C.images[k] = id; });
   EXTRA[tab]?.($("#extra"));

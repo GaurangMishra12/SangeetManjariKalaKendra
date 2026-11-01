@@ -199,7 +199,17 @@ function render(C) {
   $("#live-img")?.classList.toggle("flip", !!IMG.liveFlip);
   const slides = (list) => (Array.isArray(list) ? list.filter((x) => x.show !== false && x.id) : null);
   const hero = slides(IMG.hero);
-  if (hero && hero.length) {
+  const hv = IMG.heroVideo;
+  if (hv && hv.show !== false && /^[\w\/.-]+\.mp4$/.test(hv.src || "")) {
+    // looping banner video (muted so browsers allow autoplay)
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    $(".hero").classList.add("has-video");
+    $(".hero-slides").innerHTML = `<video src="${esc(hv.src)}" poster="${esc(hv.poster || "")}" muted loop playsinline preload="auto"${still ? "" : " autoplay"} aria-label="Kathak performance video"></video>`;
+    $(".hero-dots").hidden = true;
+    const v = $(".hero-slides video");
+    v.muted = true;
+    if (!still) v.play().catch(() => {});
+  } else if (hero && hero.length) {
     $(".hero-slides").innerHTML = hero.map((x, i) => `<img src="${gal(x.id)}" alt="${esc(altOf(x.id))}"${i ? ' loading="lazy"' : ' class="is-on"'}>`).join("");
     $(".hero-dots").innerHTML = hero.map((_, i) => `<button${i ? "" : ' class="is-on"'} aria-label="Slide ${i + 1}"></button>`).join("");
     $(".hero-dots").hidden = hero.length < 2;
