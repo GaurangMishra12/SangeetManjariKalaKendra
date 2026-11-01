@@ -407,3 +407,12 @@ a.perf:hover { border-left-color: var(--red); }
   .portal-grid { grid-template-columns: 1fr; }
   .cert-strip { border-radius: 14px; margin-top: -10px; }
 }
+
+/* ---------- parts switched off in the admin panel ---------- */
+.contact:has(> .contact-img[hidden]) { grid-template-columns: minmax(0, 620px); justify-content: center; }
+.modal-box:has(> .modal-img[hidden]) { grid-template-columns: 1fr; width: min(460px, 100%); }
+.stats { grid-template-columns: repeat(var(--n, 6), 1fr); }
+.explore-grid { grid-template-columns: repeat(var(--n, 4), 1fr); }
+.why-grid { grid-template-columns: repeat(var(--n, 4), 1fr); }
+@media (max-width: 1080px) { .stats { grid-template-columns: repeat(min(var(--n, 6), 3), 1fr); } .explore-grid, .why-grid { grid-template-columns: repeat(min(var(--n, 4), 2), 1fr); } }
+@media (max-width: 600px) { .stats { grid-template-columns: repeat(min(var(--n, 6), 2), 1fr); } .explore-grid, .why-grid { grid-template-columns: 1fr; } }

@@ -94,6 +94,43 @@
   .dialog ol { padding-left: 20px; color: #57534e; font-size: .85rem; }
   .dialog .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
 
+  /* module tabs */
+  .card h3 { font-size: 1rem; margin: 0 0 10px; }
+  .prow { padding: 8px 0; border-top: 1px solid var(--line); }
+  .card h3 + .prow { border-top: 0; }
+  .prow.off b { color: var(--muted); text-decoration: line-through; }
+  .slot { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); }
+  .card h3 + .slot, .item-body > .slot { border-top: 0; }
+  .slot img { width: 72px; height: 54px; object-fit: cover; border-radius: 8px; background: var(--cream); }
+  .slot .grow { flex: 1; min-width: 0; }
+  .slot b { display: block; font-weight: 500; }
+  .slot small { color: var(--muted); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .slides { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .slide { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; }
+  .slide img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; }
+  .slide.off img { filter: grayscale(1) opacity(.4); }
+  .slide .bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 6px 8px; }
+  .lib-body { padding: 6px 8px 8px; background: #fff; }
+  .lib-body input { width: 100%; padding: 5px 7px; border: 1px solid var(--line); border-radius: 6px; font-size: .78rem; }
+  .lib-body .bar { padding: 6px 0 0; }
+  .lib-body .bar small { color: var(--muted); font-size: .72rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .icon-btn:disabled { opacity: .35; cursor: default; }
+  /* photo picker */
+  .dialog.picker { width: min(920px, 100%); height: min(720px, calc(100vh - 32px)); display: flex; flex-direction: column; gap: 12px; }
+  .pk-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .pk-head h3 { margin: 0; flex: 1; }
+  #pk-up { cursor: pointer; }
+  #pk-up.busy, #lib-up.busy { opacity: .6; pointer-events: none; }
+  .pk-search { padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; }
+  .pk-grid { flex: 1; overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; align-content: start; }
+  .pk-tile { border: 2px solid transparent; border-radius: 10px; padding: 0; background: #fff; cursor: pointer; overflow: hidden; text-align: left; }
+  .pk-tile img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+  .pk-tile span { display: block; font-size: .7rem; color: var(--muted); padding: 4px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pk-tile:hover { border-color: var(--gold); }
+  .pk-tile.cur { border-color: var(--brown); }
+  .pk-tile.sel { border-color: var(--ok); box-shadow: 0 0 0 3px #e5f3ec; }
+  .dialog.picker .actions { margin-top: 0; }
+
   /* login gate */
   .gate { position: fixed; inset: 0; z-index: 70; background: var(--cream); display: grid; place-items: center; padding: 16px; overflow: auto; }
   .gate-box { width: min(440px, 100%); box-shadow: 0 20px 50px -24px rgba(0,0,0,.35); display: grid; gap: 12px; }
@@ -188,6 +225,19 @@
   </div>
 </div>
 
+<div class="overlay" id="picker" hidden>
+  <div class="dialog picker">
+    <div class="pk-head">
+      <h3 id="pk-title">Choose a photo</h3>
+      <label class="btn primary" id="pk-up"><span id="pk-up-text">⬆ Upload new</span><input type="file" accept="image/*" multiple hidden id="pk-file"></label>
+      <button class="btn" id="pk-close">Close</button>
+    </div>
+    <input id="pk-search" class="pk-search" placeholder="Search photos…" aria-label="Search photos">
+    <div class="pk-grid" id="pk-grid"></div>
+    <div class="actions"><button class="btn primary" id="pk-add" hidden>Add selected</button></div>
+  </div>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -217,11 +267,11 @@ const SECTIONS = [
   ["mentor", "One-to-one banner", "Green banner for personal classes"],
   ["stats", "Numbers strip", "Students, years, performances…"],
   ["explore", "Explore cards", "Classes, Performances, Events, Workshops"],
-  ["events", "Workshops & Events", "Lists of upcoming workshops and events (edit them in their tabs)"],
+  ["events", "Workshops & Events", "Lists of upcoming workshops and events"],
   ["live", "Book a performance", "“Bring Kathak to your event” banner and recent performances"],
   ["why", "What sets us apart", "Four highlight cards"],
-  ["gallery", "Photo gallery", "Sliding row of photos"],
-  ["videos", "Performance videos", "Reels row"],
+  ["gallery", "Moments gallery", "Sliding row of photos"],
+  ["videos", "Performance videos", "Instagram reels"],
   ["contact", "Contact form", "Photo and enquiry form"],
   ["reviews", "Reviews", "Student & parent reviews"],
   ["whatsappButton", "Floating WhatsApp button", "Green button in the corner (needs a phone/WhatsApp number)"],
@@ -239,19 +289,68 @@ const DETAILS = [
   ["facebook", "Facebook link", "https://facebook.com/…"],
   ["googleReviews", "Google reviews link", "https://g.page/…"],
 ];
-const TEXTS = [
-  ["heroSubtitle", "Line under the main headline", 2],
-  ["aboutText", "About us paragraph", 5],
-  ["guruBio", "About the guru (in “What sets us apart”)", 3],
-  ["upcomingEvents", "Upcoming events (in Explore cards)", 3],
-  ["coursesIntro", "Diploma line above the course cards", 2],
-];
 const NUMBERS = [["students", "Students trained"], ["cities", "Cities reached"], ["years", "Years experience"], ["performances", "Performances"], ["workshops", "Workshops held"], ["awards", "Awards & honours"]];
 const CATS = [["kids", "Kids (Age 5+)"], ["beginner", "Beginners"], ["intermediate", "Intermediate"], ["advanced", "Advanced"], ["adults", "Adults"], ["hobby", "Hobby"]];
-const TABS = [
-  ["sections", "👁 Sections"], ["guru", "🙏 Guru"], ["details", "📇 Contact & links"], ["text", "✏️ Text"], ["numbers", "🔢 Numbers"],
-  ["courses", "🎓 Courses"], ["workshops", "🧑‍🏫 Workshops"], ["events", "📅 Events"], ["performances", "🎭 Performances"], ["photos", "🖼 Photos"], ["videos", "🎬 Videos"], ["reviews", "⭐ Reviews"], ["popup", "💬 Popup"],
-];
+
+/* Each module = one tab: section switch, photos, parts to show/hide, texts, and its own list editor. */
+const MODULES = {
+  hero: { icon: "🏠", label: "Main banner", hint: "The big photo slideshow at the top of the page. Photos are shown whole, without cropping – landscape photos look best.",
+    slides: ["hero", "Banner photos (slideshow)"],
+    parts: [["hero.card", "Text box with headline and buttons"], ["hero.enquiry", "“Enquiry” button"], ["hero.courses", "“Courses” button"]],
+    texts: [["heroSubtitle", "Line under the headline", 2]] },
+  about: { icon: "ℹ️", label: "About us", section: "about",
+    images: [["aboutTall", "Large photo"], ["aboutA", "Small photo – top"], ["aboutB", "Small photo – bottom"]],
+    parts: [["about.badge", "“Years of Kathak” circle"], ["about.features", "Four feature points"], ["about.link", "“Why learn with us” link"]],
+    texts: [["aboutText", "About us paragraph", 5]] },
+  guru: { icon: "🙏", label: "Meet the Guru", section: "guru",
+    parts: [["guru.title", "Title line"], ["guru.bio", "Bio"], ["guru.credentials", "Qualifications list"], ["guru.trainedUnder", "“Trained under” line"], ["guru.chip", "“गुरु” badge on the photo"]] },
+  join: { icon: "🌟", label: "Join banner", section: "join",
+    slides: ["join", "Slider photos"],
+    parts: [["join.slider", "Photo slider"], ["join.buttons", "“Join a Class” and “Students' Corner” buttons"]] },
+  courses: { icon: "🎓", label: "Courses", section: "courses",
+    parts: [["courses.cert", "Diploma line above the cards"], ["courses.filters", "Filter tabs"]],
+    texts: [["coursesIntro", "Diploma line above the cards", 2]] },
+  mentor: { icon: "👤", label: "One-to-one banner", section: "mentor",
+    images: [["mentor", "Background photo"]],
+    parts: [["mentor.card", "Card with the booking button"]] },
+  stats: { icon: "🔢", label: "Numbers", section: "stats",
+    hint: "Use 0 to show a dash until you have the real number. The site adds “+” after each number.",
+    parts: NUMBERS.map(([k, l]) => ["stats." + k, l]) },
+  explore: { icon: "🧭", label: "Explore cards", section: "explore",
+    images: [["exploreClasses", "Regular Classes card"], ["explorePerformances", "Performances card"], ["exploreEvents", "Upcoming Events card"], ["exploreWorkshops", "Workshops card"]],
+    parts: [["explore.classes", "Regular Classes card"], ["explore.performances", "Performances card"], ["explore.events", "Upcoming Events card"], ["explore.workshops", "Workshops card"]],
+    texts: [["upcomingEvents", "Text on the Upcoming Events card", 2]] },
+  workshops: { icon: "🧑‍🏫", label: "Workshops", section: "events", sectionLabel: "Workshops & Events section",
+    hint: "Upcoming workshops. Visitors press Register to send an enquiry. Switch off or delete a workshop once it is over.",
+    parts: [["events.workshops", "Workshops column"]] },
+  events: { icon: "📅", label: "Events", section: "events", sectionLabel: "Workshops & Events section",
+    hint: "Upcoming shows, festivals and programmes. Switch off or delete an event once it is over.",
+    parts: [["events.events", "Events column"]] },
+  live: { icon: "🎭", label: "Performance banner", section: "live",
+    hint: "“Bring Kathak to your event” banner and the list of recent performances.",
+    images: [["live", "Banner photo"]], flip: true,
+    parts: [["live.watch", "“Watch Performances” button"], ["live.tags", "“Available for events…” line"], ["live.performances", "Recent performances list"]] },
+  why: { icon: "✨", label: "What sets us apart", section: "why",
+    parts: [["why.training", "Traditional Training"], ["why.guru", "Experienced Guru"], ["why.stage", "Performance Opportunities"], ["why.ages", "All Ages Welcome"]],
+    texts: [["guruBio", "Text on the “Experienced Guru” card", 3]] },
+  photos: { icon: "🖼", label: "Moments gallery", section: "gallery",
+    hint: "The sliding row of photos. Click a photo to show or hide it, use the arrows to change the order.",
+    parts: [["gallery.arrows", "← → arrow buttons"]] },
+  videos: { icon: "🎬", label: "Videos", section: "videos",
+    parts: [["videos.viewAll", "“View all” button"]] },
+  contact: { icon: "📇", label: "Contact & links", section: "contact", sectionLabel: "Contact form section",
+    images: [["contact", "Photo next to the form"]],
+    parts: [["contact.image", "Photo next to the form"], ["form.mode", "“Class mode” box (in both forms)"], ["form.course", "“Course” box (in both forms)"], ["form.message", "“Message” box (in both forms)"]] },
+  reviews: { icon: "⭐", label: "Reviews", section: "reviews",
+    parts: [["reviews.google", "“Review us on Google” button"]] },
+  popup: { icon: "💬", label: "Popup", hint: "The enquiry form that pops up once per visit.",
+    images: [["popup", "Photo in the popup"]],
+    parts: [["popup.image", "Photo"], ["popup.logo", "Logo"]] },
+  layout: { icon: "📌", label: "Top bar, footer & buttons",
+    sectionList: ["topbar", "whatsappButton", "chatButton"],
+    parts: [["topbar.socials", "Top bar – social icons"], ["topbar.phone", "Top bar – phone"], ["topbar.email", "Top bar – email"], ["topbar.button", "Top bar – “Book Demo Class” button"], ["header.enroll", "“Enroll Now” button in the menu bar"], ["footer.links", "Footer – quick links"], ["footer.courses", "Footer – course list"], ["footer.socials", "Footer – social icons"]] },
+};
+const TABS = [["sections", "👁 All sections"], ...Object.entries(MODULES).map(([k, M]) => [k, `${M.icon} ${M.label}`]), ["library", "📁 Photo library"]];
 
 /* ---------------- password lock ----------------
    The GitHub token is stored encrypted (AES-GCM, key from the admin password via PBKDF2).
@@ -339,7 +438,7 @@ const b64decode = (b64) => new TextDecoder().decode(Uint8Array.from(atob(b64.rep
 async function ghFetch(path, opts = {}) {
   const res = await fetch(`https://api.github.com/repos/${gh.repo}/${path}`, {
     ...opts,
-    headers: { Accept: "application/vnd.github+json", Authorization: `Bearer ${gh.token}`, "X-GitHub-Api-Version": "2022-11-28", ...(opts.headers || {}) },
+    headers: { Accept: "application/vnd.github+json", Authorization: `Bearer ${gh.token}`, "X-GitHub-Api-Version": "2022-11-28", ...(opts.body ? { "Content-Type": "application/json" } : {}), ...(opts.headers || {}) },
   });
   if (!res.ok) {
     let m = res.status + "";
@@ -377,13 +476,15 @@ function normalise() {
   C.sections ||= {}; C.popup ||= { enabled: true, delaySeconds: 6 }; C.site ||= {}; C.text ||= {}; C.numbers ||= {};
   C.courses ||= []; C.workshops ||= []; C.events ||= []; C.performances ||= []; C.photos ||= []; C.videos ||= []; C.reviews ||= [];
   C.guru ||= { name: "", title: "", photo: "", bio: "", credentials: [], trainedUnder: "" };
+  C.parts ||= {}; C.images ||= {}; C.library ||= [];
+  C.images.hero ||= []; C.images.join ||= [];
 }
 
 /* ---------------- UI ---------------- */
 function setStatus(t, cls = "") { const s = $("#status"); s.textContent = t; s.className = "status " + cls; }
 function toast(t, bad) { const el = $("#toast"); el.textContent = t; el.className = "toast" + (bad ? " bad" : ""); el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (el.hidden = true), 3500); }
 function changed() {
-  const dirty = JSON.stringify(C) !== saved;
+  const dirty = JSON.stringify(C) !== saved || Object.keys(pending).length > 0;
   $("#msg").textContent = dirty ? "You have unpublished changes." : "Everything is published.";
   const s = $("#status");
   if (dirty) { s.textContent = "Unpublished changes"; s.className = "status dirty"; }
@@ -391,7 +492,7 @@ function changed() {
   try { store.set("smkk-draft", JSON.stringify(C)); } catch (_) {}
   renderSideCounts();
 }
-window.addEventListener("beforeunload", (e) => { if (C && JSON.stringify(C) !== saved) { e.preventDefault(); e.returnValue = ""; } });
+window.addEventListener("beforeunload", (e) => { if (C && (JSON.stringify(C) !== saved || Object.keys(pending).length)) { e.preventDefault(); e.returnValue = ""; } });
 
 function renderSide() {
   $("#side").innerHTML = TABS.map(([k, l]) => `<button data-tab="${k}" class="${k === tab ? "on" : ""}">${l}<span class="count" data-count="${k}"></span></button>`).join("");
@@ -402,204 +503,377 @@ function renderSideCounts() {
   const on = (arr) => `${arr.filter((x) => x.show !== false).length}/${arr.length}`;
   const counts = {
     sections: `${SECTIONS.filter(([k]) => C.sections[k] !== false).length}/${SECTIONS.length}`,
-    courses: on(C.courses), workshops: on(C.workshops), events: on(C.events), performances: on(C.performances), photos: on(C.photos), videos: on(C.videos), reviews: on(C.reviews),
-    popup: C.popup.enabled ? "on" : "off",
+    hero: on(C.images.hero), join: on(C.images.join),
+    courses: on(C.courses), workshops: on(C.workshops), events: on(C.events), live: on(C.performances), photos: on(C.photos), videos: on(C.videos), reviews: on(C.reviews),
+    popup: C.popup.enabled ? "on" : "off", library: C.library.length + "",
   };
   $$("[data-count]").forEach((el) => (el.textContent = counts[el.dataset.count] || ""));
 }
 
 const sw = (checked, attrs = "") => `<label class="sw"><input type="checkbox" ${checked ? "checked" : ""} ${attrs}><span></span></label>`;
 
+/* ---------------- photos: library, picker, upload ---------------- */
+const pending = {};      // path -> base64, uploaded on Publish
+const localThumb = {};   // id -> object URL for photos not published yet
+const thumb = (id) => localThumb[id] || `assets/img/gallery/${encodeURIComponent(id)}-sm.jpg`;
+const libItem = (id) => C.library.find((p) => p.id === id);
+const altOf = (id) => libItem(id)?.alt || "";
+
+function usage(id) {
+  const u = [];
+  if (C.images.hero.some((x) => x.id === id)) u.push("Main banner");
+  if (C.images.join.some((x) => x.id === id)) u.push("Join banner");
+  Object.entries(MODULES).forEach(([, M]) => (M.images || []).forEach(([k, l]) => { if (C.images[k] === id) u.push(`${M.label} – ${l}`); }));
+  if (C.guru.photo === id) u.push("Guru photo");
+  C.courses.forEach((c) => { if (c.img === id) u.push("Course – " + c.title); });
+  if (C.photos.some((p) => p.id === id)) u.push("Moments gallery");
+  return u;
+}
+
+async function toJpeg(src, max, q) {
+  const s = Math.min(1, max / Math.max(src.width, src.height));
+  const w = Math.round(src.width * s), h = Math.round(src.height * s);
+  const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+  const cx = cv.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, w, h); cx.drawImage(src, 0, 0, w, h);
+  const blob = await new Promise((r) => cv.toBlob(r, "image/jpeg", q));
+  const b64 = await new Promise((r) => { const fr = new FileReader(); fr.onload = () => r(fr.result.split(",")[1]); fr.readAsDataURL(blob); });
+  return { blob, b64, w, h };
+}
+async function decode(file) {
+  try { return await createImageBitmap(file, { imageOrientation: "from-image" }); } catch (_) {}
+  const url = URL.createObjectURL(file);
+  try { const img = new Image(); img.src = url; await img.decode(); return img; } finally { URL.revokeObjectURL(url); }
+}
+async function uploadFiles(files) {
+  const ids = [];
+  for (const file of files) {
+    if (file.size > 40e6) { toast(`“${file.name}” is too big (over 40 MB).`, true); continue; }
+    let src;
+    try { src = await decode(file); } catch (_) { toast(`Couldn't open “${file.name}”. Please use a JPG or PNG photo.`, true); continue; }
+    const big = await toJpeg(src, 2000, 0.85), sm = await toJpeg(src, 800, 0.8);
+    const id = "u" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    pending[`assets/img/gallery/${id}.jpg`] = big.b64;
+    pending[`assets/img/gallery/${id}-sm.jpg`] = sm.b64;
+    localThumb[id] = URL.createObjectURL(sm.blob);
+    C.library.unshift({ id, alt: file.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim().slice(0, 80), w: sm.w, h: sm.h });
+    ids.push(id);
+  }
+  if (ids.length) { changed(); toast(`${ids.length} photo${ids.length > 1 ? "s" : ""} added. Press “Publish to website” to put ${ids.length > 1 ? "them" : "it"} online.`); }
+  return ids;
+}
+
+let pick = null;
+function openPicker({ title = "Choose a photo", multi = false, current = "", onPick }) {
+  pick = { multi, onPick, sel: new Set() };
+  $("#pk-title").textContent = title;
+  $("#pk-add").hidden = !multi;
+  $("#pk-search").value = "";
+  drawPicker(current);
+  $("#picker").hidden = false;
+}
+function drawPicker(current) {
+  const q = $("#pk-search").value.trim().toLowerCase();
+  const list = C.library.filter((p) => !q || (p.alt || "").toLowerCase().includes(q) || p.id.includes(q));
+  $("#pk-grid").innerHTML = list.map((p) => `
+    <button class="pk-tile ${p.id === current ? "cur" : ""} ${pick.sel.has(p.id) ? "sel" : ""}" data-id="${esc(p.id)}" title="${esc(p.alt)}">
+      <img src="${esc(thumb(p.id))}" alt="" loading="lazy"><span>${esc(p.alt || p.id)}</span>
+    </button>`).join("") || `<p class="hint">No photos match.</p>`;
+  $$(".pk-tile").forEach((t) => t.onclick = () => {
+    const id = t.dataset.id;
+    if (!pick.multi) { closePicker(); pick.onPick([id]); return; }
+    pick.sel.has(id) ? pick.sel.delete(id) : pick.sel.add(id);
+    t.classList.toggle("sel"); $("#pk-add").textContent = `Add ${pick.sel.size || ""} selected`.replace("  ", " ");
+  });
+  $("#pk-add").textContent = `Add ${pick.sel.size || ""} selected`.replace("  ", " ");
+}
+function closePicker() { $("#picker").hidden = true; }
+$("#pk-close").onclick = closePicker;
+$("#pk-search").oninput = () => drawPicker();
+$("#pk-add").onclick = () => { const ids = [...pick.sel]; closePicker(); if (ids.length) pick.onPick(ids); };
+$("#pk-file").onchange = async (e) => {
+  const files = [...e.target.files]; e.target.value = "";
+  if (!files.length) return;
+  $("#pk-up").classList.add("busy"); $("#pk-up-text").textContent = "Preparing…";
+  const ids = await uploadFiles(files);
+  $("#pk-up").classList.remove("busy"); $("#pk-up-text").textContent = "⬆ Upload new";
+  if (!ids.length) return;
+  if (!pick.multi) { closePicker(); pick.onPick([ids[0]]); }
+  else { ids.forEach((id) => pick.sel.add(id)); drawPicker(); }
+};
+
+// a single photo slot (thumbnail + change button)
+const slot = (key, label, id) => `
+  <div class="slot" data-slot="${key}">
+    <img src="${esc(id ? thumb(id) : "")}" alt="" ${id ? "" : "hidden"}>
+    <div class="grow"><b>${esc(label)}</b><small>${esc(id ? altOf(id) || id : "No photo chosen")}</small></div>
+    <button class="btn sm" data-change>Change photo</button>
+  </div>`;
+function bindSlots(get, set) {
+  $$("[data-slot]").forEach((el) => {
+    const key = el.dataset.slot;
+    $("[data-change]", el).onclick = () => openPicker({ current: get(key), onPick: ([id]) => { set(key, id); changed(); renderTab(); } });
+  });
+}
+
+// an ordered list of photos with show/hide (banner slides, slider)
+function slideEditor(listKey, label) {
+  const list = C.images[listKey];
+  return `<div class="card"><h3>${esc(label)}</h3><p class="hint">Switch a photo off to hide it, use the arrows to reorder.</p><div class="slides">` +
+    list.map((x, i) => `
+      <div class="slide ${x.show === false ? "off" : ""}" data-li="${i}">
+        <img src="${esc(thumb(x.id))}" alt="" title="${esc(altOf(x.id))}">
+        <div class="bar">${sw(x.show !== false, `data-show aria-label="Show photo"`)}<span>
+          <button class="icon-btn" data-l title="Move earlier">←</button><button class="icon-btn" data-r title="Move later">→</button><button class="icon-btn" data-x title="Remove">🗑</button></span></div>
+      </div>`).join("") + `</div><p style="margin:12px 0 0"><button class="btn" data-add-slide>+ Add photo</button></p></div>`;
+}
+function bindSlides(listKey) {
+  const list = C.images[listKey];
+  $$("[data-li]").forEach((el) => {
+    const i = +el.dataset.li, x = list[i];
+    $("[data-show]", el).onchange = (e) => { x.show = e.target.checked; el.classList.toggle("off", !x.show); changed(); };
+    $("[data-l]", el).onclick = () => move(list, i, -1);
+    $("[data-r]", el).onclick = () => move(list, i, 1);
+    $("[data-x]", el).onclick = () => { list.splice(i, 1); changed(); renderTab(); };
+  });
+  $("[data-add-slide]").onclick = () => openPicker({ title: "Add photos", multi: true, onPick: (ids) => { ids.forEach((id) => list.push({ id, show: true })); changed(); renderTab(); } });
+}
+
+/* ---------------- tabs ---------------- */
 function renderTab() {
   const m = $("#main");
-  const R = {
-    sections() {
-      m.innerHTML = `<h2>Sections</h2><p class="hint">Switch parts of the home page on or off. Hidden sections also disappear from the menu.</p>` +
-        SECTIONS.map(([k, l, d]) => `<div class="card row ${C.sections[k] === false ? "off" : ""}"><div class="grow"><b>${l}</b><small>${d}</small></div>${sw(C.sections[k] !== false, `data-sec="${k}" aria-label="${l}"`)}</div>`).join("") +
-        `<p class="hint" style="margin-top:16px">The header, main banner and footer are always shown.</p>`;
-      $$("[data-sec]").forEach((i) => i.onchange = () => { C.sections[i.dataset.sec] = i.checked; i.closest(".card").classList.toggle("off", !i.checked); changed(); });
-    },
-    guru() {
-      const G = C.guru;
-      const imgOpts = C.photos.map((p) => `<option value="${p.id}" ${p.id === G.photo ? "selected" : ""}>${p.id} – ${esc(p.alt)}</option>`).join("");
-      m.innerHTML = `<h2>Meet the Guru</h2><p class="hint">Shown in the green “Meet the Guru” section. Turn the section on/off under Sections.</p>
-        <div class="card grid2">
-          <label class="f">Name<input data-g="name" value="${esc(G.name)}"></label>
-          <label class="f">Title<input data-g="title" value="${esc(G.title)}"></label>
-          <label class="f full">Photo<select data-g="photo">${imgOpts}</select></label>
-          <label class="f full">Bio<textarea data-g="bio" rows="6">${esc(G.bio)}</textarea></label>
-          <label class="f full">Qualifications (one per line)<textarea data-g="credentials" rows="6">${esc((G.credentials || []).join("\n"))}</textarea></label>
-          <label class="f full">Trained under<textarea data-g="trainedUnder" rows="2">${esc(G.trainedUnder)}</textarea></label>
-        </div>
-        <div class="card"><img id="g-prev" src="assets/img/gallery/${esc(G.photo)}-sm.jpg" alt="" style="width:120px;border-radius:10px"></div>`;
-      $$("[data-g]").forEach((i) => i.oninput = i.onchange = () => {
-        const k = i.dataset.g;
-        G[k] = k === "credentials" ? i.value.split("\n").map((x) => x.trim()).filter(Boolean) : i.value.trim();
-        if (k === "name") C.site.guru = G.name;
-        if (k === "photo") $("#g-prev").src = `assets/img/gallery/${G.photo}-sm.jpg`;
-        changed();
-      });
-    },
-    details() {
-      m.innerHTML = `<h2>Contact & links</h2><p class="hint">Leave a box empty to hide it or show a placeholder. Enquiry form setup guide: <a href="https://github.com/${esc(gh.repo)}/blob/${esc(gh.branch)}/FORM-SETUP.md" target="_blank" rel="noopener">FORM-SETUP.md</a></p><div class="card grid2">` +
-        DETAILS.map(([k, l, ph, full]) => `<label class="f ${full ? "full" : ""}">${l}<input data-site="${k}" value="${esc(C.site[k])}" placeholder="${esc(ph)}"></label>`).join("") + `</div>`;
-      $$("[data-site]").forEach((i) => i.oninput = () => { C.site[i.dataset.site] = i.value.trim(); changed(); });
-    },
-    text() {
-      m.innerHTML = `<h2>Text</h2><p class="hint">Edit the main paragraphs on the page.</p><div class="card grid2">` +
-        TEXTS.map(([k, l, rows]) => `<label class="f full">${l}<textarea data-text="${k}" rows="${rows}">${esc(C.text[k])}</textarea></label>`).join("") + `</div>`;
-      $$("[data-text]").forEach((i) => i.oninput = () => { C.text[i.dataset.text] = i.value.trim(); changed(); });
-    },
-    numbers() {
-      m.innerHTML = `<h2>Numbers strip</h2><p class="hint">Use 0 to show a dash until you have the real number. The site adds “+” after each number.</p><div class="card grid2">` +
-        NUMBERS.map(([k, l]) => `<label class="f">${l}<input type="number" min="0" data-num="${k}" value="${+C.numbers[k] || 0}"></label>`).join("") + `</div>`;
-      $$("[data-num]").forEach((i) => i.oninput = () => { C.numbers[i.dataset.num] = Math.max(0, parseInt(i.value) || 0); changed(); });
-    },
-    courses() {
-      const imgOpts = (sel) => C.photos.map((p) => `<option value="${p.id}" ${p.id === sel ? "selected" : ""}>${p.id} – ${esc(p.alt)}</option>`).join("");
-      m.innerHTML = `<h2>Courses</h2><p class="hint">Turn courses on or off, edit fees, reorder with the arrows. Leave a fee empty to show “₹ —”.</p>` +
-        C.courses.map((c, i) => `
-        <div class="card ${c.show === false ? "off" : ""}" data-i="${i}">
-          <div class="item-head">
-            <img src="assets/img/gallery/${esc(c.img)}-sm.jpg" alt="">
-            <div class="grow"><b>${esc(c.title) || "Untitled course"}</b><small>${esc(c.badge)} · ${c.group ? "₹" + esc(c.group) : "no fee set"}</small></div>
-            <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
-            <button class="btn sm" data-edit>Edit</button>
-            ${sw(c.show !== false, `data-show aria-label="Show ${esc(c.title)}"`)}
-          </div>
-          <div class="item-body" hidden>
-            <div class="grid2">
-              <label class="f">Title<input data-k="title" value="${esc(c.title)}"></label>
-              <label class="f">Badge on photo<input data-k="badge" value="${esc(c.badge)}"></label>
-              <label class="f">Filter tab<select data-k="cat">${CATS.map(([v, l]) => `<option value="${v}" ${v === c.cat ? "selected" : ""}>${l}</option>`).join("")}</select></label>
-              <label class="f full">Short description<input data-k="desc" value="${esc(c.desc)}"></label>
-              <label class="f">Duration (optional)<input data-k="duration" value="${esc(c.duration)}"></label>
-              <label class="f">Group fee per month (₹)<input data-k="group" value="${esc(c.group)}" placeholder="e.g. 2,000"></label>
-              <label class="f">Group note<input data-k="groupNote" value="${esc(c.groupNote)}"></label>
-              <label class="f">One-on-one fee per month (₹) – leave both empty to hide<input data-k="personal" value="${esc(c.personal)}" placeholder="e.g. 3,500"></label>
-              <label class="f">One-on-one note<input data-k="personalNote" value="${esc(c.personalNote)}"></label>
-              <label class="f full">Photo<select data-k="img">${imgOpts(c.img)}</select></label>
-            </div>
-            <p style="margin:12px 0 0"><button class="btn sm danger" data-del>Delete course</button></p>
-          </div>
-        </div>`).join("") +
-        `<button class="btn" id="add-course">+ Add course</button>`;
-      $$(".card[data-i]").forEach((card) => {
-        const i = +card.dataset.i, c = C.courses[i];
-        $("[data-edit]", card).onclick = () => { const b = $(".item-body", card); b.hidden = !b.hidden; };
-        $("[data-show]", card).onchange = (e) => { c.show = e.target.checked; card.classList.toggle("off", !c.show); changed(); };
-        $("[data-up]", card).onclick = () => move(C.courses, i, -1);
-        $("[data-down]", card).onclick = () => move(C.courses, i, 1);
-        $("[data-del]", card).onclick = () => { if (confirm(`Delete “${c.title}”?`)) { C.courses.splice(i, 1); changed(); renderTab(); } };
-        $$("[data-k]", card).forEach((inp) => inp.oninput = inp.onchange = () => {
-          c[inp.dataset.k] = inp.value.trim(); changed();
-          $(".item-head b", card).textContent = c.title || "Untitled course";
-          $(".item-head small", card).textContent = `${c.badge} · ${c.group ? "₹" + c.group : "no fee set"}`;
-          $(".item-head img", card).src = `assets/img/gallery/${c.img}-sm.jpg`;
-        });
-      });
-      $("#add-course").onclick = () => {
-        C.courses.push({ show: true, cat: "beginner", badge: "New", title: "New course", img: C.courses[0]?.img || C.photos[0]?.id || "", desc: "", duration: "", group: "", personal: "", groupNote: "12 classes a month", personalNote: "" });
-        changed(); renderTab(); const cards = $$(".card[data-i]"); const last = cards[cards.length - 1]; $(".item-body", last).hidden = false; last.scrollIntoView({ behavior: "smooth" });
-      };
-    },
-    workshops() { listEditor("workshops", "Workshops", "Upcoming workshops shown in the “Workshops & Events” section. Visitors can press Register to send an enquiry. Switch off or delete a workshop once it is over.", WS_FIELDS, "workshop"); },
-    events() { listEditor("events", "Events", "Upcoming shows, festivals and programmes shown in the “Workshops & Events” section. Switch off or delete an event once it is over.", WS_FIELDS, "event"); },
-    performances() { listEditor("performances", "Recent performances", "Shown under “Bring Kathak to your event”. Add a YouTube, Instagram or Drive link so visitors can watch.", PERF_FIELDS, "performance"); },
-    photos() {
-      m.innerHTML = `<h2>Photos</h2><p class="hint">Click a photo to show or hide it in the gallery. Use the arrows to change the order.</p>
-        <p><button class="btn sm" id="all-on">Show all</button> <button class="btn sm" id="all-off">Hide all</button></p>
-        <div class="photos">` + C.photos.map((p, i) => `
-        <div class="ph-tile ${p.show === false ? "off" : "on"}" data-i="${i}">
-          <span class="tag">${p.show === false ? "Hidden" : "Shown"}</span>
-          <img src="assets/img/gallery/${esc(p.id)}-sm.jpg" alt="${esc(p.alt)}" title="${esc(p.alt)}" loading="lazy">
-          <div class="bar"><button class="icon-btn" data-l title="Move earlier">←</button><span>#${i + 1}</span><button class="icon-btn" data-r title="Move later">→</button></div>
-        </div>`).join("") + `</div>
-        <p class="hint" style="margin-top:16px">To add new photos, put <code>NNNN.jpg</code> (about 1600px) and <code>NNNN-sm.jpg</code> (about 640px) in <code>assets/img/gallery/</code>, then add them to <code>content.json</code>.</p>`;
-      $$(".ph-tile").forEach((t) => {
-        const i = +t.dataset.i, p = C.photos[i];
-        $("img", t).onclick = () => { p.show = p.show === false; changed(); renderTab(); };
-        $("[data-l]", t).onclick = () => move(C.photos, i, -1);
-        $("[data-r]", t).onclick = () => move(C.photos, i, 1);
-      });
-      $("#all-on").onclick = () => { C.photos.forEach((p) => (p.show = true)); changed(); renderTab(); };
-      $("#all-off").onclick = () => { C.photos.forEach((p) => (p.show = false)); changed(); renderTab(); };
-    },
-    videos() {
-      m.innerHTML = `<h2>Videos</h2><p class="hint">Choose which videos appear and in what order. To add an Instagram reel, press “+ Add Instagram reel” and paste its link (e.g. https://www.instagram.com/reel/ABC123/). The reel plays right on the website. Title and caption are optional.</p>` +
-        C.videos.map((v, i) => `
-        <div class="card ${v.show === false ? "off" : ""}" data-i="${i}">
-          <div class="item-head" style="align-items:flex-start">
-            ${v.instagram !== undefined
-              ? `<span style="width:40px;height:64px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.8rem;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)">IG</span>`
-              : `<img src="assets/img/${esc(v.src)}-poster.jpg" alt="" style="width:40px;height:64px">`}
-            <div class="grow grid2">
-              ${v.instagram !== undefined ? `<label class="f full">Instagram reel link<input data-k="instagram" value="${esc(v.instagram)}" placeholder="https://www.instagram.com/reel/…"></label>` : ""}
-              <label class="f">Title<input data-k="title" value="${esc(v.title)}"></label>
-              <label class="f">Caption<input data-k="caption" value="${esc(v.caption)}"></label>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
-              ${sw(v.show !== false, `data-show aria-label="Show video"`)}
-              <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
-              ${v.instagram !== undefined ? `<button class="icon-btn" data-del title="Delete">🗑</button>` : ""}
-            </div>
-          </div>
-        </div>`).join("") + `<button class="btn" id="add-ig">+ Add Instagram reel</button>`;
-      $$(".card[data-i]").forEach((card) => {
-        const i = +card.dataset.i, v = C.videos[i];
-        $("[data-show]", card).onchange = (e) => { v.show = e.target.checked; card.classList.toggle("off", !v.show); changed(); };
-        $("[data-up]", card).onclick = () => move(C.videos, i, -1);
-        $("[data-down]", card).onclick = () => move(C.videos, i, 1);
-        const del = $("[data-del]", card);
-        if (del) del.onclick = () => { if (confirm("Remove this reel from the website?")) { C.videos.splice(i, 1); changed(); renderTab(); } };
-        $$("[data-k]", card).forEach((inp) => inp.oninput = () => { v[inp.dataset.k] = inp.value.trim(); changed(); });
-      });
-      $("#add-ig").onclick = () => { C.videos.unshift({ show: true, instagram: "", title: "", caption: "" }); changed(); renderTab(); $("#main [data-k=instagram]")?.focus(); };
-    },
-    reviews() {
-      m.innerHTML = `<h2>Reviews</h2><p class="hint">Add reviews from students and parents (copy them from Google). Only switched-on reviews with text are shown.</p>` +
-        (C.reviews.length ? "" : `<div class="card"><p class="hint" style="margin:0">No reviews yet. The site shows placeholders until you add some.</p></div>`) +
-        C.reviews.map((r, i) => `
-        <div class="card ${r.show === false ? "off" : ""}" data-i="${i}">
-          <div class="item-head" style="align-items:flex-start">
-            <div class="grow grid2">
-              <label class="f">Name<input data-k="name" value="${esc(r.name)}"></label>
-              <label class="f">Batch / relation (optional)<input data-k="batch" value="${esc(r.batch)}" placeholder="e.g. Parent, Kids batch"></label>
-              <label class="f full">Review<textarea data-k="text" rows="3">${esc(r.text)}</textarea></label>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
-              ${sw(r.show !== false, `data-show aria-label="Show review"`)}
-              <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
-              <button class="icon-btn" data-del title="Delete">🗑</button>
-            </div>
-          </div>
-        </div>`).join("") + `<button class="btn" id="add-review">+ Add review</button>`;
-      $$(".card[data-i]").forEach((card) => {
-        const i = +card.dataset.i, r = C.reviews[i];
-        $("[data-show]", card).onchange = (e) => { r.show = e.target.checked; card.classList.toggle("off", !r.show); changed(); };
-        $("[data-up]", card).onclick = () => move(C.reviews, i, -1);
-        $("[data-down]", card).onclick = () => move(C.reviews, i, 1);
-        $("[data-del]", card).onclick = () => { if (confirm("Delete this review?")) { C.reviews.splice(i, 1); changed(); renderTab(); } };
-        $$("[data-k]", card).forEach((inp) => inp.oninput = () => { r[inp.dataset.k] = inp.value.trim(); changed(); });
-      });
-      $("#add-review").onclick = () => { C.reviews.push({ show: true, name: "", batch: "", text: "" }); changed(); renderTab(); $$(".card[data-i] input")[$$(".card[data-i] input").length - 2]?.focus(); };
-    },
-    popup() {
-      m.innerHTML = `<h2>Enquiry popup</h2><p class="hint">The form that pops up once per visit.</p>
-        <div class="card row"><div class="grow"><b>Show popup automatically</b><small>Visitors can always open it with the buttons.</small></div>${sw(C.popup.enabled !== false, 'id="pop-on" aria-label="Show popup"')}</div>
-        <div class="card"><label class="f" style="max-width:240px">Seconds after the page opens<input type="number" min="1" max="120" id="pop-delay" value="${+C.popup.delaySeconds || 6}"></label></div>`;
-      $("#pop-on").onchange = (e) => { C.popup.enabled = e.target.checked; changed(); };
-      $("#pop-delay").oninput = (e) => { C.popup.delaySeconds = Math.max(1, parseInt(e.target.value) || 6); changed(); };
-    },
-  };
-  R[tab]();
+  if (tab === "sections") return renderSections(m);
+  if (tab === "library") return renderLibrary(m);
+  const M = MODULES[tab];
+  let h = `<h2>${M.icon} ${M.label}</h2>${M.hint ? `<p class="hint">${M.hint}</p>` : `<p class="hint"></p>`}`;
+  if (M.section) h += `<div class="card row ${C.sections[M.section] === false ? "off" : ""}"><div class="grow"><b>Show ${esc(M.sectionLabel || "this section")} on the website</b><small>Switch off to hide the whole section (and its menu link).</small></div>${sw(C.sections[M.section] !== false, `data-sec="${M.section}" aria-label="Show section"`)}</div>`;
+  if (M.sectionList) h += `<div class="card"><h3>Show on the website</h3>` + M.sectionList.map((k) => { const s = SECTIONS.find((x) => x[0] === k); return `<div class="row prow"><div class="grow"><b>${s[1]}</b><small>${s[2]}</small></div>${sw(C.sections[k] !== false, `data-sec="${k}" aria-label="${s[1]}"`)}</div>`; }).join("") + `</div>`;
+  if (M.slides) h += slideEditor(M.slides[0], M.slides[1]);
+  if (M.images || tab === "guru") {
+    h += `<div class="card"><h3>Photos</h3>` + (tab === "guru" ? slot("guru.photo", "Guru's photo", C.guru.photo) : "") +
+      (M.images || []).map(([k, l]) => slot(k, l, C.images[k])).join("") +
+      (M.flip ? `<div class="row prow"><div class="grow"><b>Mirror the banner photo</b><small>Flips it left-to-right so the dancer faces the text.</small></div>${sw(!!C.images.liveFlip, 'id="flip" aria-label="Mirror photo"')}</div>` : "") + `</div>`;
+  }
+  if (M.parts) h += `<div class="card"><h3>Show / hide parts</h3>` + M.parts.map(([k, l]) => `<div class="row prow ${C.parts[k] === false ? "off" : ""}"><div class="grow"><b>${esc(l)}</b></div>${sw(C.parts[k] !== false, `data-part="${k}" aria-label="${esc(l)}"`)}</div>`).join("") + `</div>`;
+  if (M.texts) h += `<div class="card grid2"><h3 class="full" style="margin:0">Text</h3>` + M.texts.map(([k, l, rows]) => `<label class="f full">${l}<textarea data-text="${k}" rows="${rows}">${esc(C.text[k])}</textarea></label>`).join("") + `</div>`;
+  h += `<div id="extra"></div>`;
+  m.innerHTML = h;
+
+  $$("[data-sec]", m).forEach((i) => i.onchange = () => { C.sections[i.dataset.sec] = i.checked; i.closest(".card.row")?.classList.toggle("off", !i.checked); changed(); });
+  $$("[data-part]", m).forEach((i) => i.onchange = () => { if (i.checked) delete C.parts[i.dataset.part]; else C.parts[i.dataset.part] = false; i.closest(".prow").classList.toggle("off", !i.checked); changed(); });
+  $$("[data-text]", m).forEach((i) => i.oninput = () => { C.text[i.dataset.text] = i.value.trim(); changed(); });
+  if ($("#flip")) $("#flip").onchange = (e) => { C.images.liveFlip = e.target.checked; changed(); };
+  if (M.slides) bindSlides(M.slides[0]);
+  bindSlots((k) => (k === "guru.photo" ? C.guru.photo : C.images[k]), (k, id) => { if (k === "guru.photo") C.guru.photo = id; else C.images[k] = id; });
+  EXTRA[tab]?.($("#extra"));
 }
+
+function renderSections(m) {
+  m.innerHTML = `<h2>All sections</h2><p class="hint">Switch whole parts of the home page on or off. Open a section's own tab to change its photos and hide smaller parts.</p>` +
+    SECTIONS.map(([k, l, d]) => `<div class="card row ${C.sections[k] === false ? "off" : ""}"><div class="grow"><b>${l}</b><small>${d}</small></div>${sw(C.sections[k] !== false, `data-sec="${k}" aria-label="${l}"`)}</div>`).join("") +
+    `<p class="hint" style="margin-top:16px">The menu bar, main banner and footer are always shown.</p>`;
+  $$("[data-sec]").forEach((i) => i.onchange = () => { C.sections[i.dataset.sec] = i.checked; i.closest(".card").classList.toggle("off", !i.checked); changed(); });
+}
+
+function renderLibrary(m) {
+  m.innerHTML = `<h2>📁 Photo library</h2><p class="hint">Every photo the website can use. Upload new ones here or from any “Change photo” button. Edit the description (helps Google and screen readers). A photo that is in use can't be deleted.</p>
+    <p><label class="btn primary" id="lib-up"><span id="lib-up-text">⬆ Upload photos</span><input type="file" accept="image/*" multiple hidden id="lib-file"></label></p>
+    <div class="photos">` + C.library.map((p, i) => {
+      const u = usage(p.id);
+      return `<div class="ph-tile on lib" data-i="${i}">
+        ${localThumb[p.id] ? `<span class="tag" style="background:#9a5b00">Not published</span>` : u.length ? `<span class="tag">In use</span>` : ""}
+        <img src="${esc(thumb(p.id))}" alt="${esc(p.alt)}" loading="lazy" title="${esc(u.join(" · ") || "Not used anywhere")}">
+        <div class="lib-body"><input data-alt value="${esc(p.alt)}" placeholder="Description" aria-label="Description">
+        <div class="bar"><small>${u.length ? esc(u.length === 1 ? u[0] : u.length + " places") : "Not used"}</small><button class="icon-btn" data-del title="Delete" ${u.length ? "disabled" : ""}>🗑</button></div></div>
+      </div>`; }).join("") + `</div>`;
+  $("#lib-file").onchange = async (e) => {
+    const files = [...e.target.files]; e.target.value = ""; if (!files.length) return;
+    $("#lib-up-text").textContent = "Preparing…"; await uploadFiles(files); renderTab();
+  };
+  $$(".ph-tile.lib").forEach((t) => {
+    const p = C.library[+t.dataset.i];
+    $("[data-alt]", t).oninput = (e) => { p.alt = e.target.value.trim(); C.photos.forEach((x) => { if (x.id === p.id) x.alt = p.alt; }); changed(); };
+    $("[data-del]", t).onclick = () => {
+      if (usage(p.id).length || !confirm("Delete this photo from the library?")) return;
+      C.library.splice(C.library.indexOf(p), 1);
+      delete pending[`assets/img/gallery/${p.id}.jpg`]; delete pending[`assets/img/gallery/${p.id}-sm.jpg`];
+      changed(); renderTab();
+    };
+  });
+}
+
+/* extra editors shown under a module's photos/parts */
+const EXTRA = {
+  guru(box) {
+    const G = C.guru;
+    box.innerHTML = `<div class="card grid2"><h3 class="full" style="margin:0">Details</h3>
+      <label class="f">Name<input data-g="name" value="${esc(G.name)}"></label>
+      <label class="f">Title<input data-g="title" value="${esc(G.title)}"></label>
+      <label class="f full">Bio<textarea data-g="bio" rows="6">${esc(G.bio)}</textarea></label>
+      <label class="f full">Qualifications & achievements (one per line)<textarea data-g="credentials" rows="7">${esc((G.credentials || []).join("\n"))}</textarea></label>
+      <label class="f full">Trained under<textarea data-g="trainedUnder" rows="2">${esc(G.trainedUnder)}</textarea></label></div>`;
+    $$("[data-g]", box).forEach((i) => i.oninput = () => {
+      const k = i.dataset.g;
+      G[k] = k === "credentials" ? i.value.split("\n").map((x) => x.trim()).filter(Boolean) : i.value.trim();
+      if (k === "name") C.site.guru = G.name;
+      changed();
+    });
+  },
+  stats(box) {
+    box.innerHTML = `<div class="card grid2"><h3 class="full" style="margin:0">Numbers</h3>` +
+      NUMBERS.map(([k, l]) => `<label class="f">${l}<input type="number" min="0" data-num="${k}" value="${+C.numbers[k] || 0}"></label>`).join("") + `</div>`;
+    $$("[data-num]", box).forEach((i) => i.oninput = () => { C.numbers[i.dataset.num] = Math.max(0, parseInt(i.value) || 0); changed(); });
+  },
+  courses(box) {
+    box.innerHTML = `<h3 style="margin:20px 0 4px">Course cards</h3><p class="hint">Turn courses on or off, edit fees, reorder with the arrows. Leave a fee empty to show “₹ —”.</p>` +
+      C.courses.map((c, i) => `
+      <div class="card ${c.show === false ? "off" : ""}" data-i="${i}">
+        <div class="item-head">
+          <img src="${esc(thumb(c.img))}" alt="">
+          <div class="grow"><b>${esc(c.title) || "Untitled course"}</b><small>${esc(c.badge)} · ${c.group ? "₹" + esc(c.group) : "no fee set"}</small></div>
+          <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
+          <button class="btn sm" data-edit>Edit</button>
+          ${sw(c.show !== false, `data-show aria-label="Show ${esc(c.title)}"`)}
+        </div>
+        <div class="item-body" hidden>
+          ${slot("course", "Course photo", c.img)}
+          <div class="grid2" style="margin-top:12px">
+            <label class="f">Title<input data-k="title" value="${esc(c.title)}"></label>
+            <label class="f">Badge on photo<input data-k="badge" value="${esc(c.badge)}"></label>
+            <label class="f full">Short description<input data-k="desc" value="${esc(c.desc)}"></label>
+            <label class="f">Filter tab<select data-k="cat">${CATS.map(([v, l]) => `<option value="${v}" ${v === c.cat ? "selected" : ""}>${l}</option>`).join("")}</select></label>
+            <label class="f">Duration (optional)<input data-k="duration" value="${esc(c.duration)}"></label>
+            <label class="f">Group fee per month (₹)<input data-k="group" value="${esc(c.group)}" placeholder="e.g. 2,000"></label>
+            <label class="f">Group note<input data-k="groupNote" value="${esc(c.groupNote)}"></label>
+            <label class="f">One-on-one fee per month (₹) – leave both empty to hide<input data-k="personal" value="${esc(c.personal)}" placeholder="e.g. 3,500"></label>
+            <label class="f">One-on-one note<input data-k="personalNote" value="${esc(c.personalNote)}"></label>
+          </div>
+          <p style="margin:12px 0 0"><button class="btn sm danger" data-del>Delete course</button></p>
+        </div>
+      </div>`).join("") + `<button class="btn" id="add-course">+ Add course</button>`;
+    $$(".card[data-i]", box).forEach((card) => {
+      const i = +card.dataset.i, c = C.courses[i];
+      $("[data-edit]", card).onclick = () => { const b = $(".item-body", card); b.hidden = !b.hidden; };
+      $("[data-show]", card).onchange = (e) => { c.show = e.target.checked; card.classList.toggle("off", !c.show); changed(); };
+      $("[data-up]", card).onclick = () => move(C.courses, i, -1);
+      $("[data-down]", card).onclick = () => move(C.courses, i, 1);
+      $("[data-del]", card).onclick = () => { if (confirm(`Delete “${c.title}”?`)) { C.courses.splice(i, 1); changed(); renderTab(); } };
+      $("[data-change]", card).onclick = () => openPicker({ current: c.img, onPick: ([id]) => {
+        c.img = id; changed();
+        $(".item-head img", card).src = $(".slot img", card).src = thumb(id); $(".slot img", card).hidden = false; $(".slot small", card).textContent = altOf(id) || id;
+      } });
+      $$("[data-k]", card).forEach((inp) => inp.oninput = inp.onchange = () => {
+        c[inp.dataset.k] = inp.value.trim(); changed();
+        $(".item-head b", card).textContent = c.title || "Untitled course";
+        $(".item-head small", card).textContent = `${c.badge} · ${c.group ? "₹" + c.group : "no fee set"}`;
+      });
+    });
+    $("#add-course").onclick = () => {
+      C.courses.push({ show: true, cat: "beginner", badge: "New", title: "New course", img: C.courses[0]?.img || C.library[0]?.id || "", desc: "", duration: "", group: "", personal: "", groupNote: "12 classes a month", personalNote: "" });
+      changed(); renderTab(); const cards = $$(".card[data-i]"); const last = cards[cards.length - 1]; $(".item-body", last).hidden = false; last.scrollIntoView({ behavior: "smooth" });
+    };
+  },
+  workshops(box) { listEditor(box, "workshops", WS_FIELDS, "workshop"); },
+  events(box) { listEditor(box, "events", WS_FIELDS, "event"); },
+  live(box) { box.innerHTML = `<h3 style="margin:20px 0 4px">Recent performances</h3><p class="hint">Add a YouTube, Instagram or Drive link so visitors can watch.</p><div id="perf-box"></div>`; listEditor($("#perf-box"), "performances", PERF_FIELDS, "performance"); },
+  photos(box) {
+    box.innerHTML = `<div class="card"><h3>Photos in the gallery</h3>
+      <p><button class="btn primary" id="mo-add">+ Add photos</button> <button class="btn sm" id="all-on">Show all</button> <button class="btn sm" id="all-off">Hide all</button></p>
+      <div class="photos">` + C.photos.map((p, i) => `
+      <div class="ph-tile ${p.show === false ? "off" : "on"}" data-i="${i}">
+        <span class="tag">${p.show === false ? "Hidden" : "Shown"}</span>
+        <img src="${esc(thumb(p.id))}" alt="${esc(p.alt)}" title="${esc(p.alt)}" loading="lazy">
+        <div class="bar"><button class="icon-btn" data-l title="Move earlier">←</button><span>#${i + 1}</span><button class="icon-btn" data-r title="Move later">→</button><button class="icon-btn" data-x title="Remove from gallery">✕</button></div>
+      </div>`).join("") + `</div><p class="hint" style="margin:12px 0 0">“✕” only removes a photo from this gallery – it stays in the photo library.</p></div>`;
+    $$(".ph-tile", box).forEach((t) => {
+      const i = +t.dataset.i, p = C.photos[i];
+      $("img", t).onclick = () => { p.show = p.show === false; changed(); renderTab(); };
+      $("[data-l]", t).onclick = () => move(C.photos, i, -1);
+      $("[data-r]", t).onclick = () => move(C.photos, i, 1);
+      $("[data-x]", t).onclick = () => { C.photos.splice(i, 1); changed(); renderTab(); };
+    });
+    $("#all-on").onclick = () => { C.photos.forEach((p) => (p.show = true)); changed(); renderTab(); };
+    $("#all-off").onclick = () => { C.photos.forEach((p) => (p.show = false)); changed(); renderTab(); };
+    $("#mo-add").onclick = () => openPicker({ title: "Add photos to the gallery", multi: true, onPick: (ids) => {
+      ids.forEach((id) => { const L = libItem(id); if (L) C.photos.push({ show: true, id, alt: L.alt, w: L.w, h: L.h }); });
+      changed(); renderTab();
+    } });
+  },
+  videos(box) {
+    box.innerHTML = `<h3 style="margin:20px 0 4px">Videos</h3><p class="hint">To add an Instagram reel, press “+ Add Instagram reel” and paste its link (e.g. https://www.instagram.com/reel/ABC123/). The reel plays right on the website. Title and caption are optional.</p>` +
+      C.videos.map((v, i) => `
+      <div class="card ${v.show === false ? "off" : ""}" data-i="${i}">
+        <div class="item-head" style="align-items:flex-start">
+          ${v.instagram !== undefined
+            ? `<span style="width:40px;height:64px;flex:none;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.8rem;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)">IG</span>`
+            : `<img src="assets/img/${esc(v.src)}-poster.jpg" alt="" style="width:40px;height:64px">`}
+          <div class="grow grid2">
+            ${v.instagram !== undefined ? `<label class="f full">Instagram reel link<input data-k="instagram" value="${esc(v.instagram)}" placeholder="https://www.instagram.com/reel/…"></label>` : ""}
+            <label class="f">Title<input data-k="title" value="${esc(v.title)}"></label>
+            <label class="f">Caption<input data-k="caption" value="${esc(v.caption)}"></label>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+            ${sw(v.show !== false, `data-show aria-label="Show video"`)}
+            <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
+            <button class="icon-btn" data-del title="Delete">🗑</button>
+          </div>
+        </div>
+      </div>`).join("") + `<button class="btn" id="add-ig">+ Add Instagram reel</button>`;
+    $$(".card[data-i]", box).forEach((card) => {
+      const i = +card.dataset.i, v = C.videos[i];
+      $("[data-show]", card).onchange = (e) => { v.show = e.target.checked; card.classList.toggle("off", !v.show); changed(); };
+      $("[data-up]", card).onclick = () => move(C.videos, i, -1);
+      $("[data-down]", card).onclick = () => move(C.videos, i, 1);
+      $("[data-del]", card).onclick = () => { if (confirm("Remove this video from the website?")) { C.videos.splice(i, 1); changed(); renderTab(); } };
+      $$("[data-k]", card).forEach((inp) => inp.oninput = () => { v[inp.dataset.k] = inp.value.trim(); changed(); });
+    });
+    $("#add-ig").onclick = () => { C.videos.unshift({ show: true, instagram: "", title: "", caption: "" }); changed(); renderTab(); $("#main [data-k=instagram]")?.focus(); };
+  },
+  contact(box) {
+    box.innerHTML = `<div class="card grid2"><h3 class="full" style="margin:0">Contact details & links</h3><p class="hint full" style="margin:0">Leave a box empty to hide it or show a placeholder. Enquiry form setup guide: <a href="https://github.com/${esc(gh.repo)}/blob/${esc(gh.branch)}/FORM-SETUP.md" target="_blank" rel="noopener">FORM-SETUP.md</a></p>` +
+      DETAILS.map(([k, l, ph, full]) => `<label class="f ${full ? "full" : ""}">${l}<input data-site="${k}" value="${esc(C.site[k])}" placeholder="${esc(ph)}"></label>`).join("") + `</div>`;
+    $$("[data-site]", box).forEach((i) => i.oninput = () => { C.site[i.dataset.site] = i.value.trim(); changed(); });
+  },
+  reviews(box) {
+    box.innerHTML = `<h3 style="margin:20px 0 4px">Reviews</h3><p class="hint">Add reviews from students and parents (copy them from Google). Only switched-on reviews with text are shown.</p>` +
+      (C.reviews.length ? "" : `<div class="card"><p class="hint" style="margin:0">No reviews yet. The site shows placeholders until you add some.</p></div>`) +
+      C.reviews.map((r, i) => `
+      <div class="card ${r.show === false ? "off" : ""}" data-i="${i}">
+        <div class="item-head" style="align-items:flex-start">
+          <div class="grow grid2">
+            <label class="f">Name<input data-k="name" value="${esc(r.name)}"></label>
+            <label class="f">Batch / relation (optional)<input data-k="batch" value="${esc(r.batch)}" placeholder="e.g. Parent, Kids batch"></label>
+            <label class="f full">Review<textarea data-k="text" rows="3">${esc(r.text)}</textarea></label>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+            ${sw(r.show !== false, `data-show aria-label="Show review"`)}
+            <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
+            <button class="icon-btn" data-del title="Delete">🗑</button>
+          </div>
+        </div>
+      </div>`).join("") + `<button class="btn" id="add-review">+ Add review</button>`;
+    $$(".card[data-i]", box).forEach((card) => {
+      const i = +card.dataset.i, r = C.reviews[i];
+      $("[data-show]", card).onchange = (e) => { r.show = e.target.checked; card.classList.toggle("off", !r.show); changed(); };
+      $("[data-up]", card).onclick = () => move(C.reviews, i, -1);
+      $("[data-down]", card).onclick = () => move(C.reviews, i, 1);
+      $("[data-del]", card).onclick = () => { if (confirm("Delete this review?")) { C.reviews.splice(i, 1); changed(); renderTab(); } };
+      $$("[data-k]", card).forEach((inp) => inp.oninput = () => { r[inp.dataset.k] = inp.value.trim(); changed(); });
+    });
+    $("#add-review").onclick = () => { C.reviews.push({ show: true, name: "", batch: "", text: "" }); changed(); renderTab(); };
+  },
+  popup(box) {
+    box.innerHTML = `<div class="card row"><div class="grow"><b>Show popup automatically</b><small>Visitors can always open it with the buttons.</small></div>${sw(C.popup.enabled !== false, 'id="pop-on" aria-label="Show popup"')}</div>
+      <div class="card"><label class="f" style="max-width:240px">Seconds after the page opens<input type="number" min="1" max="120" id="pop-delay" value="${+C.popup.delaySeconds || 6}"></label></div>`;
+    $("#pop-on").onchange = (e) => { C.popup.enabled = e.target.checked; changed(); };
+    $("#pop-delay").oninput = (e) => { C.popup.delaySeconds = Math.max(1, parseInt(e.target.value) || 6); changed(); };
+  },
+};
+
 const WS_FIELDS = [["title", "Title", "e.g. Abhinaya workshop"], ["date", "Date", "e.g. 14 Dec 2026"], ["place", "Venue / mode", "e.g. At the Kendra, Jaipur · or Online"], ["fee", "Fee (optional)", "e.g. ₹500"], ["details", "Details", "Timings, who it is for, what to bring…", true], ["link", "Link (optional) – registration form, poster or map", "https://…", true]];
 const PERF_FIELDS = [["title", "Title", "e.g. Bharat Utsav"], ["date", "Date", "e.g. 9 Aug 2026"], ["place", "Venue", "e.g. Jawahar Kala Kendra, Jaipur", true], ["link", "Video link (optional)", "https://youtube.com/… or https://instagram.com/…", true]];
-function listEditor(key, heading, hint, fields, noun) {
-  const m = $("#main"), list = C[key];
-  m.innerHTML = `<h2>${heading}</h2><p class="hint">${hint}</p>` +
-    (list.length ? "" : `<div class="card"><p class="hint" style="margin:0">Nothing added yet. The site shows a friendly “coming soon” note with an enquiry button.</p></div>`) +
+function listEditor(box, key, fields, noun) {
+  const list = C[key];
+  box.innerHTML = (list.length ? "" : `<div class="card"><p class="hint" style="margin:0">Nothing added yet. The site shows a friendly “coming soon” note with an enquiry button.</p></div>`) +
     list.map((x, i) => `
     <div class="card ${x.show === false ? "off" : ""}" data-i="${i}">
       <div class="item-head" style="align-items:flex-start">
@@ -613,8 +887,8 @@ function listEditor(key, heading, hint, fields, noun) {
           <button class="icon-btn" data-del title="Delete">🗑</button>
         </div>
       </div>
-    </div>`).join("") + `<button class="btn" id="add-item">+ Add ${noun}</button>`;
-  $$(".card[data-i]").forEach((card) => {
+    </div>`).join("") + `<button class="btn" data-add-item>+ Add ${noun}</button>`;
+  $$(".card[data-i]", box).forEach((card) => {
     const i = +card.dataset.i, x = list[i];
     $("[data-show]", card).onchange = (e) => { x.show = e.target.checked; card.classList.toggle("off", !x.show); changed(); };
     $("[data-up]", card).onclick = () => move(list, i, -1);
@@ -622,9 +896,9 @@ function listEditor(key, heading, hint, fields, noun) {
     $("[data-del]", card).onclick = () => { if (confirm(`Delete this ${noun}?`)) { list.splice(i, 1); changed(); renderTab(); } };
     $$("[data-k]", card).forEach((inp) => inp.oninput = () => { x[inp.dataset.k] = inp.value.trim(); changed(); });
   });
-  $("#add-item").onclick = () => {
+  $("[data-add-item]", box).onclick = () => {
     list.push(Object.fromEntries([["show", true], ...fields.map(([k]) => [k, ""])]));
-    changed(); renderTab(); const cards = $$(".card[data-i]"); $("input", cards[cards.length - 1])?.focus();
+    changed(); renderTab(); const cards = $$(".card[data-i]", box.isConnected ? box : $("#main")); $("input", cards[cards.length - 1])?.focus();
   };
 }
 function move(arr, i, d) { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; changed(); renderTab(); }
@@ -638,16 +912,30 @@ $("#download-btn").onclick = () => {
 };
 $("#publish-btn").onclick = async () => {
   if (!gh.token) { openConnect(); return; }
-  if (JSON.stringify(C) === saved) { toast("Nothing new to publish."); return; }
-  const btn = $("#publish-btn"); btn.disabled = true; btn.textContent = "Publishing…";
+  const files = Object.entries(pending);
+  if (JSON.stringify(C) === saved && !files.length) { toast("Nothing new to publish."); return; }
+  const btn = $("#publish-btn"); btn.disabled = true;
   try {
-    // get latest sha in case the file changed elsewhere
-    try { sha = (await ghFetch(`contents/content.json?ref=${encodeURIComponent(gh.branch)}`)).sha; } catch (_) {}
-    const res = await ghFetch("contents/content.json", {
-      method: "PUT",
-      body: JSON.stringify({ message: "Update website content from admin panel", content: b64encode(JSON.stringify(C, null, 2) + "\n"), sha, branch: gh.branch }),
-    });
-    sha = res.content.sha; saved = JSON.stringify(C); changed();
+    // one commit with content.json and any new photos (GitHub git data API)
+    const ref = encodeURIComponent(gh.branch);
+    const head = (await ghFetch(`git/ref/heads/${ref}`)).object.sha;
+    const base = await ghFetch(`git/commits/${head}`);
+    const tree = [];
+    let n = 0;
+    for (const [path, content] of files) {
+      btn.textContent = `Uploading photos… ${Math.round((++n / files.length) * 100)}%`;
+      const blob = await ghFetch("git/blobs", { method: "POST", body: JSON.stringify({ content, encoding: "base64" }) });
+      tree.push({ path, mode: "100644", type: "blob", sha: blob.sha });
+    }
+    btn.textContent = "Publishing…";
+    tree.push({ path: "content.json", mode: "100644", type: "blob", content: JSON.stringify(C, null, 2) + "\n" });
+    const t = await ghFetch("git/trees", { method: "POST", body: JSON.stringify({ base_tree: base.tree.sha, tree }) });
+    const photos = files.length / 2;
+    const msg = "Update website content from admin panel" + (photos ? ` (+${photos} photo${photos > 1 ? "s" : ""})` : "");
+    const commit = await ghFetch("git/commits", { method: "POST", body: JSON.stringify({ message: msg, tree: t.sha, parents: [head] }) });
+    await ghFetch(`git/refs/heads/${ref}`, { method: "PATCH", body: JSON.stringify({ sha: commit.sha }) });
+    files.forEach(([p]) => delete pending[p]);
+    saved = JSON.stringify(C); changed();
     toast("Published! The live site updates in about a minute.");
   } catch (e) { toast("Couldn't publish: " + e.message, true); }
   btn.disabled = false; btn.textContent = "Publish to website";
@@ -679,7 +967,7 @@ $("#c-save").onclick = async () => {
     changed(); toast(newPw ? "Saved. Use the new password next time." : "Saved.");
   } catch (e) { Object.assign(gh, old); toast(e.message, true); }
 };
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("#connect").hidden = true; });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { $("#connect").hidden = true; $("#picker").hidden = true; } });
 
 startGate();
 </script>

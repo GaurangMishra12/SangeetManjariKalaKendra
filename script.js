@@ -188,6 +188,34 @@ function render(C) {
     ? reviews.map((r) => `<div class="review"><span class="avatar">${esc((r.name || "?").trim()[0].toUpperCase())}</span><p>${esc(r.text)}</p><b>${esc(r.name)}</b>${r.batch ? ` <small>· ${esc(r.batch)}</small>` : ""}</div>`).join("")
     : [1, 2, 3].map(() => `<div class="review"><span class="avatar">★</span><p class="ph">[Add a review in the admin panel.]</p><b>[Name]</b></div>`).join("");
 
+  /* ---------- photos chosen in the admin panel ---------- */
+  const IMG = C.images || {};
+  const gal = (id, sm) => `assets/img/gallery/${encodeURIComponent(id)}${sm ? "-sm" : ""}.jpg`;
+  const altOf = (id) => (C.library || []).find((p) => p.id === id)?.alt || "";
+  $$("[data-img]").forEach((el) => {
+    const id = IMG[el.dataset.img];
+    if (id) { el.src = gal(id, el.dataset.size === "sm"); if (!el.closest(".mentor, .live-box, .modal-box")) el.alt = altOf(id); }
+  });
+  $("#live-img")?.classList.toggle("flip", !!IMG.liveFlip);
+  const slides = (list) => (Array.isArray(list) ? list.filter((x) => x.show !== false && x.id) : null);
+  const hero = slides(IMG.hero);
+  if (hero && hero.length) {
+    $(".hero-slides").innerHTML = hero.map((x, i) => `<img src="${gal(x.id)}" alt="${esc(altOf(x.id))}"${i ? ' loading="lazy"' : ' class="is-on"'}>`).join("");
+    $(".hero-dots").innerHTML = hero.map((_, i) => `<button${i ? "" : ' class="is-on"'} aria-label="Slide ${i + 1}"></button>`).join("");
+    $(".hero-dots").hidden = hero.length < 2;
+  }
+  const join = slides(IMG.join);
+  if (join && join.length) {
+    $("[data-slider]").innerHTML = join.map((x, i) => `<img src="${gal(x.id)}" alt="${esc(altOf(x.id))}"${i ? "" : ' class="is-on"'}>`).join("") + `<div class="slider-dots"></div>`;
+  } else if (join) $("[data-slider]").hidden = true;
+
+  /* ---------- parts switched off in the admin panel ---------- */
+  const P = C.parts || {};
+  $$("[data-part]").forEach((el) => { if (P[el.dataset.part] === false) el.hidden = true; });
+  [".stats", ".explore-grid", ".why-grid"].forEach((sel) => {
+    const box = $(sel); if (box) box.style.setProperty("--n", Math.max(1, [...box.children].filter((c) => !c.hidden).length));
+  });
+
   setupInteractions(C, photos, LINKS);
 }
 
@@ -214,12 +242,13 @@ function setupInteractions(C, photos, LINKS) {
   {
     const imgs = $$(".hero-slides img"), dots = $$(".hero-dots button");
     let i = 0, t;
+    if (imgs.length < 2) dots.length = 0;
     const go = (n) => {
-      imgs[i].classList.remove("is-on"); dots[i].classList.remove("is-on");
+      imgs[i].classList.remove("is-on"); dots[i]?.classList.remove("is-on");
       i = (n + imgs.length) % imgs.length;
-      imgs[i].classList.add("is-on"); dots[i].classList.add("is-on");
+      imgs[i].classList.add("is-on"); dots[i]?.classList.add("is-on");
     };
-    const auto = () => { clearInterval(t); t = setInterval(() => go(i + 1), 5500); };
+    const auto = () => { clearInterval(t); if (imgs.length > 1) t = setInterval(() => go(i + 1), 5500); };
     dots.forEach((d, n) => d.addEventListener("click", () => { go(n); auto(); }));
     auto();
   }
@@ -228,6 +257,7 @@ function setupInteractions(C, photos, LINKS) {
   $$("[data-slider]").forEach((box) => {
     const imgs = $$("img", box), dotsBox = $(".slider-dots", box);
     let i = 0;
+    if (imgs.length < 2) return;
     imgs.forEach((_, n) => {
       const b = document.createElement("button");
       b.setAttribute("aria-label", "Image " + (n + 1));
