@@ -39,7 +39,7 @@
         "show": true
       },
       {
-        "id": "umvxg6n24m8r",
+        "id": "umvxgcbusup1",
         "show": true
       }
     ],
@@ -380,6 +380,12 @@
   ],
   "reviews": [],
   "library": [
+    {
+      "id": "umvxgcbusup1",
+      "alt": "1000480517",
+      "w": 600,
+      "h": 800
+    },
     {
       "id": "umvxg6n24m8r",
       "alt": "1000479105",
