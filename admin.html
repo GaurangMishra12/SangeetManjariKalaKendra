@@ -228,7 +228,10 @@ async function ghFetch(path, opts = {}) {
   if (!res.ok) {
     let m = res.status + "";
     try { m = (await res.json()).message || m; } catch (_) {}
-    throw new Error(res.status === 401 ? "Token not accepted – check it and try again." : res.status === 404 ? "Repository, branch or file not found – or the token can't access it." : m);
+    throw new Error(res.status === 401 ? "Token not accepted – check it and try again."
+      : res.status === 404 ? "Repository, branch or file not found – or the token can't access it."
+      : res.status === 403 && /not accessible/i.test(m) ? "This token can read but not save. On GitHub, edit the token: Repository access → SangeetManjariKalaKendra, and Permissions → Contents → Read and write."
+      : m);
   }
   return res.json();
 }
