@@ -181,7 +181,8 @@ const SECTIONS = [
   ["mentor", "One-to-one banner", "Green banner for personal classes"],
   ["stats", "Numbers strip", "Students, years, performances…"],
   ["explore", "Explore cards", "Classes, Performances, Events, Workshops"],
-  ["live", "Book a performance", "“Bring Kathak to your event” banner"],
+  ["events", "Workshops & Events", "Lists of upcoming workshops and events (edit them in their tabs)"],
+  ["live", "Book a performance", "“Bring Kathak to your event” banner and recent performances"],
   ["why", "What sets us apart", "Four highlight cards"],
   ["gallery", "Photo gallery", "Sliding row of photos"],
   ["videos", "Performance videos", "Reels row"],
@@ -207,12 +208,13 @@ const TEXTS = [
   ["aboutText", "About us paragraph", 5],
   ["guruBio", "About the guru (in “What sets us apart”)", 3],
   ["upcomingEvents", "Upcoming events (in Explore cards)", 3],
+  ["coursesIntro", "Diploma line above the course cards", 2],
 ];
 const NUMBERS = [["students", "Students trained"], ["cities", "Cities reached"], ["years", "Years experience"], ["performances", "Performances"], ["workshops", "Workshops held"], ["awards", "Awards & honours"]];
 const CATS = [["kids", "Kids (Age 5+)"], ["beginner", "Beginners"], ["intermediate", "Intermediate"], ["advanced", "Advanced"], ["adults", "Adults"], ["hobby", "Hobby"]];
 const TABS = [
   ["sections", "👁 Sections"], ["guru", "🙏 Guru"], ["details", "📇 Contact & links"], ["text", "✏️ Text"], ["numbers", "🔢 Numbers"],
-  ["courses", "🎓 Courses"], ["photos", "🖼 Photos"], ["videos", "🎬 Videos"], ["reviews", "⭐ Reviews"], ["popup", "💬 Popup"],
+  ["courses", "🎓 Courses"], ["workshops", "🧑‍🏫 Workshops"], ["events", "📅 Events"], ["performances", "🎭 Performances"], ["photos", "🖼 Photos"], ["videos", "🎬 Videos"], ["reviews", "⭐ Reviews"], ["popup", "💬 Popup"],
 ];
 
 /* ---------------- GitHub ---------------- */
@@ -254,7 +256,7 @@ async function load() {
 }
 function normalise() {
   C.sections ||= {}; C.popup ||= { enabled: true, delaySeconds: 6 }; C.site ||= {}; C.text ||= {}; C.numbers ||= {};
-  C.courses ||= []; C.photos ||= []; C.videos ||= []; C.reviews ||= [];
+  C.courses ||= []; C.workshops ||= []; C.events ||= []; C.performances ||= []; C.photos ||= []; C.videos ||= []; C.reviews ||= [];
   C.guru ||= { name: "", title: "", photo: "", bio: "", credentials: [], trainedUnder: "" };
 }
 
@@ -281,7 +283,7 @@ function renderSideCounts() {
   const on = (arr) => `${arr.filter((x) => x.show !== false).length}/${arr.length}`;
   const counts = {
     sections: `${SECTIONS.filter(([k]) => C.sections[k] !== false).length}/${SECTIONS.length}`,
-    courses: on(C.courses), photos: on(C.photos), videos: on(C.videos), reviews: on(C.reviews),
+    courses: on(C.courses), workshops: on(C.workshops), events: on(C.events), performances: on(C.performances), photos: on(C.photos), videos: on(C.videos), reviews: on(C.reviews),
     popup: C.popup.enabled ? "on" : "off",
   };
   $$("[data-count]").forEach((el) => (el.textContent = counts[el.dataset.count] || ""));
@@ -351,10 +353,11 @@ function renderTab() {
               <label class="f">Title<input data-k="title" value="${esc(c.title)}"></label>
               <label class="f">Badge on photo<input data-k="badge" value="${esc(c.badge)}"></label>
               <label class="f">Filter tab<select data-k="cat">${CATS.map(([v, l]) => `<option value="${v}" ${v === c.cat ? "selected" : ""}>${l}</option>`).join("")}</select></label>
-              <label class="f">Duration<input data-k="duration" value="${esc(c.duration)}"></label>
+              <label class="f full">Short description<input data-k="desc" value="${esc(c.desc)}"></label>
+              <label class="f">Duration (optional)<input data-k="duration" value="${esc(c.duration)}"></label>
               <label class="f">Group fee per month (₹)<input data-k="group" value="${esc(c.group)}" placeholder="e.g. 2,000"></label>
               <label class="f">Group note<input data-k="groupNote" value="${esc(c.groupNote)}"></label>
-              <label class="f">One-on-one fee per month (₹)<input data-k="personal" value="${esc(c.personal)}" placeholder="e.g. 3,500"></label>
+              <label class="f">One-on-one fee per month (₹) – leave both empty to hide<input data-k="personal" value="${esc(c.personal)}" placeholder="e.g. 3,500"></label>
               <label class="f">One-on-one note<input data-k="personalNote" value="${esc(c.personalNote)}"></label>
               <label class="f full">Photo<select data-k="img">${imgOpts(c.img)}</select></label>
             </div>
@@ -377,10 +380,13 @@ function renderTab() {
         });
       });
       $("#add-course").onclick = () => {
-        C.courses.push({ show: true, cat: "beginner", badge: "New", title: "New course", img: C.photos[0]?.id || "", duration: "12 Months", group: "", personal: "", groupNote: "8 classes per month", personalNote: "Min. 4 classes per month" });
+        C.courses.push({ show: true, cat: "beginner", badge: "New", title: "New course", img: C.courses[0]?.img || C.photos[0]?.id || "", desc: "", duration: "", group: "", personal: "", groupNote: "12 classes a month", personalNote: "" });
         changed(); renderTab(); const cards = $$(".card[data-i]"); const last = cards[cards.length - 1]; $(".item-body", last).hidden = false; last.scrollIntoView({ behavior: "smooth" });
       };
     },
+    workshops() { listEditor("workshops", "Workshops", "Upcoming workshops shown in the “Workshops & Events” section. Visitors can press Register to send an enquiry. Switch off or delete a workshop once it is over.", WS_FIELDS, "workshop"); },
+    events() { listEditor("events", "Events", "Upcoming shows, festivals and programmes shown in the “Workshops & Events” section. Switch off or delete an event once it is over.", WS_FIELDS, "event"); },
+    performances() { listEditor("performances", "Recent performances", "Shown under “Bring Kathak to your event”. Add a YouTube, Instagram or Drive link so visitors can watch.", PERF_FIELDS, "performance"); },
     photos() {
       m.innerHTML = `<h2>Photos</h2><p class="hint">Click a photo to show or hide it in the gallery. Use the arrows to change the order.</p>
         <p><button class="btn sm" id="all-on">Show all</button> <button class="btn sm" id="all-off">Hide all</button></p>
@@ -459,6 +465,39 @@ function renderTab() {
     },
   };
   R[tab]();
+}
+const WS_FIELDS = [["title", "Title", "e.g. Abhinaya workshop"], ["date", "Date", "e.g. 14 Dec 2026"], ["place", "Venue / mode", "e.g. At the Kendra, Jaipur · or Online"], ["fee", "Fee (optional)", "e.g. ₹500"], ["details", "Details", "Timings, who it is for, what to bring…", true], ["link", "Link (optional) – registration form, poster or map", "https://…", true]];
+const PERF_FIELDS = [["title", "Title", "e.g. Bharat Utsav"], ["date", "Date", "e.g. 9 Aug 2026"], ["place", "Venue", "e.g. Jawahar Kala Kendra, Jaipur", true], ["link", "Video link (optional)", "https://youtube.com/… or https://instagram.com/…", true]];
+function listEditor(key, heading, hint, fields, noun) {
+  const m = $("#main"), list = C[key];
+  m.innerHTML = `<h2>${heading}</h2><p class="hint">${hint}</p>` +
+    (list.length ? "" : `<div class="card"><p class="hint" style="margin:0">Nothing added yet. The site shows a friendly “coming soon” note with an enquiry button.</p></div>`) +
+    list.map((x, i) => `
+    <div class="card ${x.show === false ? "off" : ""}" data-i="${i}">
+      <div class="item-head" style="align-items:flex-start">
+        <div class="grow grid2">` + fields.map(([k, l, ph, full]) => k === "details"
+          ? `<label class="f full">${l}<textarea data-k="${k}" rows="2" placeholder="${esc(ph)}">${esc(x[k])}</textarea></label>`
+          : `<label class="f ${full ? "full" : ""}">${l}<input data-k="${k}" value="${esc(x[k])}" placeholder="${esc(ph)}"></label>`).join("") + `
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+          ${sw(x.show !== false, `data-show aria-label="Show ${noun}"`)}
+          <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
+          <button class="icon-btn" data-del title="Delete">🗑</button>
+        </div>
+      </div>
+    </div>`).join("") + `<button class="btn" id="add-item">+ Add ${noun}</button>`;
+  $$(".card[data-i]").forEach((card) => {
+    const i = +card.dataset.i, x = list[i];
+    $("[data-show]", card).onchange = (e) => { x.show = e.target.checked; card.classList.toggle("off", !x.show); changed(); };
+    $("[data-up]", card).onclick = () => move(list, i, -1);
+    $("[data-down]", card).onclick = () => move(list, i, 1);
+    $("[data-del]", card).onclick = () => { if (confirm(`Delete this ${noun}?`)) { list.splice(i, 1); changed(); renderTab(); } };
+    $$("[data-k]", card).forEach((inp) => inp.oninput = () => { x[inp.dataset.k] = inp.value.trim(); changed(); });
+  });
+  $("#add-item").onclick = () => {
+    list.push(Object.fromEntries([["show", true], ...fields.map(([k]) => [k, ""])]));
+    changed(); renderTab(); const cards = $$(".card[data-i]"); $("input", cards[cards.length - 1])?.focus();
+  };
 }
 function move(arr, i, d) { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; changed(); renderTab(); }
 

@@ -15,7 +15,8 @@
     "contact": true,
     "reviews": true,
     "whatsappButton": true,
-    "chatButton": true
+    "chatButton": true,
+    "events": true
   },
   "popup": {
     "enabled": true,
@@ -34,24 +35,27 @@
     "facebook": ""
   },
   "text": {
-    "heroSubtitle": "Kathak classes for kids and adults, online and at the Kendra.",
-    "aboutText": "Sangeet Manjari Kala Kendra is a home for Kathak, the storytelling dance of North India. We teach in the guru–shishya way – footwork, spins, gestures and expression, with the music and taal behind them – so every student dances with confidence and understanding.",
-    "guruBio": "Akshita Sharma – Doordarshan B Grade Kathak artist with Visharad, Nipun and Bhaskar qualifications in Kathak.",
-    "upcomingEvents": ""
+    "heroSubtitle": "Professional Kathak courses for Indian and international students – beginner to advanced, online and at the Kendra.",
+    "aboutText": "Sangeet Manjari Kala Kendra is a home for Kathak, the storytelling dance of North India. We offer professional Kathak courses at beginner, intermediate and advanced level for Indian and international students – online and at the Kendra in Jaipur. Teaching follows the guru–shishya way: footwork, spins, gestures and expression, with the music and taal behind them.",
+    "guruBio": "Akshita Sharma – Doordarshan B Grade Kathak artist, disciple of Guru Shri Jay Karan Kawa Ji and Guru Dr. Swati Agarwal, with Visharad, Nipun and Bhaskar in Kathak.",
+    "upcomingEvents": "Shows, festivals and programmes coming up at and around the Kendra.",
+    "coursesIntro": "Diploma and Advanced Diploma courses of Bhatkhande Sangeet Vidyapeeth and Pracheen Kala Kendra."
   },
   "guru": {
     "name": "Akshita Sharma",
-    "title": "Founder & Kathak Guru · Kathak Artist & Vocalist",
+    "title": "Founder & Kathak Guru",
     "photo": "7838",
-    "bio": "Akshita Sharma is a Kathak artist and vocalist from Jaipur with about nine years of training in Kathak, alongside Hindustani classical vocal music and tabla. She founded Sangeet Manjari Kala Kendra to teach Kathak in a structured, traditional way – building both practical skill and theoretical understanding – and prepares students for grade examinations. She has a deep interest in Indian cultural heritage, temple art and architecture, and how music and dance have evolved over time.",
+    "bio": "Akshita Sharma is a Kathak artist from Jaipur and a B Grade artist of Doordarshan Kendra, Jaipur. She learnt Kathak from Guru Shri Jay Karan Kawa Ji and Guru Dr. Swati Agarwal, and holds Visharad and Nipun in Kathak from Bhatkhande Sangeet Vidyapeeth and the Bhaskar advanced diploma from Pracheen Kala Kendra. She performs regularly on stage in Jaipur, including Nrityam and Bharat Utsav at Jawahar Kala Kendra. She founded Sangeet Manjari Kala Kendra to teach Kathak in a structured, traditional way – building both technique and understanding – and prepares students for diploma examinations.",
     "credentials": [
       "B Grade Artist in Kathak – Doordarshan Kendra, Jaipur",
       "Visharad & Nipun in Kathak – Bhatkhande Sangeet Vidyapeeth, Lucknow",
       "Bhaskar, Advanced Diploma in Kathak – Pracheen Kala Kendra, Chandigarh",
-      "M.A. in Vocal Music (pursuing) – University of Rajasthan, Jaipur",
-      "Diploma in Tabla (Madhyama Part I cleared) – Bhatkhande Sangeet Vidyapeeth"
+      "Certificate for Kathak presentation – Nrityam Jaipur Dance & Music Festival 2024, Jawahar Kala Kendra",
+      "Performer – Bharat Utsav 2026, Jawahar Kala Kendra (supported by the Ministry of Culture)",
+      "Award – Bhaskar 2023–24, Indian Institute of Kathak Dance and Music",
+      "M.A. in Vocal Music (pursuing) – University of Rajasthan, Jaipur"
     ],
-    "trainedUnder": "Trained in Kathak under Dr. Swati Agarwal and Shri Jay Karan Kawa Ji, in vocal music under Dr. Shekhar Saxena, and in tabla under Dr. R. D. Agarwal."
+    "trainedUnder": "Learnt Kathak from Guru Shri Jay Karan Kawa Ji and Guru Dr. Swati Agarwal. Also trained in vocal music under Dr. Shekhar Saxena and in tabla under Dr. R. D. Agarwal."
   },
   "numbers": {
     "students": 0,
@@ -64,75 +68,60 @@
   "courses": [
     {
       "show": true,
-      "cat": "kids",
-      "badge": "Kids · Age 5+",
-      "title": "Kids Batch",
-      "img": "7763",
-      "duration": "12 Months",
-      "group": "",
-      "personal": "",
-      "groupNote": "8 classes per month",
-      "personalNote": "Min. 4 classes per month"
-    },
-    {
-      "show": true,
       "cat": "beginner",
-      "badge": "Beginner Course",
-      "title": "Kathak — Beginners",
+      "badge": "Beginner Level",
+      "title": "Kathak – Beginner Level",
       "img": "7768",
-      "duration": "12 Months",
-      "group": "",
+      "desc": "Foundations of Kathak – tatkar, hastak, basic chakkar and the first taals.",
+      "duration": "",
+      "group": "1,000",
       "personal": "",
-      "groupNote": "8 classes per month",
-      "personalNote": "Min. 4 classes per month"
+      "groupNote": "Group classes · 12 classes a month",
+      "personalNote": ""
     },
     {
       "show": true,
       "cat": "intermediate",
-      "badge": "Intermediate",
-      "title": "Kathak — Intermediate",
+      "badge": "Intermediate Level",
+      "title": "Kathak – Intermediate Level",
       "img": "7727",
-      "duration": "24 Months",
-      "group": "",
+      "desc": "Longer compositions, layakari and abhinaya, with stage pieces.",
+      "duration": "",
+      "group": "1,500",
       "personal": "",
-      "groupNote": "8 classes per month",
-      "personalNote": "Min. 4 classes per month"
+      "groupNote": "Group classes · 12 classes a month",
+      "personalNote": ""
     },
     {
       "show": true,
       "cat": "advanced",
-      "badge": "Advanced Course",
-      "title": "Kathak — Advanced",
+      "badge": "Advanced Level",
+      "title": "Kathak – Advanced Level",
       "img": "7816",
-      "duration": "24+ Months",
-      "group": "",
+      "desc": "Advanced repertoire and preparation for diploma examinations and performance.",
+      "duration": "",
+      "group": "2,000",
       "personal": "",
-      "groupNote": "8 classes per month",
-      "personalNote": "Min. 4 classes per month"
+      "groupNote": "12 classes a month",
+      "personalNote": ""
+    }
+  ],
+  "workshops": [],
+  "events": [],
+  "performances": [
+    {
+      "show": true,
+      "title": "Bharat Utsav",
+      "date": "9 Aug 2026",
+      "place": "Rangayan Auditorium, Jawahar Kala Kendra, Jaipur",
+      "link": ""
     },
     {
       "show": true,
-      "cat": "adults",
-      "badge": "Adults",
-      "title": "Adult Batch",
-      "img": "7726",
-      "duration": "12 Months",
-      "group": "",
-      "personal": "",
-      "groupNote": "8 classes per month",
-      "personalNote": "Min. 4 classes per month"
-    },
-    {
-      "show": true,
-      "cat": "hobby",
-      "badge": "Hobby Batch",
-      "title": "Hobby Kathak",
-      "img": "7838",
-      "duration": "6 Months",
-      "group": "",
-      "personal": "",
-      "groupNote": "8 classes per month",
-      "personalNote": "Min. 4 classes per month"
+      "title": "Nrityam – Jaipur Dance & Music Festival",
+      "date": "29 Apr 2024",
+      "place": "Rangayan, Jawahar Kala Kendra, Jaipur",
+      "link": ""
     }
   ],
   "photos": [

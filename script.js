@@ -105,16 +105,22 @@ function render(C) {
   /* ---------- courses ---------- */
   const courses = (C.courses || []).filter((c) => c.show !== false);
   const price = (v) => (v ? "₹" + esc(v) : "₹ —");
+  const priceRow = (c) => {
+    const hasPersonal = c.personal || c.personalNote;
+    const cols = [];
+    if (c.group || c.groupNote || !hasPersonal) cols.push([hasPersonal ? "Group Classes" : "Monthly Fee", c.group, c.groupNote]);
+    if (hasPersonal) cols.push(["Personal (One-on-One)", c.personal, c.personalNote]);
+    return `<div class="price-row${cols.length === 1 ? " one" : ""}">` + cols.map(([l, v, note]) =>
+      `<div><small class="pr-label">${l}</small><b class="${v ? "" : "ph"}">${price(v)}<i>/month</i></b><small>${esc(note)}</small></div>`).join("") + `</div>`;
+  };
   $("#course-grid").innerHTML = courses.map((c) => `
     <article class="course" data-cat="${esc(c.cat)}">
       <div class="course-img"><img src="assets/img/gallery/${esc(c.img)}-sm.jpg" alt="" loading="lazy"><span class="course-badge">${esc(c.badge)}</span></div>
       <div class="course-body">
         <h3>${esc(c.title)}</h3>
-        <p class="course-dur">🗓 Course duration: ${esc(c.duration)}</p>
-        <div class="price-row">
-          <div><small class="pr-label">Group Classes</small><b class="${c.group ? "" : "ph"}">${price(c.group)}<i>/month</i></b><small>${esc(c.groupNote)}</small></div>
-          <div><small class="pr-label">Personal (One-on-One)</small><b class="${c.personal ? "" : "ph"}">${price(c.personal)}<i>/month</i></b><small>${esc(c.personalNote)}</small></div>
-        </div>
+        ${c.desc ? `<p class="course-desc">${esc(c.desc)}</p>` : ""}
+        ${c.duration ? `<p class="course-dur">🗓 Course duration: ${esc(c.duration)}</p>` : ""}
+        ${priceRow(c)}
         <div class="course-btns">
           <a href="#contact" class="btn btn-red btn-sm" data-open-enquiry data-course="${esc(c.title)}">Enroll now</a>
           <a href="#contact" class="btn btn-outline btn-sm" data-open-enquiry data-course="${esc(c.title)}">Explore →</a>
@@ -126,7 +132,37 @@ function render(C) {
   $$("[data-filters] button").forEach((b) => { b.hidden = b.dataset.f !== "all" && !cats.has(b.dataset.f); });
   $("#footer-courses").innerHTML = courses.map((c) => `<a href="#courses">${esc(c.title)}</a>`).join("");
 
-  const courseOptions = [...courses.map((c) => c.title), "Personal (One-to-One)", "Performance booking", "Workshops", "Upcoming events", "Not sure yet"];
+  /* ---------- workshops, events, performances ---------- */
+  const shown = (arr) => (arr || []).filter((x) => x.show !== false && x.title);
+  const safeUrl = (u) => (/^https?:\/\//i.test(u || "") ? u : "");
+  const pItem = (x, kind) => `
+    <article class="p-item">
+      ${x.date ? `<div class="p-date">${esc(x.date)}</div>` : ""}
+      <div class="p-body">
+        <b>${esc(x.title)}</b>
+        <small>${[x.place, x.fee && "Fee: " + x.fee].filter(Boolean).map(esc).join(" · ")}</small>
+        ${x.details ? `<p>${esc(x.details)}</p>` : ""}
+        <div class="p-btns">
+          <a href="#contact" class="btn btn-red btn-xs" data-open-enquiry data-course="${esc(kind + ": " + x.title)}">${kind === "Workshop" ? "Register" : "Enquire"}</a>
+          ${safeUrl(x.link) ? `<a href="${esc(x.link)}" class="btn btn-outline btn-xs" target="_blank" rel="noopener">Details →</a>` : ""}
+        </div>
+      </div>
+    </article>`;
+  const pEmpty = (text, course, btn) => `<div class="p-empty"><p>${text}</p><a href="#contact" class="btn btn-outline btn-xs" data-open-enquiry data-course="${course}">${btn}</a></div>`;
+  const ws = shown(C.workshops), ev = shown(C.events);
+  $("#workshop-list").innerHTML = ws.length ? ws.map((x) => pItem(x, "Workshop")).join("")
+    : pEmpty("No workshops announced right now. Want one for your school, college or group?", "Workshops", "Ask about workshops");
+  $("#event-list").innerHTML = ev.length ? ev.map((x) => pItem(x, "Event")).join("")
+    : pEmpty("New dates will be announced here soon.", "Upcoming events", "Get event updates");
+  const perfs = shown(C.performances);
+  $("#perf-wrap").hidden = !perfs.length;
+  $("#perf-list").innerHTML = perfs.map((x) => {
+    const url = safeUrl(x.link);
+    const inner = `<b>${esc(x.title)}</b><small>${[x.date, x.place].filter(Boolean).map(esc).join(" · ")}</small>${url ? `<em>▶ Watch</em>` : ""}`;
+    return url ? `<a class="perf" href="${esc(url)}" target="_blank" rel="noopener">${inner}</a>` : `<div class="perf">${inner}</div>`;
+  }).join("");
+
+  const courseOptions = [...courses.map((c) => c.title), "Personal (One-to-One)", "Performance booking", ...ws.map((x) => "Workshop: " + x.title), "Workshops", ...ev.map((x) => "Event: " + x.title), "Upcoming events", "Not sure yet"];
   $$("[data-course-select]").forEach((sel) => courseOptions.forEach((t) => sel.add(new Option(t, t))));
 
   /* ---------- photos ---------- */
@@ -260,7 +296,10 @@ function setupInteractions(C, photos, LINKS) {
   // enquiry popup
   const modal = $("#modal");
   const openModal = (course) => {
-    if (course) $$("[data-course-select]").forEach((s) => (s.value = course));
+    if (course) $$("[data-course-select]").forEach((s) => {
+      if (![...s.options].some((o) => o.value === course)) s.add(new Option(course, course));
+      s.value = course;
+    });
     modal.hidden = false;
     document.body.classList.add("locked");
   };
@@ -331,7 +370,7 @@ function setupInteractions(C, photos, LINKS) {
   const revIO = new IntersectionObserver((es) => es.forEach((e) => {
     if (e.isIntersecting) { e.target.classList.add("in"); revIO.unobserve(e.target); }
   }), { threshold: 0.12 });
-  $$(".head-center, .about-copy, .collage, .course, .ex-card, .why-card, .stat, .join-copy, .join-slider, .form-card, .contact-img, .live-box, .review")
+  $$(".head-center, .about-copy, .collage, .course, .ex-card, .portal-col, .perf, .why-card, .stat, .join-copy, .join-slider, .form-card, .contact-img, .live-box, .review")
     .forEach((el) => { el.classList.add("rv"); revIO.observe(el); });
 
   $("#year").textContent = new Date().getFullYear();

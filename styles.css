@@ -366,3 +366,41 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); }
 .guru-creds li::before { content: "✦"; position: absolute; left: 16px; top: 9px; color: var(--gold-light); }
 .guru-teachers { font-size: .88rem; opacity: .85; border-left: 2px solid var(--gold); padding-left: 14px; margin: 0; }
 @media (max-width: 900px) { .guru-inner { grid-template-columns: 1fr; } .guru-chip { right: 8px; } }
+
+/* ---------- courses: extras ---------- */
+.cert-strip { display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 760px; margin: -14px auto 28px; padding: 10px 18px; border: 1px solid var(--gold-light); background: var(--cream-light); border-radius: 999px; font-size: .88rem; color: var(--red-dark); text-align: center; }
+.cert-ico { font-size: 1.1rem; }
+.course-desc { font-size: .84rem; color: var(--muted); margin: 0 0 12px; }
+.price-row.one { grid-template-columns: 1fr; }
+
+/* ---------- workshops & events ---------- */
+.portal { padding: clamp(40px, 6vw, 70px) 0; }
+.portal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.portal-col { background: var(--cream-light); border: 1px solid var(--line); border-radius: 16px; padding: 22px 22px 18px; }
+.portal-col h3 { font-size: 1.3rem; color: var(--red); display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.p-ico { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--red); color: #fff; font-size: .9rem; }
+.p-list { display: grid; gap: 12px; }
+.p-item { display: flex; gap: 14px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px; box-shadow: var(--shadow); }
+.p-date { flex: 0 0 auto; width: 78px; align-self: flex-start; text-align: center; background: var(--green); color: #fff; border-radius: 10px; padding: 8px 6px; font-size: .78rem; font-weight: 600; line-height: 1.3; }
+.p-body { display: flex; flex-direction: column; min-width: 0; }
+.p-body b { font-family: var(--serif); font-size: 1.05rem; }
+.p-body small { color: var(--muted); font-size: .78rem; }
+.p-body p { font-size: .84rem; margin: 6px 0 0; }
+.p-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.p-empty { text-align: center; padding: 22px 12px; border: 1px dashed var(--gold); border-radius: 12px; background: #fff; }
+.p-empty p { color: var(--muted); font-size: .88rem; margin: 0 0 12px; }
+
+/* ---------- recent performances ---------- */
+.perf-wrap { margin-top: 34px; }
+.perf-head { text-align: center; font-size: 1.4rem; color: var(--red); margin-bottom: 16px; }
+.perf-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.perf { display: flex; flex-direction: column; gap: 2px; padding: 16px 18px; border-radius: 12px; border: 1px solid var(--line); border-left: 4px solid var(--gold); background: #fff; box-shadow: var(--shadow); }
+.perf b { font-family: var(--serif); font-size: 1.02rem; }
+.perf small { color: var(--muted); font-size: .8rem; }
+.perf em { font-style: normal; color: var(--red); font-weight: 600; font-size: .82rem; margin-top: 6px; }
+a.perf:hover { border-left-color: var(--red); }
+
+@media (max-width: 900px) {
+  .portal-grid { grid-template-columns: 1fr; }
+  .cert-strip { border-radius: 14px; margin-top: -10px; }
+}
