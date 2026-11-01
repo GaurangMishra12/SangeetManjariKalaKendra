@@ -172,9 +172,15 @@ function render(C) {
 
   /* ---------- videos ---------- */
   const videos = (C.videos || []).filter((v) => v.show !== false);
-  $("#video-track").innerHTML = videos.map((v) => `
-    <figure class="vcard"><video src="assets/video/${esc(v.src)}.mp4" poster="assets/img/${esc(v.src)}-poster.jpg" preload="none" playsinline controls></video>
-    <figcaption><b>${esc(v.title)}</b><small>${esc(v.caption)}</small></figcaption></figure>`).join("");
+  const igCode = (u) => (String(u || "").match(/instagram\.com\/(?:[\w.]+\/)?(?:reel|reels|p|tv)\/([\w-]+)/) || [])[1];
+  const cap = (v) => (v.title || v.caption ? `<figcaption><b>${esc(v.title)}</b><small>${esc(v.caption)}</small></figcaption>` : "");
+  $("#video-track").innerHTML = videos.map((v) => {
+    const code = igCode(v.instagram);
+    if (v.instagram) return code ? `
+    <figure class="vcard ig"><iframe src="https://www.instagram.com/reel/${code}/embed/" title="${esc(v.title || "Instagram reel")}" loading="lazy" allowtransparency="true" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" scrolling="no"></iframe>${cap(v)}</figure>` : "";
+    return `
+    <figure class="vcard"><video src="assets/video/${esc(v.src)}.mp4" poster="assets/img/${esc(v.src)}-poster.jpg" preload="none" playsinline controls></video>${cap(v)}</figure>`;
+  }).join("");
 
   /* ---------- reviews ---------- */
   const reviews = (C.reviews || []).filter((r) => r.show !== false && r.text);
@@ -271,6 +277,17 @@ function setupInteractions(C, photos, LINKS) {
   $(".lb-prev", lb).onclick = () => show(cur - 1);
   $(".lb-next", lb).onclick = () => show(cur + 1);
   lb.addEventListener("click", (e) => { if (e.target === lb) closeLb(); });
+
+  // Instagram embeds report their height – resize each frame to fit
+  window.addEventListener("message", (e) => {
+    if (!/^https:\/\/www\.instagram\.com$/.test(e.origin)) return;
+    let d = e.data;
+    try { if (typeof d === "string") d = JSON.parse(d); } catch (_) { return; }
+    const h = d?.type === "MEASURE" && +d.details?.height;
+    if (!h) return;
+    const fr = $$(".vcard.ig iframe").find((f) => f.contentWindow === e.source);
+    if (fr) fr.style.height = Math.min(h, 1200) + "px";
+  });
 
   // one video at a time
   const vids = $$("video");

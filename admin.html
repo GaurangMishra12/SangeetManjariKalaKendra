@@ -407,26 +407,35 @@ function renderTab() {
       $("#all-off").onclick = () => { C.photos.forEach((p) => (p.show = false)); changed(); renderTab(); };
     },
     videos() {
-      m.innerHTML = `<h2>Videos</h2><p class="hint">Choose which reels appear and edit their captions.</p>` +
+      m.innerHTML = `<h2>Videos</h2><p class="hint">Choose which videos appear and in what order. To add an Instagram reel, press “+ Add Instagram reel” and paste its link (e.g. https://www.instagram.com/reel/ABC123/). The reel plays right on the website. Title and caption are optional.</p>` +
         C.videos.map((v, i) => `
         <div class="card ${v.show === false ? "off" : ""}" data-i="${i}">
-          <div class="item-head">
-            <img src="assets/img/${esc(v.src)}-poster.jpg" alt="" style="width:40px;height:64px">
+          <div class="item-head" style="align-items:flex-start">
+            ${v.instagram !== undefined
+              ? `<span style="width:40px;height:64px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.8rem;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)">IG</span>`
+              : `<img src="assets/img/${esc(v.src)}-poster.jpg" alt="" style="width:40px;height:64px">`}
             <div class="grow grid2">
+              ${v.instagram !== undefined ? `<label class="f full">Instagram reel link<input data-k="instagram" value="${esc(v.instagram)}" placeholder="https://www.instagram.com/reel/…"></label>` : ""}
               <label class="f">Title<input data-k="title" value="${esc(v.title)}"></label>
               <label class="f">Caption<input data-k="caption" value="${esc(v.caption)}"></label>
             </div>
-            <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
-            ${sw(v.show !== false, `data-show aria-label="Show ${esc(v.title)}"`)}
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+              ${sw(v.show !== false, `data-show aria-label="Show video"`)}
+              <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
+              ${v.instagram !== undefined ? `<button class="icon-btn" data-del title="Delete">🗑</button>` : ""}
+            </div>
           </div>
-        </div>`).join("");
+        </div>`).join("") + `<button class="btn" id="add-ig">+ Add Instagram reel</button>`;
       $$(".card[data-i]").forEach((card) => {
         const i = +card.dataset.i, v = C.videos[i];
         $("[data-show]", card).onchange = (e) => { v.show = e.target.checked; card.classList.toggle("off", !v.show); changed(); };
         $("[data-up]", card).onclick = () => move(C.videos, i, -1);
         $("[data-down]", card).onclick = () => move(C.videos, i, 1);
+        const del = $("[data-del]", card);
+        if (del) del.onclick = () => { if (confirm("Remove this reel from the website?")) { C.videos.splice(i, 1); changed(); renderTab(); } };
         $$("[data-k]", card).forEach((inp) => inp.oninput = () => { v[inp.dataset.k] = inp.value.trim(); changed(); });
       });
+      $("#add-ig").onclick = () => { C.videos.unshift({ show: true, instagram: "", title: "", caption: "" }); changed(); renderTab(); $("#main [data-k=instagram]")?.focus(); };
     },
     reviews() {
       m.innerHTML = `<h2>Reviews</h2><p class="hint">Add reviews from students and parents (copy them from Google). Only switched-on reviews with text are shown.</p>` +

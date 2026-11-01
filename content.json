@@ -290,21 +290,57 @@
   "videos": [
     {
       "show": true,
-      "src": "reel1",
-      "title": "Chakkar – the spin",
-      "caption": "Balance, breath, devotion"
+      "instagram": "https://www.instagram.com/reel/DfJldQCBlux/",
+      "title": "",
+      "caption": ""
     },
     {
       "show": true,
-      "src": "reel2",
-      "title": "Bhaav – expressions",
-      "caption": "In Kathak, the face dances too"
+      "instagram": "https://www.instagram.com/reel/DedZ_RzhFQu/",
+      "title": "",
+      "caption": ""
     },
     {
       "show": true,
-      "src": "reel3",
-      "title": "Katha kahe so Kathak",
-      "caption": "The story behind the dance"
+      "instagram": "https://www.instagram.com/reel/DevZ_BPhixc/",
+      "title": "",
+      "caption": ""
+    },
+    {
+      "show": true,
+      "instagram": "https://www.instagram.com/reel/Dd8jUx6holB/",
+      "title": "",
+      "caption": ""
+    },
+    {
+      "show": true,
+      "instagram": "https://www.instagram.com/reel/DdQFGz7BYJq/",
+      "title": "",
+      "caption": ""
+    },
+    {
+      "show": true,
+      "instagram": "https://www.instagram.com/reel/DdLvwpNB5bM/",
+      "title": "",
+      "caption": ""
+    },
+    {
+      "show": true,
+      "instagram": "https://www.instagram.com/reel/Dc3dPOMBpRF/",
+      "title": "",
+      "caption": ""
+    },
+    {
+      "show": true,
+      "instagram": "https://www.instagram.com/reel/DcVufYhBrik/",
+      "title": "",
+      "caption": ""
+    },
+    {
+      "show": true,
+      "instagram": "https://www.instagram.com/reel/DcDDaMLhNFh/",
+      "title": "",
+      "caption": ""
     }
   ],
   "reviews": []
