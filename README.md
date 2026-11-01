@@ -14,7 +14,9 @@ Open **https://sangeetmanjari.me/admin.html**
 
 Publishing needs a GitHub fine-grained token (once per device):
 GitHub → Settings → Developer settings → Fine-grained tokens → only this repository →
-Repository permissions → **Contents: Read and write**. The token is stored only in that browser.
+Repository permissions → **Contents: Read and write**. On first use you also choose an **admin password**;
+the token is saved in that browser encrypted with it, and the panel asks for the password every time it opens.
+Forgot it? Use “Reset this device” on the login screen and connect again with the token.
 
 ## Files
 
