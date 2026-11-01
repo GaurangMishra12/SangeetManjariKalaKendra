@@ -18,7 +18,9 @@
     "chatButton": true,
     "events": false
   },
-  "parts": {},
+  "parts": {
+    "explore.workshops": false
+  },
   "images": {
     "hero": [
       {
@@ -44,10 +46,10 @@
       }
     ],
     "mentor": "7800",
-    "exploreClasses": "7766",
-    "explorePerformances": "r01",
-    "exploreEvents": "7828",
-    "exploreWorkshops": "7795",
+    "exploreClasses": "umvxgy4nxzgh",
+    "explorePerformances": "umvxgy76jd1i",
+    "exploreEvents": "umvxgyd9ahlx",
+    "exploreWorkshops": "umvxgyd9ahlx",
     "live": "7836",
     "liveFlip": true,
     "contact": "7727",
@@ -106,7 +108,7 @@
       "cat": "beginner",
       "badge": "Beginner Level",
       "title": "Kathak – Beginner Level",
-      "img": "c01",
+      "img": "7768",
       "desc": "Foundations of Kathak – tatkar, hastak, basic chakkar and the first taals.",
       "duration": "",
       "group": "1,000",
@@ -119,7 +121,7 @@
       "cat": "intermediate",
       "badge": "Intermediate Level",
       "title": "Kathak – Intermediate Level",
-      "img": "c02",
+      "img": "7727",
       "desc": "Longer compositions, layakari and abhinaya, with stage pieces.",
       "duration": "",
       "group": "1,500",
@@ -132,7 +134,7 @@
       "cat": "advanced",
       "badge": "Advanced Level",
       "title": "Kathak – Advanced Level",
-      "img": "c03",
+      "img": "7816",
       "desc": "Advanced repertoire and preparation for diploma examinations and performance.",
       "duration": "",
       "group": "2,000",
@@ -381,26 +383,26 @@
   "reviews": [],
   "library": [
     {
-      "id": "c01",
-      "alt": "Illustration – Kathak dancer in namaskar (Beginner)",
+      "id": "umvxgyd9ahlx",
+      "alt": "1000480518",
       "w": 800,
       "h": 500
     },
     {
-      "id": "c02",
-      "alt": "Illustration – Kathak dancer with raised arm (Intermediate)",
+      "id": "umvxgy9yw296",
+      "alt": "1000480519",
       "w": 800,
       "h": 500
     },
     {
-      "id": "c03",
-      "alt": "Illustration – Kathak dancer in a chakkar spin (Advanced)",
+      "id": "umvxgy76jd1i",
+      "alt": "1000480520",
       "w": 800,
       "h": 500
     },
     {
-      "id": "c04",
-      "alt": "Illustration – ghungroo, lotus and diya",
+      "id": "umvxgy4nxzgh",
+      "alt": "1000480521",
       "w": 800,
       "h": 500
     },
