@@ -30,9 +30,9 @@
         "show": true
       }
     ],
-    "aboutTall": "7768",
-    "aboutA": "7809",
-    "aboutB": "7726",
+    "aboutTall": "umvxg4vukkyr",
+    "aboutA": "umvxg54zb5ps",
+    "aboutB": "umvxg5c6jr2h",
     "join": [
       {
         "id": "7816",
@@ -384,6 +384,24 @@
   ],
   "reviews": [],
   "library": [
+    {
+      "id": "umvxg5c6jr2h",
+      "alt": "1000480160",
+      "w": 800,
+      "h": 533
+    },
+    {
+      "id": "umvxg54zb5ps",
+      "alt": "1000480143",
+      "w": 800,
+      "h": 533
+    },
+    {
+      "id": "umvxg4vukkyr",
+      "alt": "1000480145",
+      "w": 800,
+      "h": 533
+    },
     {
       "id": "h01",
       "alt": "Kathak pose beneath a banyan tree",
