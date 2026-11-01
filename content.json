@@ -138,6 +138,26 @@
   "photos": [
     {
       "show": true,
+      "id": "8001",
+      "alt": "Pallu held at the shoulder beneath a banyan tree"
+    },
+    {
+      "show": true,
+      "id": "8002",
+      "alt": "Dancing inside the red sandstone pavilion"
+    },
+    {
+      "show": true,
+      "id": "8003",
+      "alt": "A graceful pose in the morning light"
+    },
+    {
+      "show": true,
+      "id": "8004",
+      "alt": "Arm raised towards the sky above the Aravalli hills"
+    },
+    {
+      "show": true,
       "id": "7768",
       "alt": "Mid-spin in front of a white marble temple"
     },
