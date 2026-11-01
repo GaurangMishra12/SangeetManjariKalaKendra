@@ -47,8 +47,8 @@
     ],
     "mentor": "7800",
     "exploreClasses": "umvxhaigpqmp",
-    "explorePerformances": "umvxharqrsi3",
-    "exploreEvents": "m23",
+    "explorePerformances": "umvxhfar665t",
+    "exploreEvents": "umvxhfsbqaei",
     "exploreWorkshops": "m13",
     "live": "7836",
     "liveFlip": true,
@@ -382,6 +382,30 @@
   ],
   "reviews": [],
   "library": [
+    {
+      "id": "umvxhfsbqaei",
+      "alt": "1000480530",
+      "w": 800,
+      "h": 800
+    },
+    {
+      "id": "umvxhfghh01s",
+      "alt": "1000480528",
+      "w": 800,
+      "h": 800
+    },
+    {
+      "id": "umvxhfar665t",
+      "alt": "1000480529",
+      "w": 800,
+      "h": 800
+    },
+    {
+      "id": "umvxheoqq856",
+      "alt": "1000480525",
+      "w": 800,
+      "h": 800
+    },
     {
       "id": "umvxhb09kpl0",
       "alt": "1000480523",
