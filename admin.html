@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin · Sangeet Manjari</title>
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --brown:#742e0b; --brown-d:#5a2308; --green:#1f4a3a; --gold:#c9a35a; --cream:#faf6f0; --line:#e8e1d8; --muted:#7a716b; --ink:#1c1917; --ok:#1f7a4d; --bad:#b42318; }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; font: 400 14px/1.55 Poppins, system-ui, sans-serif; color: var(--ink); background: var(--cream); }
+  button, input, select, textarea { font: inherit; }
+  a { color: var(--brown); }
+
+  .top { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 16px; padding: 10px 20px; background: #fff; border-bottom: 1px solid var(--line); }
+  .top img { height: 44px; }
+  .top h1 { font-size: 1rem; font-weight: 600; margin: 0; flex: 1; }
+  .top h1 small { display: block; font-weight: 400; color: var(--muted); font-size: .78rem; }
+  .status { font-size: .8rem; padding: 4px 10px; border-radius: 999px; background: #f1ece6; color: var(--muted); white-space: nowrap; }
+  .status.on { background: #e5f3ec; color: var(--ok); }
+  .status.dirty { background: #fff4e0; color: #9a5b00; }
+
+  .layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 65px); }
+  .side { background: #fff; border-right: 1px solid var(--line); padding: 16px 10px; position: sticky; top: 65px; height: calc(100vh - 65px); overflow: auto; }
+  .side button { display: flex; width: 100%; align-items: center; gap: 10px; border: 0; background: none; padding: 10px 12px; border-radius: 8px; text-align: left; cursor: pointer; color: #44403c; }
+  .side button:hover { background: var(--cream); }
+  .side button.on { background: var(--brown); color: #fff; }
+  .side .count { margin-left: auto; font-size: .72rem; opacity: .7; }
+  main { padding: 24px clamp(16px, 3vw, 40px) 120px; max-width: 980px; }
+  h2 { font-size: 1.3rem; margin: 0 0 4px; }
+  .hint { color: var(--muted); margin: 0 0 20px; }
+
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+  .row { display: flex; align-items: center; gap: 14px; }
+  .row .grow { flex: 1; min-width: 0; }
+  .row b { display: block; font-weight: 500; }
+  .row small { color: var(--muted); }
+
+  /* switch */
+  .sw { position: relative; width: 44px; height: 24px; flex: none; }
+  .sw input { opacity: 0; width: 100%; height: 100%; margin: 0; position: absolute; cursor: pointer; z-index: 1; }
+  .sw span { position: absolute; inset: 0; border-radius: 999px; background: #d6d0c9; transition: .2s; }
+  .sw span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .sw input:checked + span { background: var(--ok); }
+  .sw input:checked + span::after { transform: translateX(20px); }
+  .sw input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+  label.f { display: block; font-size: .8rem; font-weight: 500; color: #57534e; }
+  label.f input, label.f select, label.f textarea { display: block; width: 100%; margin-top: 4px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); }
+  label.f textarea { resize: vertical; min-height: 80px; }
+  label.f input:focus, label.f select:focus, label.f textarea:focus { outline: 2px solid var(--gold); border-color: transparent; }
+  .full { grid-column: 1 / -1; }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 500; text-decoration: none; }
+  .btn:hover { border-color: var(--brown); }
+  .btn.primary { background: var(--brown); color: #fff; border-color: var(--brown); }
+  .btn.primary:hover { background: var(--brown-d); }
+  .btn.green { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn.danger { color: var(--bad); }
+  .btn.sm { padding: 5px 10px; font-size: .8rem; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .icon-btn { border: 1px solid var(--line); background: #fff; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; }
+  .icon-btn:hover { border-color: var(--brown); }
+
+  .item-head { display: flex; align-items: center; gap: 12px; }
+  .item-head img { width: 64px; height: 48px; object-fit: cover; border-radius: 6px; }
+  .item-head .grow b { font-weight: 600; display: block; }
+  .item-head .grow small { color: var(--muted); display: block; }
+  .item-body { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); }
+  .card.off { opacity: .55; }
+
+  .photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .ph-tile { position: relative; border-radius: 10px; overflow: hidden; background: #fff; border: 2px solid transparent; }
+  .ph-tile img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; cursor: pointer; transition: .2s; }
+  .ph-tile.off img { filter: grayscale(1) opacity(.4); }
+  .ph-tile.on { border-color: var(--ok); }
+  .ph-tile .bar { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; background: #fff; font-size: .75rem; }
+  .ph-tile .tag { position: absolute; top: 6px; left: 6px; font-size: .7rem; padding: 2px 8px; border-radius: 999px; background: var(--ok); color: #fff; pointer-events: none; }
+  .ph-tile.off .tag { background: #78716c; }
+
+  .bottom { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; gap: 10px; align-items: center; justify-content: flex-end; flex-wrap: wrap; padding: 12px 20px; background: #fff; border-top: 1px solid var(--line); box-shadow: 0 -8px 20px -14px rgba(0,0,0,.2); }
+  .bottom .msg { margin-right: auto; color: var(--muted); font-size: .85rem; }
+
+  /* connect dialog */
+  .overlay { position: fixed; inset: 0; z-index: 50; background: rgba(28,25,23,.5); display: grid; place-items: center; padding: 16px; }
+  .dialog { background: #fff; border-radius: 14px; padding: 24px; width: min(520px, 100%); max-height: calc(100vh - 32px); overflow: auto; }
+  .dialog h3 { margin: 0 0 6px; }
+  .dialog ol { padding-left: 20px; color: #57534e; font-size: .85rem; }
+  .dialog .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
+
+  .toast { position: fixed; left: 50%; bottom: 80px; transform: translateX(-50%); z-index: 60; background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: .85rem; box-shadow: 0 10px 30px -10px rgba(0,0,0,.5); }
+  .toast.bad { background: var(--bad); }
+
+  @media (max-width: 760px) {
+    .layout { grid-template-columns: 1fr; }
+    .side { position: static; height: auto; display: flex; overflow-x: auto; gap: 4px; padding: 8px; border-right: 0; border-bottom: 1px solid var(--line); }
+    .side button { width: auto; white-space: nowrap; }
+    .side .count { display: none; }
+    .grid2 { grid-template-columns: 1fr; }
+    .top h1 small { display: none; }
+    .bottom .msg { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <img src="assets/img/logo-dark.png" alt="">
+  <h1>Website Admin <small>Choose what shows on sangeetmanjari.me</small></h1>
+  <span class="status" id="status">Not connected</span>
+  <button class="btn sm" id="connect-btn">Connect</button>
+</header>
+
+<div class="layout">
+  <nav class="side" id="side"></nav>
+  <main id="main"><p class="hint">Loading…</p></main>
+</div>
+
+<div class="bottom">
+  <span class="msg" id="msg">No changes yet.</span>
+  <button class="btn" id="download-btn" title="Download content.json">⬇ Download</button>
+  <button class="btn" id="preview-btn">👁 Preview</button>
+  <button class="btn primary" id="publish-btn">Publish to website</button>
+</div>
+
+<div class="overlay" id="connect" hidden>
+  <div class="dialog">
+    <h3>Connect to GitHub</h3>
+    <p class="hint" style="margin-bottom:10px">Publishing saves your changes to the website's GitHub repository. You only need to do this once per device.</p>
+    <ol>
+      <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → new fine-grained token</a>.</li>
+      <li>Repository access: <b>Only select repositories</b> → <b>SangeetManjariKalaKendra</b>.</li>
+      <li>Permissions → Repository → <b>Contents: Read and write</b>.</li>
+      <li>Generate, copy the token and paste it below.</li>
+    </ol>
+    <div class="grid2">
+      <label class="f full">Access token<input id="c-token" type="password" autocomplete="off" placeholder="github_pat_…"></label>
+      <label class="f">Repository<input id="c-repo" value="GaurangMishra12/SangeetManjariKalaKendra"></label>
+      <label class="f">Branch<input id="c-branch" value="main"></label>
+    </div>
+    <p class="hint" style="margin:10px 0 0;font-size:.8rem">The token stays in this browser only. Don't connect on a shared computer.</p>
+    <div class="actions">
+      <button class="btn danger" id="c-forget" hidden>Disconnect</button>
+      <button class="btn" id="c-cancel">Cancel</button>
+      <button class="btn primary" id="c-save">Connect</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (_) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (_) {} },
+};
+
+let C = null;          // content being edited
+let saved = "";        // last published JSON (to detect changes)
+let sha = null;        // GitHub file sha
+let tab = "sections";
+const gh = { token: store.get("smkk-gh-token") || "", repo: store.get("smkk-gh-repo") || "GaurangMishra12/SangeetManjariKalaKendra", branch: store.get("smkk-gh-branch") || "main" };
+
+/* ---------------- labels ---------------- */
+const SECTIONS = [
+  ["topbar", "Top bar", "Phone, email and “Book Demo Class” strip at the very top"],
+  ["about", "About us", "Photo collage, intro text and four features"],
+  ["join", "Join banner", "“Begin your journey with our Guru” with image slider"],
+  ["courses", "Courses", "Course cards with prices and filter tabs"],
+  ["mentor", "One-to-one banner", "Green banner for personal classes"],
+  ["stats", "Numbers strip", "Students, years, performances…"],
+  ["explore", "Explore cards", "Classes, Performances, Events, Workshops"],
+  ["live", "Book a performance", "“Bring Kathak to your event” banner"],
+  ["why", "What sets us apart", "Four highlight cards"],
+  ["gallery", "Photo gallery", "Sliding row of photos"],
+  ["videos", "Performance videos", "Reels row"],
+  ["contact", "Contact form", "Photo and enquiry form"],
+  ["reviews", "Reviews", "Student & parent reviews"],
+  ["whatsappButton", "Floating WhatsApp button", "Green button in the corner (needs a phone/WhatsApp number)"],
+  ["chatButton", "Floating enquiry button", "Opens the enquiry form"],
+];
+const DETAILS = [
+  ["guru", "Guru's name", "Guru Sangeeta Sharma"],
+  ["phone", "Phone (shown on site)", "+91 98765 43210"],
+  ["whatsapp", "WhatsApp number (if different)", "919876543210"],
+  ["email", "Email", "hello@sangeetmanjari.me"],
+  ["address", "Address", "Street, City, State PIN", true],
+  ["instagram", "Instagram link", "https://instagram.com/…"],
+  ["youtube", "YouTube link", "https://youtube.com/@…"],
+  ["facebook", "Facebook link", "https://facebook.com/…"],
+  ["googleReviews", "Google reviews link", "https://g.page/…"],
+];
+const TEXTS = [
+  ["heroSubtitle", "Line under the main headline", 2],
+  ["aboutText", "About us paragraph", 5],
+  ["guruBio", "About the guru (in “What sets us apart”)", 3],
+  ["upcomingEvents", "Upcoming events (in Explore cards)", 3],
+];
+const NUMBERS = [["students", "Students trained"], ["cities", "Cities reached"], ["years", "Years experience"], ["performances", "Performances"], ["workshops", "Workshops held"], ["awards", "Awards & honours"]];
+const CATS = [["kids", "Kids (Age 5+)"], ["beginner", "Beginners"], ["intermediate", "Intermediate"], ["advanced", "Advanced"], ["adults", "Adults"], ["hobby", "Hobby"]];
+const TABS = [
+  ["sections", "👁 Sections"], ["details", "📇 Contact & links"], ["text", "✏️ Text"], ["numbers", "🔢 Numbers"],
+  ["courses", "🎓 Courses"], ["photos", "🖼 Photos"], ["videos", "🎬 Videos"], ["reviews", "⭐ Reviews"], ["popup", "💬 Popup"],
+];
+
+/* ---------------- GitHub ---------------- */
+const b64encode = (str) => { const bytes = new TextEncoder().encode(str); let bin = ""; bytes.forEach((b) => (bin += String.fromCharCode(b))); return btoa(bin); };
+const b64decode = (b64) => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\n/g, "")), (c) => c.charCodeAt(0)));
+async function ghFetch(path, opts = {}) {
+  const res = await fetch(`https://api.github.com/repos/${gh.repo}/${path}`, {
+    ...opts,
+    headers: { Accept: "application/vnd.github+json", Authorization: `Bearer ${gh.token}`, "X-GitHub-Api-Version": "2022-11-28", ...(opts.headers || {}) },
+  });
+  if (!res.ok) {
+    let m = res.status + "";
+    try { m = (await res.json()).message || m; } catch (_) {}
+    throw new Error(res.status === 401 ? "Token not accepted – check it and try again." : res.status === 404 ? "Repository, branch or file not found – or the token can't access it." : m);
+  }
+  return res.json();
+}
+
+/* ---------------- load ---------------- */
+async function load() {
+  try {
+    if (gh.token) {
+      const f = await ghFetch(`contents/content.json?ref=${encodeURIComponent(gh.branch)}`);
+      sha = f.sha;
+      C = JSON.parse(b64decode(f.content));
+      setStatus("Connected", "on");
+    } else {
+      C = await (await fetch("content.json?t=" + Date.now(), { cache: "no-store" })).json();
+      setStatus("Not connected");
+    }
+  } catch (e) {
+    toast(e.message, true);
+    C = await (await fetch("content.json?t=" + Date.now(), { cache: "no-store" })).json();
+    setStatus("Not connected");
+  }
+  normalise();
+  saved = JSON.stringify(C);
+  renderSide(); renderTab(); changed();
+}
+function normalise() {
+  C.sections ||= {}; C.popup ||= { enabled: true, delaySeconds: 6 }; C.site ||= {}; C.text ||= {}; C.numbers ||= {};
+  C.courses ||= []; C.photos ||= []; C.videos ||= []; C.reviews ||= [];
+}
+
+/* ---------------- UI ---------------- */
+function setStatus(t, cls = "") { const s = $("#status"); s.textContent = t; s.className = "status " + cls; $("#connect-btn").textContent = gh.token ? "Account" : "Connect"; }
+function toast(t, bad) { const el = $("#toast"); el.textContent = t; el.className = "toast" + (bad ? " bad" : ""); el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (el.hidden = true), 3500); }
+function changed() {
+  const dirty = JSON.stringify(C) !== saved;
+  $("#msg").textContent = dirty ? "You have unpublished changes." : "Everything is published.";
+  const s = $("#status");
+  if (dirty) { s.textContent = "Unpublished changes"; s.className = "status dirty"; }
+  else setStatus(gh.token ? "Connected" : "Not connected", gh.token ? "on" : "");
+  try { store.set("smkk-draft", JSON.stringify(C)); } catch (_) {}
+  renderSideCounts();
+}
+window.addEventListener("beforeunload", (e) => { if (C && JSON.stringify(C) !== saved) { e.preventDefault(); e.returnValue = ""; } });
+
+function renderSide() {
+  $("#side").innerHTML = TABS.map(([k, l]) => `<button data-tab="${k}" class="${k === tab ? "on" : ""}">${l}<span class="count" data-count="${k}"></span></button>`).join("");
+  $$("#side button").forEach((b) => b.onclick = () => { tab = b.dataset.tab; $$("#side button").forEach((x) => x.classList.toggle("on", x === b)); renderTab(); scrollTo(0, 0); });
+  renderSideCounts();
+}
+function renderSideCounts() {
+  const on = (arr) => `${arr.filter((x) => x.show !== false).length}/${arr.length}`;
+  const counts = {
+    sections: `${SECTIONS.filter(([k]) => C.sections[k] !== false).length}/${SECTIONS.length}`,
+    courses: on(C.courses), photos: on(C.photos), videos: on(C.videos), reviews: on(C.reviews),
+    popup: C.popup.enabled ? "on" : "off",
+  };
+  $$("[data-count]").forEach((el) => (el.textContent = counts[el.dataset.count] || ""));
+}
+
+const sw = (checked, attrs = "") => `<label class="sw"><input type="checkbox" ${checked ? "checked" : ""} ${attrs}><span></span></label>`;
+
+function renderTab() {
+  const m = $("#main");
+  const R = {
+    sections() {
+      m.innerHTML = `<h2>Sections</h2><p class="hint">Switch parts of the home page on or off. Hidden sections also disappear from the menu.</p>` +
+        SECTIONS.map(([k, l, d]) => `<div class="card row ${C.sections[k] === false ? "off" : ""}"><div class="grow"><b>${l}</b><small>${d}</small></div>${sw(C.sections[k] !== false, `data-sec="${k}" aria-label="${l}"`)}</div>`).join("") +
+        `<p class="hint" style="margin-top:16px">The header, main banner and footer are always shown.</p>`;
+      $$("[data-sec]").forEach((i) => i.onchange = () => { C.sections[i.dataset.sec] = i.checked; i.closest(".card").classList.toggle("off", !i.checked); changed(); });
+    },
+    details() {
+      m.innerHTML = `<h2>Contact & links</h2><p class="hint">Leave a box empty to hide it or show a placeholder.</p><div class="card grid2">` +
+        DETAILS.map(([k, l, ph, full]) => `<label class="f ${full ? "full" : ""}">${l}<input data-site="${k}" value="${esc(C.site[k])}" placeholder="${esc(ph)}"></label>`).join("") + `</div>`;
+      $$("[data-site]").forEach((i) => i.oninput = () => { C.site[i.dataset.site] = i.value.trim(); changed(); });
+    },
+    text() {
+      m.innerHTML = `<h2>Text</h2><p class="hint">Edit the main paragraphs on the page.</p><div class="card grid2">` +
+        TEXTS.map(([k, l, rows]) => `<label class="f full">${l}<textarea data-text="${k}" rows="${rows}">${esc(C.text[k])}</textarea></label>`).join("") + `</div>`;
+      $$("[data-text]").forEach((i) => i.oninput = () => { C.text[i.dataset.text] = i.value.trim(); changed(); });
+    },
+    numbers() {
+      m.innerHTML = `<h2>Numbers strip</h2><p class="hint">Use 0 to show a dash until you have the real number. The site adds “+” after each number.</p><div class="card grid2">` +
+        NUMBERS.map(([k, l]) => `<label class="f">${l}<input type="number" min="0" data-num="${k}" value="${+C.numbers[k] || 0}"></label>`).join("") + `</div>`;
+      $$("[data-num]").forEach((i) => i.oninput = () => { C.numbers[i.dataset.num] = Math.max(0, parseInt(i.value) || 0); changed(); });
+    },
+    courses() {
+      const imgOpts = (sel) => C.photos.map((p) => `<option value="${p.id}" ${p.id === sel ? "selected" : ""}>${p.id} – ${esc(p.alt)}</option>`).join("");
+      m.innerHTML = `<h2>Courses</h2><p class="hint">Turn courses on or off, edit fees, reorder with the arrows. Leave a fee empty to show “₹ —”.</p>` +
+        C.courses.map((c, i) => `
+        <div class="card ${c.show === false ? "off" : ""}" data-i="${i}">
+          <div class="item-head">
+            <img src="assets/img/gallery/${esc(c.img)}-sm.jpg" alt="">
+            <div class="grow"><b>${esc(c.title) || "Untitled course"}</b><small>${esc(c.badge)} · ${c.group ? "₹" + esc(c.group) : "no fee set"}</small></div>
+            <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
+            <button class="btn sm" data-edit>Edit</button>
+            ${sw(c.show !== false, `data-show aria-label="Show ${esc(c.title)}"`)}
+          </div>
+          <div class="item-body" hidden>
+            <div class="grid2">
+              <label class="f">Title<input data-k="title" value="${esc(c.title)}"></label>
+              <label class="f">Badge on photo<input data-k="badge" value="${esc(c.badge)}"></label>
+              <label class="f">Filter tab<select data-k="cat">${CATS.map(([v, l]) => `<option value="${v}" ${v === c.cat ? "selected" : ""}>${l}</option>`).join("")}</select></label>
+              <label class="f">Duration<input data-k="duration" value="${esc(c.duration)}"></label>
+              <label class="f">Group fee per month (₹)<input data-k="group" value="${esc(c.group)}" placeholder="e.g. 2,000"></label>
+              <label class="f">Group note<input data-k="groupNote" value="${esc(c.groupNote)}"></label>
+              <label class="f">One-on-one fee per month (₹)<input data-k="personal" value="${esc(c.personal)}" placeholder="e.g. 3,500"></label>
+              <label class="f">One-on-one note<input data-k="personalNote" value="${esc(c.personalNote)}"></label>
+              <label class="f full">Photo<select data-k="img">${imgOpts(c.img)}</select></label>
+            </div>
+            <p style="margin:12px 0 0"><button class="btn sm danger" data-del>Delete course</button></p>
+          </div>
+        </div>`).join("") +
+        `<button class="btn" id="add-course">+ Add course</button>`;
+      $$(".card[data-i]").forEach((card) => {
+        const i = +card.dataset.i, c = C.courses[i];
+        $("[data-edit]", card).onclick = () => { const b = $(".item-body", card); b.hidden = !b.hidden; };
+        $("[data-show]", card).onchange = (e) => { c.show = e.target.checked; card.classList.toggle("off", !c.show); changed(); };
+        $("[data-up]", card).onclick = () => move(C.courses, i, -1);
+        $("[data-down]", card).onclick = () => move(C.courses, i, 1);
+        $("[data-del]", card).onclick = () => { if (confirm(`Delete “${c.title}”?`)) { C.courses.splice(i, 1); changed(); renderTab(); } };
+        $$("[data-k]", card).forEach((inp) => inp.oninput = inp.onchange = () => {
+          c[inp.dataset.k] = inp.value.trim(); changed();
+          $(".item-head b", card).textContent = c.title || "Untitled course";
+          $(".item-head small", card).textContent = `${c.badge} · ${c.group ? "₹" + c.group : "no fee set"}`;
+          $(".item-head img", card).src = `assets/img/gallery/${c.img}-sm.jpg`;
+        });
+      });
+      $("#add-course").onclick = () => {
+        C.courses.push({ show: true, cat: "beginner", badge: "New", title: "New course", img: C.photos[0]?.id || "", duration: "12 Months", group: "", personal: "", groupNote: "8 classes per month", personalNote: "Min. 4 classes per month" });
+        changed(); renderTab(); const cards = $$(".card[data-i]"); const last = cards[cards.length - 1]; $(".item-body", last).hidden = false; last.scrollIntoView({ behavior: "smooth" });
+      };
+    },
+    photos() {
+      m.innerHTML = `<h2>Photos</h2><p class="hint">Click a photo to show or hide it in the gallery. Use the arrows to change the order.</p>
+        <p><button class="btn sm" id="all-on">Show all</button> <button class="btn sm" id="all-off">Hide all</button></p>
+        <div class="photos">` + C.photos.map((p, i) => `
+        <div class="ph-tile ${p.show === false ? "off" : "on"}" data-i="${i}">
+          <span class="tag">${p.show === false ? "Hidden" : "Shown"}</span>
+          <img src="assets/img/gallery/${esc(p.id)}-sm.jpg" alt="${esc(p.alt)}" title="${esc(p.alt)}" loading="lazy">
+          <div class="bar"><button class="icon-btn" data-l title="Move earlier">←</button><span>#${i + 1}</span><button class="icon-btn" data-r title="Move later">→</button></div>
+        </div>`).join("") + `</div>
+        <p class="hint" style="margin-top:16px">To add new photos, put <code>NNNN.jpg</code> (about 1600px) and <code>NNNN-sm.jpg</code> (about 640px) in <code>assets/img/gallery/</code>, then add them to <code>content.json</code>.</p>`;
+      $$(".ph-tile").forEach((t) => {
+        const i = +t.dataset.i, p = C.photos[i];
+        $("img", t).onclick = () => { p.show = p.show === false; changed(); renderTab(); };
+        $("[data-l]", t).onclick = () => move(C.photos, i, -1);
+        $("[data-r]", t).onclick = () => move(C.photos, i, 1);
+      });
+      $("#all-on").onclick = () => { C.photos.forEach((p) => (p.show = true)); changed(); renderTab(); };
+      $("#all-off").onclick = () => { C.photos.forEach((p) => (p.show = false)); changed(); renderTab(); };
+    },
+    videos() {
+      m.innerHTML = `<h2>Videos</h2><p class="hint">Choose which reels appear and edit their captions.</p>` +
+        C.videos.map((v, i) => `
+        <div class="card ${v.show === false ? "off" : ""}" data-i="${i}">
+          <div class="item-head">
+            <img src="assets/img/${esc(v.src)}-poster.jpg" alt="" style="width:40px;height:64px">
+            <div class="grow grid2">
+              <label class="f">Title<input data-k="title" value="${esc(v.title)}"></label>
+              <label class="f">Caption<input data-k="caption" value="${esc(v.caption)}"></label>
+            </div>
+            <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
+            ${sw(v.show !== false, `data-show aria-label="Show ${esc(v.title)}"`)}
+          </div>
+        </div>`).join("");
+      $$(".card[data-i]").forEach((card) => {
+        const i = +card.dataset.i, v = C.videos[i];
+        $("[data-show]", card).onchange = (e) => { v.show = e.target.checked; card.classList.toggle("off", !v.show); changed(); };
+        $("[data-up]", card).onclick = () => move(C.videos, i, -1);
+        $("[data-down]", card).onclick = () => move(C.videos, i, 1);
+        $$("[data-k]", card).forEach((inp) => inp.oninput = () => { v[inp.dataset.k] = inp.value.trim(); changed(); });
+      });
+    },
+    reviews() {
+      m.innerHTML = `<h2>Reviews</h2><p class="hint">Add reviews from students and parents (copy them from Google). Only switched-on reviews with text are shown.</p>` +
+        (C.reviews.length ? "" : `<div class="card"><p class="hint" style="margin:0">No reviews yet. The site shows placeholders until you add some.</p></div>`) +
+        C.reviews.map((r, i) => `
+        <div class="card ${r.show === false ? "off" : ""}" data-i="${i}">
+          <div class="item-head" style="align-items:flex-start">
+            <div class="grow grid2">
+              <label class="f">Name<input data-k="name" value="${esc(r.name)}"></label>
+              <label class="f">Batch / relation (optional)<input data-k="batch" value="${esc(r.batch)}" placeholder="e.g. Parent, Kids batch"></label>
+              <label class="f full">Review<textarea data-k="text" rows="3">${esc(r.text)}</textarea></label>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+              ${sw(r.show !== false, `data-show aria-label="Show review"`)}
+              <button class="icon-btn" data-up title="Move up">↑</button><button class="icon-btn" data-down title="Move down">↓</button>
+              <button class="icon-btn" data-del title="Delete">🗑</button>
+            </div>
+          </div>
+        </div>`).join("") + `<button class="btn" id="add-review">+ Add review</button>`;
+      $$(".card[data-i]").forEach((card) => {
+        const i = +card.dataset.i, r = C.reviews[i];
+        $("[data-show]", card).onchange = (e) => { r.show = e.target.checked; card.classList.toggle("off", !r.show); changed(); };
+        $("[data-up]", card).onclick = () => move(C.reviews, i, -1);
+        $("[data-down]", card).onclick = () => move(C.reviews, i, 1);
+        $("[data-del]", card).onclick = () => { if (confirm("Delete this review?")) { C.reviews.splice(i, 1); changed(); renderTab(); } };
+        $$("[data-k]", card).forEach((inp) => inp.oninput = () => { r[inp.dataset.k] = inp.value.trim(); changed(); });
+      });
+      $("#add-review").onclick = () => { C.reviews.push({ show: true, name: "", batch: "", text: "" }); changed(); renderTab(); $$(".card[data-i] input")[$$(".card[data-i] input").length - 2]?.focus(); };
+    },
+    popup() {
+      m.innerHTML = `<h2>Enquiry popup</h2><p class="hint">The form that pops up once per visit.</p>
+        <div class="card row"><div class="grow"><b>Show popup automatically</b><small>Visitors can always open it with the buttons.</small></div>${sw(C.popup.enabled !== false, 'id="pop-on" aria-label="Show popup"')}</div>
+        <div class="card"><label class="f" style="max-width:240px">Seconds after the page opens<input type="number" min="1" max="120" id="pop-delay" value="${+C.popup.delaySeconds || 6}"></label></div>`;
+      $("#pop-on").onchange = (e) => { C.popup.enabled = e.target.checked; changed(); };
+      $("#pop-delay").oninput = (e) => { C.popup.delaySeconds = Math.max(1, parseInt(e.target.value) || 6); changed(); };
+    },
+  };
+  R[tab]();
+}
+function move(arr, i, d) { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; changed(); renderTab(); }
+
+/* ---------------- actions ---------------- */
+$("#preview-btn").onclick = () => { store.set("smkk-draft", JSON.stringify(C)); window.open("./?preview=1", "_blank"); };
+$("#download-btn").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(C, null, 2) + "\n"], { type: "application/json" }));
+  a.download = "content.json"; a.click(); URL.revokeObjectURL(a.href);
+};
+$("#publish-btn").onclick = async () => {
+  if (!gh.token) { openConnect(); return; }
+  if (JSON.stringify(C) === saved) { toast("Nothing new to publish."); return; }
+  const btn = $("#publish-btn"); btn.disabled = true; btn.textContent = "Publishing…";
+  try {
+    // get latest sha in case the file changed elsewhere
+    try { sha = (await ghFetch(`contents/content.json?ref=${encodeURIComponent(gh.branch)}`)).sha; } catch (_) {}
+    const res = await ghFetch("contents/content.json", {
+      method: "PUT",
+      body: JSON.stringify({ message: "Update website content from admin panel", content: b64encode(JSON.stringify(C, null, 2) + "\n"), sha, branch: gh.branch }),
+    });
+    sha = res.content.sha; saved = JSON.stringify(C); changed();
+    toast("Published! The live site updates in about a minute.");
+  } catch (e) { toast("Couldn't publish: " + e.message, true); }
+  btn.disabled = false; btn.textContent = "Publish to website";
+};
+
+function openConnect() {
+  $("#c-token").value = gh.token; $("#c-repo").value = gh.repo; $("#c-branch").value = gh.branch;
+  $("#c-forget").hidden = !gh.token; $("#connect").hidden = false; $("#c-token").focus();
+}
+$("#connect-btn").onclick = openConnect;
+$("#c-cancel").onclick = () => ($("#connect").hidden = true);
+$("#c-forget").onclick = () => { ["smkk-gh-token"].forEach(store.del); gh.token = ""; $("#connect").hidden = true; setStatus("Not connected"); toast("Disconnected."); };
+$("#c-save").onclick = async () => {
+  const keep = JSON.stringify(C) !== saved ? JSON.parse(JSON.stringify(C)) : null;
+  gh.token = $("#c-token").value.trim(); gh.repo = $("#c-repo").value.trim(); gh.branch = $("#c-branch").value.trim() || "main";
+  if (!gh.token) { toast("Paste a token first.", true); return; }
+  try {
+    const f = await ghFetch(`contents/content.json?ref=${encodeURIComponent(gh.branch)}`);
+    sha = f.sha;
+    store.set("smkk-gh-token", gh.token); store.set("smkk-gh-repo", gh.repo); store.set("smkk-gh-branch", gh.branch);
+    $("#connect").hidden = true;
+    if (!keep) { C = JSON.parse(b64decode(f.content)); normalise(); saved = JSON.stringify(C); }
+    else { saved = b64decode(f.content).trim() && JSON.stringify(JSON.parse(b64decode(f.content))); }
+    renderTab(); changed(); toast("Connected to GitHub.");
+  } catch (e) { toast(e.message, true); }
+};
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("#connect").hidden = true; });
+
+load();
+</script>
+</body>
+</html>
