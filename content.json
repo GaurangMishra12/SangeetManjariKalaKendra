@@ -138,133 +138,115 @@
   "photos": [
     {
       "show": true,
-      "id": "8001",
-      "alt": "Pallu held at the shoulder beneath a banyan tree"
+      "id": "m01",
+      "alt": "Newspaper clipping – Kathak at the Nrityam evening",
+      "w": 600,
+      "h": 800
     },
     {
       "show": true,
-      "id": "8002",
-      "alt": "Dancing inside the red sandstone pavilion"
+      "id": "m02",
+      "alt": "Rajasthan Patrika – Nrityam, Kathak & Odissi, 30-01-26",
+      "w": 800,
+      "h": 782
     },
     {
       "show": true,
-      "id": "8003",
-      "alt": "A graceful pose in the morning light"
+      "id": "m03",
+      "alt": "Press coverage – 'Nirat Karat' at Jawahar Kala Kendra",
+      "w": 472,
+      "h": 800
     },
     {
       "show": true,
-      "id": "8004",
-      "alt": "Arm raised towards the sky above the Aravalli hills"
+      "id": "m04",
+      "alt": "At the centenary celebration",
+      "w": 600,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7768",
-      "alt": "Mid-spin in front of a white marble temple"
+      "id": "m05",
+      "alt": "Backstage with a guru after the performance",
+      "w": 600,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7836",
-      "alt": "Looking out over the hills from a sandstone balcony"
+      "id": "m06",
+      "alt": "Bharat Utsav, Jawahar Kala Kendra – 9 August 2026",
+      "w": 600,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7726",
-      "alt": "Holding the lehenga beside a red sandstone chhatri"
+      "id": "m07",
+      "alt": "Honoured at Bharat Utsav",
+      "w": 600,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7800",
-      "alt": "Seated in a temple sanctum with marigolds"
+      "id": "m08",
+      "alt": "Blessings at the temple",
+      "w": 450,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7816",
-      "alt": "Hands joined above the head before an ancient shikhara"
+      "id": "m09",
+      "alt": "Receiving the temple chunari",
+      "w": 450,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7737",
-      "alt": "Dancing beneath a great banyan tree"
+      "id": "m10",
+      "alt": "After a folk dance presentation",
+      "w": 600,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7838",
-      "alt": "Smiling beside an old carved door"
+      "id": "m11",
+      "alt": "At a temple festival performance",
+      "w": 600,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7763",
-      "alt": "Pose before the marble temple"
+      "id": "m12",
+      "alt": "With an Odissi guru after a shared stage",
+      "w": 600,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7724",
-      "alt": "Under the chhatri arches"
+      "id": "m13",
+      "alt": "Meeting senior Kathak gurus",
+      "w": 600,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7795",
-      "alt": "Resting pose on the temple floor"
+      "id": "m14",
+      "alt": "A selfie with a guest artist",
+      "w": 600,
+      "h": 800
     },
     {
       "show": true,
-      "id": "7820",
-      "alt": "Before the carved temple spire"
+      "id": "m15",
+      "alt": "Nrityam festival – certificate ceremony",
+      "w": 800,
+      "h": 533
     },
     {
       "show": true,
-      "id": "7667",
-      "alt": "Morning practice on the terrace"
-    },
-    {
-      "show": true,
-      "id": "7809",
-      "alt": "Close-up of a mudra"
-    },
-    {
-      "show": true,
-      "id": "7828",
-      "alt": "In the temple courtyard under a blue sky"
-    },
-    {
-      "show": true,
-      "id": "7766",
-      "alt": "Opening the spin"
-    },
-    {
-      "show": true,
-      "id": "7741",
-      "alt": "In the shade of the banyan"
-    },
-    {
-      "show": true,
-      "id": "7727",
-      "alt": "A graceful turn by the chhatri"
-    },
-    {
-      "show": true,
-      "id": "7804",
-      "alt": "Light through the temple window"
-    },
-    {
-      "show": true,
-      "id": "7812",
-      "alt": "Namaskar at the temple"
-    },
-    {
-      "show": true,
-      "id": "7695",
-      "alt": "At the pavilion among the trees"
-    },
-    {
-      "show": true,
-      "id": "7771",
-      "alt": "Arms raised in the temple square"
-    },
-    {
-      "show": true,
-      "id": "7678",
-      "alt": "Sunlight through the leaves"
+      "id": "m16",
+      "alt": "Receiving a certificate on stage",
+      "w": 800,
+      "h": 533
     }
   ],
   "videos": [

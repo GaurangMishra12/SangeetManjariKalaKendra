@@ -132,7 +132,7 @@ function render(C) {
   /* ---------- photos ---------- */
   const photos = (C.photos || []).filter((p) => p.show !== false);
   $("#photo-track").innerHTML = photos.map((p, i) =>
-    `<button class="photo" data-i="${i}" aria-label="Open photo: ${esc(p.alt)}"><img src="assets/img/gallery/${esc(p.id)}-sm.jpg" alt="${esc(p.alt)}" loading="lazy"></button>`).join("");
+    `<button class="photo" data-i="${i}" aria-label="Open photo: ${esc(p.alt)}"><img src="assets/img/gallery/${esc(p.id)}-sm.jpg" alt="${esc(p.alt)}"${p.w ? ` width="${+p.w}" height="${+p.h}"` : ""} loading="lazy"></button>`).join("");
 
   /* ---------- videos ---------- */
   const videos = (C.videos || []).filter((v) => v.show !== false);

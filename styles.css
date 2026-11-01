@@ -218,8 +218,8 @@ h2.sans { font-family: var(--sans); font-weight: 500; }
 .arrows { display: flex; gap: 8px; }
 .arrows button { width: 40px; height: 32px; border-radius: 999px; border: 0; background: var(--red); color: #fff; cursor: pointer; }
 .track { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px max(16px, calc((100% - 1240px) / 2)) 14px; scrollbar-width: thin; }
-.photo { flex: 0 0 auto; width: 240px; height: 300px; padding: 0; border: 0; border-radius: 12px; overflow: hidden; cursor: zoom-in; scroll-snap-align: start; background: var(--cream); box-shadow: var(--shadow); }
-.photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.photo { flex: 0 0 auto; width: auto; height: 300px; padding: 0; border: 0; border-radius: 12px; overflow: hidden; cursor: zoom-in; scroll-snap-align: start; background: var(--cream); box-shadow: var(--shadow); }
+.photo img { display: block; height: 100%; width: auto; transition: transform .5s; }
 .photo:hover img { transform: scale(1.06); }
 .vcard { flex: 0 0 auto; width: 260px; margin: 0; scroll-snap-align: start; }
 .vcard video { width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; background: #000; box-shadow: var(--shadow); }
