@@ -348,3 +348,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); }
 }
 .live-box > img.flip { transform: scaleX(-1); }
 .footer .ph { background: rgba(255,255,255,.1); color: var(--gold-light); }
+.hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
+.form-card, .modal-form { position: relative; }
+.form-note.ok { color: #1f7a4d; font-weight: 500; }
+.form-note.bad { color: #b42318; }

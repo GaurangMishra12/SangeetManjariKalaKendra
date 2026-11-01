@@ -24,6 +24,7 @@
     "guru": "",
     "phone": "",
     "whatsapp": "",
+    "formEndpoint": "",
     "email": "",
     "address": "",
     "googleReviews": "",
@@ -46,41 +47,210 @@
     "awards": 0
   },
   "courses": [
-    { "show": true, "cat": "kids",         "badge": "Kids · Age 5+",   "title": "Kids Batch",            "img": "7763", "duration": "12 Months",  "group": "", "personal": "", "groupNote": "8 classes per month", "personalNote": "Min. 4 classes per month" },
-    { "show": true, "cat": "beginner",     "badge": "Beginner Course", "title": "Kathak — Beginners",    "img": "7768", "duration": "12 Months",  "group": "", "personal": "", "groupNote": "8 classes per month", "personalNote": "Min. 4 classes per month" },
-    { "show": true, "cat": "intermediate", "badge": "Intermediate",    "title": "Kathak — Intermediate", "img": "7727", "duration": "24 Months",  "group": "", "personal": "", "groupNote": "8 classes per month", "personalNote": "Min. 4 classes per month" },
-    { "show": true, "cat": "advanced",     "badge": "Advanced Course", "title": "Kathak — Advanced",     "img": "7816", "duration": "24+ Months", "group": "", "personal": "", "groupNote": "8 classes per month", "personalNote": "Min. 4 classes per month" },
-    { "show": true, "cat": "adults",       "badge": "Adults",          "title": "Adult Batch",           "img": "7726", "duration": "12 Months",  "group": "", "personal": "", "groupNote": "8 classes per month", "personalNote": "Min. 4 classes per month" },
-    { "show": true, "cat": "hobby",        "badge": "Hobby Batch",     "title": "Hobby Kathak",          "img": "7838", "duration": "6 Months",   "group": "", "personal": "", "groupNote": "8 classes per month", "personalNote": "Min. 4 classes per month" }
+    {
+      "show": true,
+      "cat": "kids",
+      "badge": "Kids · Age 5+",
+      "title": "Kids Batch",
+      "img": "7763",
+      "duration": "12 Months",
+      "group": "",
+      "personal": "",
+      "groupNote": "8 classes per month",
+      "personalNote": "Min. 4 classes per month"
+    },
+    {
+      "show": true,
+      "cat": "beginner",
+      "badge": "Beginner Course",
+      "title": "Kathak — Beginners",
+      "img": "7768",
+      "duration": "12 Months",
+      "group": "",
+      "personal": "",
+      "groupNote": "8 classes per month",
+      "personalNote": "Min. 4 classes per month"
+    },
+    {
+      "show": true,
+      "cat": "intermediate",
+      "badge": "Intermediate",
+      "title": "Kathak — Intermediate",
+      "img": "7727",
+      "duration": "24 Months",
+      "group": "",
+      "personal": "",
+      "groupNote": "8 classes per month",
+      "personalNote": "Min. 4 classes per month"
+    },
+    {
+      "show": true,
+      "cat": "advanced",
+      "badge": "Advanced Course",
+      "title": "Kathak — Advanced",
+      "img": "7816",
+      "duration": "24+ Months",
+      "group": "",
+      "personal": "",
+      "groupNote": "8 classes per month",
+      "personalNote": "Min. 4 classes per month"
+    },
+    {
+      "show": true,
+      "cat": "adults",
+      "badge": "Adults",
+      "title": "Adult Batch",
+      "img": "7726",
+      "duration": "12 Months",
+      "group": "",
+      "personal": "",
+      "groupNote": "8 classes per month",
+      "personalNote": "Min. 4 classes per month"
+    },
+    {
+      "show": true,
+      "cat": "hobby",
+      "badge": "Hobby Batch",
+      "title": "Hobby Kathak",
+      "img": "7838",
+      "duration": "6 Months",
+      "group": "",
+      "personal": "",
+      "groupNote": "8 classes per month",
+      "personalNote": "Min. 4 classes per month"
+    }
   ],
   "photos": [
-    { "show": true, "id": "7768", "alt": "Mid-spin in front of a white marble temple" },
-    { "show": true, "id": "7836", "alt": "Looking out over the hills from a sandstone balcony" },
-    { "show": true, "id": "7726", "alt": "Holding the lehenga beside a red sandstone chhatri" },
-    { "show": true, "id": "7800", "alt": "Seated in a temple sanctum with marigolds" },
-    { "show": true, "id": "7816", "alt": "Hands joined above the head before an ancient shikhara" },
-    { "show": true, "id": "7737", "alt": "Dancing beneath a great banyan tree" },
-    { "show": true, "id": "7838", "alt": "Smiling beside an old carved door" },
-    { "show": true, "id": "7763", "alt": "Pose before the marble temple" },
-    { "show": true, "id": "7724", "alt": "Under the chhatri arches" },
-    { "show": true, "id": "7795", "alt": "Resting pose on the temple floor" },
-    { "show": true, "id": "7820", "alt": "Before the carved temple spire" },
-    { "show": true, "id": "7667", "alt": "Morning practice on the terrace" },
-    { "show": true, "id": "7809", "alt": "Close-up of a mudra" },
-    { "show": true, "id": "7828", "alt": "In the temple courtyard under a blue sky" },
-    { "show": true, "id": "7766", "alt": "Opening the spin" },
-    { "show": true, "id": "7741", "alt": "In the shade of the banyan" },
-    { "show": true, "id": "7727", "alt": "A graceful turn by the chhatri" },
-    { "show": true, "id": "7804", "alt": "Light through the temple window" },
-    { "show": true, "id": "7812", "alt": "Namaskar at the temple" },
-    { "show": true, "id": "7695", "alt": "At the pavilion among the trees" },
-    { "show": true, "id": "7771", "alt": "Arms raised in the temple square" },
-    { "show": true, "id": "7678", "alt": "Sunlight through the leaves" }
+    {
+      "show": true,
+      "id": "7768",
+      "alt": "Mid-spin in front of a white marble temple"
+    },
+    {
+      "show": true,
+      "id": "7836",
+      "alt": "Looking out over the hills from a sandstone balcony"
+    },
+    {
+      "show": true,
+      "id": "7726",
+      "alt": "Holding the lehenga beside a red sandstone chhatri"
+    },
+    {
+      "show": true,
+      "id": "7800",
+      "alt": "Seated in a temple sanctum with marigolds"
+    },
+    {
+      "show": true,
+      "id": "7816",
+      "alt": "Hands joined above the head before an ancient shikhara"
+    },
+    {
+      "show": true,
+      "id": "7737",
+      "alt": "Dancing beneath a great banyan tree"
+    },
+    {
+      "show": true,
+      "id": "7838",
+      "alt": "Smiling beside an old carved door"
+    },
+    {
+      "show": true,
+      "id": "7763",
+      "alt": "Pose before the marble temple"
+    },
+    {
+      "show": true,
+      "id": "7724",
+      "alt": "Under the chhatri arches"
+    },
+    {
+      "show": true,
+      "id": "7795",
+      "alt": "Resting pose on the temple floor"
+    },
+    {
+      "show": true,
+      "id": "7820",
+      "alt": "Before the carved temple spire"
+    },
+    {
+      "show": true,
+      "id": "7667",
+      "alt": "Morning practice on the terrace"
+    },
+    {
+      "show": true,
+      "id": "7809",
+      "alt": "Close-up of a mudra"
+    },
+    {
+      "show": true,
+      "id": "7828",
+      "alt": "In the temple courtyard under a blue sky"
+    },
+    {
+      "show": true,
+      "id": "7766",
+      "alt": "Opening the spin"
+    },
+    {
+      "show": true,
+      "id": "7741",
+      "alt": "In the shade of the banyan"
+    },
+    {
+      "show": true,
+      "id": "7727",
+      "alt": "A graceful turn by the chhatri"
+    },
+    {
+      "show": true,
+      "id": "7804",
+      "alt": "Light through the temple window"
+    },
+    {
+      "show": true,
+      "id": "7812",
+      "alt": "Namaskar at the temple"
+    },
+    {
+      "show": true,
+      "id": "7695",
+      "alt": "At the pavilion among the trees"
+    },
+    {
+      "show": true,
+      "id": "7771",
+      "alt": "Arms raised in the temple square"
+    },
+    {
+      "show": true,
+      "id": "7678",
+      "alt": "Sunlight through the leaves"
+    }
   ],
   "videos": [
-    { "show": true, "src": "reel1", "title": "Chakkar – the spin",    "caption": "Balance, breath, devotion" },
-    { "show": true, "src": "reel2", "title": "Bhaav – expressions",   "caption": "In Kathak, the face dances too" },
-    { "show": true, "src": "reel3", "title": "Katha kahe so Kathak",  "caption": "The story behind the dance" }
+    {
+      "show": true,
+      "src": "reel1",
+      "title": "Chakkar – the spin",
+      "caption": "Balance, breath, devotion"
+    },
+    {
+      "show": true,
+      "src": "reel2",
+      "title": "Bhaav – expressions",
+      "caption": "In Kathak, the face dances too"
+    },
+    {
+      "show": true,
+      "src": "reel3",
+      "title": "Katha kahe so Kathak",
+      "caption": "The story behind the dance"
+    }
   ],
   "reviews": []
 }

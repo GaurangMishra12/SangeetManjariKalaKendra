@@ -273,20 +273,43 @@ function setupInteractions(C, photos, LINKS) {
     if (!lb.hidden && e.key === "ArrowRight") show(cur + 1);
   });
 
-  // forms -> WhatsApp
+  // forms -> Google Sheet + email (Apps Script) and WhatsApp
+  const endpoint = (C.site?.formEndpoint || "").trim();
   $$("[data-enquiry-form]").forEach((f) => f.addEventListener("submit", (e) => {
     e.preventDefault();
     const d = new FormData(f);
-    const lines = [
-      "Namaste! I'd like to enquire about Kathak classes.",
-      "Name: " + d.get("name"),
-      "Phone: " + d.get("phone"),
-      d.get("mode") && "Class mode: " + d.get("mode"),
-      d.get("course") && "Course: " + d.get("course"),
-      d.get("message") && "Message: " + d.get("message"),
-    ].filter(Boolean).join("\n");
-    if (!LINKS.whatsappLink) { alert("WhatsApp number isn't set up yet."); return; }
-    window.open(LINKS.whatsappLink + "?text=" + encodeURIComponent(lines), "_blank", "noopener");
+    const note = $("[data-form-note]", f);
+    const say = (t, cls) => { if (note) { note.textContent = t; note.className = "form-note " + (cls || ""); } };
+
+    if (d.get("website")) return; // spam trap filled in – ignore silently
+
+    if (!endpoint && !LINKS.whatsappLink) { say("Sorry, the enquiry form isn't set up yet. Please call us instead.", "bad"); return; }
+
+    // 1) save to Google Sheet + email (fire-and-forget so WhatsApp can open right away)
+    if (endpoint) {
+      const body = new URLSearchParams();
+      ["name", "phone", "mode", "course", "message", "website"].forEach((k) => body.append(k, (d.get(k) || "").toString().slice(0, 2000)));
+      body.append("source", f.classList.contains("modal-form") ? "Popup" : "Contact section");
+      body.append("page", location.href);
+      fetch(endpoint, { method: "POST", mode: "no-cors", body, keepalive: true }).catch(() => {});
+    }
+
+    // 2) open WhatsApp with the details filled in
+    if (LINKS.whatsappLink) {
+      const lines = [
+        "Namaste! I'd like to enquire about Kathak classes.",
+        "Name: " + d.get("name"),
+        "Phone: " + d.get("phone"),
+        d.get("mode") && "Class mode: " + d.get("mode"),
+        d.get("course") && "Course: " + d.get("course"),
+        d.get("message") && "Message: " + d.get("message"),
+      ].filter(Boolean).join("\n");
+      window.open(LINKS.whatsappLink + "?text=" + encodeURIComponent(lines), "_blank", "noopener");
+    }
+
+    say("Thank you! We've received your enquiry and will contact you soon.", "ok");
+    f.reset();
+    try { sessionStorage.setItem("smkk-popup", "1"); } catch (_) {}
   }));
 
   // reveal on scroll

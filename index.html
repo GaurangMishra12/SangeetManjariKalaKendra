@@ -239,9 +239,10 @@
     <input name="phone" placeholder="Phone / WhatsApp Number" required inputmode="tel" autocomplete="tel">
     <select name="mode"><option value="">Class Mode</option><option>Online</option><option>Offline</option><option>Not Sure</option></select>
     <select name="course" data-course-select><option value="">Courses</option></select>
+    <input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
     <textarea name="message" rows="3" placeholder="Your Message"></textarea>
     <button class="btn btn-red btn-block" type="submit">Send →</button>
-    <p class="form-note">Sends your enquiry to us on WhatsApp.</p>
+    <p class="form-note" data-form-note>We'll get back to you soon.</p>
   </form>
 </section>
 
@@ -304,8 +305,10 @@
       <input name="phone" placeholder="Phone / WhatsApp Number" required inputmode="tel">
       <select name="mode"><option value="">Class Mode</option><option>Online</option><option>Offline</option><option>Not Sure</option></select>
       <select name="course" data-course-select><option value="">Courses</option></select>
+      <input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <textarea name="message" rows="3" placeholder="Your Message"></textarea>
       <button class="btn btn-red btn-block" type="submit">Send →</button>
+      <p class="form-note" data-form-note></p>
     </form>
     <img src="assets/img/gallery/7820.jpg" alt="" class="modal-img">
   </div>
@@ -319,6 +322,6 @@
   <button class="lb-next" aria-label="Next">›</button>
 </div>
 
-<script src="script.js?v=2"></script>
+<script src="script.js?v=3"></script>
 </body>
 </html>

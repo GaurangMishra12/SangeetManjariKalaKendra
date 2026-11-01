@@ -193,6 +193,7 @@ const DETAILS = [
   ["guru", "Guru's name", "Guru Sangeeta Sharma"],
   ["phone", "Phone (shown on site)", "+91 98765 43210"],
   ["whatsapp", "WhatsApp number (if different)", "919876543210"],
+  ["formEndpoint", "Enquiry form link (Google Script) – saves enquiries to Google Sheet + email", "https://script.google.com/macros/s/…/exec", true],
   ["email", "Email", "hello@sangeetmanjari.me"],
   ["address", "Address", "Street, City, State PIN", true],
   ["instagram", "Instagram link", "https://instagram.com/…"],
@@ -296,7 +297,7 @@ function renderTab() {
       $$("[data-sec]").forEach((i) => i.onchange = () => { C.sections[i.dataset.sec] = i.checked; i.closest(".card").classList.toggle("off", !i.checked); changed(); });
     },
     details() {
-      m.innerHTML = `<h2>Contact & links</h2><p class="hint">Leave a box empty to hide it or show a placeholder.</p><div class="card grid2">` +
+      m.innerHTML = `<h2>Contact & links</h2><p class="hint">Leave a box empty to hide it or show a placeholder. Enquiry form setup guide: <a href="https://github.com/${esc(gh.repo)}/blob/${esc(gh.branch)}/FORM-SETUP.md" target="_blank" rel="noopener">FORM-SETUP.md</a></p><div class="card grid2">` +
         DETAILS.map(([k, l, ph, full]) => `<label class="f ${full ? "full" : ""}">${l}<input data-site="${k}" value="${esc(C.site[k])}" placeholder="${esc(ph)}"></label>`).join("") + `</div>`;
       $$("[data-site]").forEach((i) => i.oninput = () => { C.site[i.dataset.site] = i.value.trim(); changed(); });
     },
