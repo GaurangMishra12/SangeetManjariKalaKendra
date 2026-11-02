@@ -8,7 +8,7 @@
     "mentor": true,
     "stats": false,
     "explore": true,
-    "live": true,
+    "live": false,
     "why": true,
     "gallery": true,
     "videos": true,
