@@ -82,7 +82,8 @@
     "aboutText": "Sangeet Manjari Kala Kendra is a home for Kathak, the storytelling dance of North India. We offer professional Kathak courses at beginner, intermediate and advanced level for Indian and international students – online and at the Kendra in Jaipur. Teaching follows the guru–shishya way: footwork, spins, gestures and expression, with the music and taal behind them.",
     "guruBio": "Akshita Sharma – Doordarshan B Grade Kathak artist, disciple of Guru Shri Jay Karan Kawa Ji and Guru Dr. Swati Agarwal, with Visharad, Nipun and Bhaskar in Kathak.",
     "upcomingEvents": "Shows, festivals and programmes coming up at and around the Kendra.",
-    "coursesIntro": "Diploma and Advanced Diploma courses of Bhatkhande Sangeet Vidyapeeth and Pracheen Kala Kendra."
+    "coursesIntro": "Diploma and Advanced Diploma courses of Bhatkhande Sangeet Vidyapeeth and Pracheen Kala Kendra.",
+    "eventsIntro": "Upcoming shows and workshops, our past performances, and live Kathak for your own event."
   },
   "guru": {
     "name": "Akshita Sharma",
@@ -155,16 +156,18 @@
     {
       "show": true,
       "title": "Bharat Utsav",
-      "date": "9 Aug 2026",
+      "date": "2026-08-09",
       "place": "Rangayan Auditorium, Jawahar Kala Kendra, Jaipur",
-      "link": ""
+      "link": "",
+      "photo": "m06"
     },
     {
       "show": true,
       "title": "Nrityam – Jaipur Dance & Music Festival",
-      "date": "29 Apr 2024",
+      "date": "2024-04-29",
       "place": "Rangayan, Jawahar Kala Kendra, Jaipur",
-      "link": ""
+      "link": "",
+      "photo": "m18"
     }
   ],
   "photos": [

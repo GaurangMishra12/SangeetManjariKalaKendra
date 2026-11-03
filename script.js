@@ -3,6 +3,7 @@
 
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const put = (sel, html) => { const el = document.querySelector(sel); if (el) el.innerHTML = html; return el; };
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 async function loadContent() {
@@ -113,7 +114,7 @@ function render(C) {
     return `<div class="price-row${cols.length === 1 ? " one" : ""}">` + cols.map(([l, v, note]) =>
       `<div><small class="pr-label">${l}</small><b class="${v ? "" : "ph"}">${price(v)}<i>/month</i></b><small>${esc(note)}</small></div>`).join("") + `</div>`;
   };
-  $("#course-grid").innerHTML = courses.map((c) => `
+  put("#course-grid", courses.map((c) => `
     <article class="course" data-cat="${esc(c.cat)}">
       <div class="course-img"><img src="assets/img/gallery/${esc(c.img)}-sm.jpg" alt="" loading="lazy"><span class="course-badge">${esc(c.badge)}</span></div>
       <div class="course-body">
@@ -126,67 +127,111 @@ function render(C) {
           <a href="#contact" class="btn btn-outline btn-sm" data-open-enquiry data-course="${esc(c.title)}">Explore →</a>
         </div>
       </div>
-    </article>`).join("");
+    </article>`).join(""));
   // only show filter tabs that have courses
   const cats = new Set(courses.map((c) => c.cat));
   $$("[data-filters] button").forEach((b) => { b.hidden = b.dataset.f !== "all" && !cats.has(b.dataset.f); });
-  $("#footer-courses").innerHTML = courses.map((c) => `<a href="#courses">${esc(c.title)}</a>`).join("");
+  const home = document.body.dataset.page === "events" ? "index.html" : "";
+  put("#footer-courses", courses.map((c) => `<a href="${home}#courses">${esc(c.title)}</a>`).join(""));
 
   /* ---------- workshops, events, performances ---------- */
   const shown = (arr) => (arr || []).filter((x) => x.show !== false && x.title);
   const safeUrl = (u) => (/^https?:\/\//i.test(u || "") ? u : "");
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const dt = (s) => (/^\d{4}-\d{2}-\d{2}$/.test(s || "") ? new Date(s + "T00:00:00") : null);
+  const isPast = (x) => { const d = dt(x.date); return !!d && d < today; };
+  const fmt = (s) => { const d = dt(s); return d ? d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : (s || ""); };
+  const byDate = (dir) => (a, b) => ((dt(a.date) || (dir > 0 ? Infinity : -Infinity)) - (dt(b.date) || (dir > 0 ? Infinity : -Infinity))) * dir;
+  const ws = shown(C.workshops).filter((x) => !isPast(x)).sort(byDate(1));
+  const ev = shown(C.events).filter((x) => !isPast(x)).sort(byDate(1));
+  const past = [
+    ...shown(C.performances).map((x) => ({ ...x, kind: "Performance" })),
+    ...shown(C.events).filter(isPast).map((x) => ({ ...x, kind: "Event" })),
+    ...shown(C.workshops).filter(isPast).map((x) => ({ ...x, kind: "Workshop" })),
+  ].sort(byDate(-1));
+
+  // home page: short lists + "view all"
   const pItem = (x, kind) => `
     <article class="p-item">
-      ${x.date ? `<div class="p-date">${esc(x.date)}</div>` : ""}
+      ${x.date ? `<div class="p-date">${esc(fmt(x.date))}</div>` : ""}
       <div class="p-body">
         <b>${esc(x.title)}</b>
-        <small>${[x.place, x.fee && "Fee: " + x.fee].filter(Boolean).map(esc).join(" · ")}</small>
+        <small>${[x.time, x.place, x.fee && "Fee: " + x.fee].filter(Boolean).map(esc).join(" · ")}</small>
         ${x.details ? `<p>${esc(x.details)}</p>` : ""}
         <div class="p-btns">
           <a href="#contact" class="btn btn-red btn-xs" data-open-enquiry data-course="${esc(kind + ": " + x.title)}">${kind === "Workshop" ? "Register" : "Enquire"}</a>
-          ${safeUrl(x.link) ? `<a href="${esc(x.link)}" class="btn btn-outline btn-xs" target="_blank" rel="noopener">Details →</a>` : ""}
+          <a href="events.html#${kind === "Workshop" ? "workshops" : "upcoming"}" class="btn btn-outline btn-xs">Details →</a>
         </div>
       </div>
     </article>`;
   const pEmpty = (text, course, btn) => `<div class="p-empty"><p>${text}</p><a href="#contact" class="btn btn-outline btn-xs" data-open-enquiry data-course="${course}">${btn}</a></div>`;
-  const ws = shown(C.workshops), ev = shown(C.events);
-  $("#workshop-list").innerHTML = ws.length ? ws.map((x) => pItem(x, "Workshop")).join("")
-    : pEmpty("No workshops announced right now. Want one for your school, college or group?", "Workshops", "Ask about workshops");
-  $("#event-list").innerHTML = ev.length ? ev.map((x) => pItem(x, "Event")).join("")
-    : pEmpty("New dates will be announced here soon.", "Upcoming events", "Get event updates");
-  const perfs = shown(C.performances);
-  $("#perf-wrap").hidden = !perfs.length;
-  $("#perf-list").innerHTML = perfs.map((x) => {
+  put("#workshop-list", ws.length ? ws.slice(0, 3).map((x) => pItem(x, "Workshop")).join("")
+    : pEmpty("No workshops announced right now. Want one for your school, college or group?", "Workshops", "Ask about workshops"));
+  put("#event-list", ev.length ? ev.slice(0, 3).map((x) => pItem(x, "Event")).join("")
+    : pEmpty("New dates will be announced here soon.", "Upcoming events", "Get event updates"));
+  const pw = $("#perf-wrap");
+  if (pw) pw.hidden = !past.length;
+  put("#perf-list", past.slice(0, 3).map((x) => {
     const url = safeUrl(x.link);
-    const inner = `<b>${esc(x.title)}</b><small>${[x.date, x.place].filter(Boolean).map(esc).join(" · ")}</small>${url ? `<em>▶ Watch</em>` : ""}`;
+    const inner = `<b>${esc(x.title)}</b><small>${[fmt(x.date), x.place].filter(Boolean).map(esc).join(" · ")}</small>${url ? `<em>▶ Watch</em>` : ""}`;
     return url ? `<a class="perf" href="${esc(url)}" target="_blank" rel="noopener">${inner}</a>` : `<div class="perf">${inner}</div>`;
-  }).join("");
+  }).join(""));
+
+  // events page: full cards
+  const evImg = (x) => (x.photo ? `assets/img/gallery/${encodeURIComponent(x.photo)}-sm.jpg` : "assets/img/gallery/c04-sm.jpg");
+  const evCard = (x, kind, isOld) => {
+    const d = dt(x.date), url = safeUrl(x.link);
+    const dateBadge = d ? `<span class="ev-date"><b>${d.getDate()}</b><small>${d.toLocaleDateString("en-IN", { month: "short" })} ${d.getFullYear()}</small></span>`
+      : x.date ? `<span class="ev-date wide"><small>${esc(x.date)}</small></span>` : `<span class="ev-date wide"><small>Date TBA</small></span>`;
+    const btns = isOld
+      ? (url ? `<a href="${esc(url)}" class="btn btn-red btn-xs" target="_blank" rel="noopener">▶ Watch</a>` : "")
+      : `<a href="#book" class="btn btn-red btn-xs" data-open-enquiry data-course="${esc(kind + ": " + x.title)}">${kind === "Workshop" ? "Register now" : "Book your seat"}</a>` +
+        (url ? `<a href="${esc(url)}" class="btn btn-outline btn-xs" target="_blank" rel="noopener">Details →</a>` : "");
+    return `
+    <article class="ev-card${isOld ? " old" : ""}">
+      <div class="ev-img"><img src="${evImg(x)}" alt="${esc(x.title)}" loading="lazy">${dateBadge}<span class="ev-kind">${esc(kind)}</span></div>
+      <div class="ev-body">
+        <h3>${esc(x.title)}</h3>
+        <p class="ev-meta">${[x.time && "🕒 " + x.time, x.place && "📍 " + x.place].filter(Boolean).map(esc).join("<br>")}</p>
+        ${x.fee && !isOld ? `<p class="ev-fee">Fee: ${esc(x.fee)}</p>` : ""}
+        ${x.details ? `<p class="ev-text">${esc(x.details)}</p>` : ""}
+        ${btns ? `<div class="ev-btns">${btns}</div>` : ""}
+      </div>
+    </article>`;
+  };
+  const evEmpty = (text, course, btn) => `<div class="p-empty ev-empty"><p>${text}</p><a href="#book" class="btn btn-outline btn-xs" data-open-enquiry data-course="${course}">${btn}</a></div>`;
+  put("#ev-upcoming", ev.length ? ev.map((x) => evCard(x, "Event")).join("")
+    : evEmpty("No upcoming events right now – new dates will be announced here soon.", "Upcoming events", "Get event updates"));
+  put("#ev-workshops", ws.length ? ws.map((x) => evCard(x, "Workshop")).join("")
+    : evEmpty("No workshops announced right now. Want one for your school, college or group?", "Workshops", "Ask about workshops"));
+  put("#ev-past", past.length ? past.map((x) => evCard(x, x.kind, true)).join("")
+    : evEmpty("Our past performances will appear here.", "Performance booking", "Book a performance"));
 
   const courseOptions = [...courses.map((c) => c.title), "Personal (One-to-One)", "Performance booking", ...ws.map((x) => "Workshop: " + x.title), "Workshops", ...ev.map((x) => "Event: " + x.title), "Upcoming events", "Not sure yet"];
   $$("[data-course-select]").forEach((sel) => courseOptions.forEach((t) => sel.add(new Option(t, t))));
 
   /* ---------- photos ---------- */
   const photos = (C.photos || []).filter((p) => p.show !== false);
-  $("#photo-track").innerHTML = photos.map((p, i) =>
-    `<button class="photo" data-i="${i}" aria-label="Open photo: ${esc(p.alt)}"><img src="assets/img/gallery/${esc(p.id)}-sm.jpg" alt="${esc(p.alt)}"${p.w ? ` width="${+p.w}" height="${+p.h}"` : ""} loading="lazy"></button>`).join("");
+  put("#photo-track", photos.map((p, i) =>
+    `<button class="photo" data-i="${i}" aria-label="Open photo: ${esc(p.alt)}"><img src="assets/img/gallery/${esc(p.id)}-sm.jpg" alt="${esc(p.alt)}"${p.w ? ` width="${+p.w}" height="${+p.h}"` : ""} loading="lazy"></button>`).join(""));
 
   /* ---------- videos ---------- */
   const videos = (C.videos || []).filter((v) => v.show !== false);
   const igCode = (u) => (String(u || "").match(/instagram\.com\/(?:[\w.]+\/)?(?:reel|reels|p|tv)\/([\w-]+)/) || [])[1];
   const cap = (v) => (v.title || v.caption ? `<figcaption><b>${esc(v.title)}</b><small>${esc(v.caption)}</small></figcaption>` : "");
-  $("#video-track").innerHTML = videos.map((v) => {
+  put("#video-track", videos.map((v) => {
     const code = igCode(v.instagram);
     if (v.instagram) return code ? `
     <figure class="vcard ig"><iframe src="https://www.instagram.com/reel/${code}/embed/" title="${esc(v.title || "Instagram reel")}" loading="lazy" allowtransparency="true" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" scrolling="no"></iframe>${cap(v)}</figure>` : "";
     return `
     <figure class="vcard"><video src="assets/video/${esc(v.src)}.mp4" poster="assets/img/${esc(v.src)}-poster.jpg" preload="none" playsinline controls></video>${cap(v)}</figure>`;
-  }).join("");
+  }).join(""));
 
   /* ---------- reviews ---------- */
   const reviews = (C.reviews || []).filter((r) => r.show !== false && r.text);
-  $("#review-grid").innerHTML = reviews.length
+  put("#review-grid", reviews.length
     ? reviews.map((r) => `<div class="review"><span class="avatar">${esc((r.name || "?").trim()[0].toUpperCase())}</span><p>${esc(r.text)}</p><b>${esc(r.name)}</b>${r.batch ? ` <small>· ${esc(r.batch)}</small>` : ""}</div>`).join("")
-    : [1, 2, 3].map(() => `<div class="review"><span class="avatar">★</span><p class="ph">[Add a review in the admin panel.]</p><b>[Name]</b></div>`).join("");
+    : [1, 2, 3].map(() => `<div class="review"><span class="avatar">★</span><p class="ph">[Add a review in the admin panel.]</p><b>[Name]</b></div>`).join(""));
 
   /* ---------- photos chosen in the admin panel ---------- */
   const IMG = C.images || {};
@@ -200,7 +245,7 @@ function render(C) {
   const slides = (list) => (Array.isArray(list) ? list.filter((x) => x.show !== false && x.id) : null);
   const hero = slides(IMG.hero);
   const hv = IMG.heroVideo;
-  if (hv && hv.show !== false && /^[\w\/.-]+\.mp4$/.test(hv.src || "")) {
+  if (!$(".hero-slides")) {} else if (hv && hv.show !== false && /^[\w\/.-]+\.mp4$/.test(hv.src || "")) {
     // looping banner video (muted so browsers allow autoplay)
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     $(".hero").classList.add("has-video");
@@ -216,8 +261,8 @@ function render(C) {
   }
   const join = slides(IMG.join);
   if (join && join.length) {
-    $("[data-slider]").innerHTML = join.map((x, i) => `<img src="${gal(x.id)}" alt="${esc(altOf(x.id))}"${i ? "" : ' class="is-on"'}>`).join("") + `<div class="slider-dots"></div>`;
-  } else if (join) $("[data-slider]").hidden = true;
+    put("[data-slider]", join.map((x, i) => `<img src="${gal(x.id)}" alt="${esc(altOf(x.id))}"${i ? "" : ' class="is-on"'}>`).join("") + `<div class="slider-dots"></div>`);
+  } else if (join && $("[data-slider]")) $("[data-slider]").hidden = true;
 
   /* ---------- parts switched off in the admin panel ---------- */
   const P = C.parts || {};
@@ -240,9 +285,10 @@ function setupInteractions(C, photos, LINKS) {
   $$("#menu a").forEach((a) => a.addEventListener("click", () => document.body.classList.remove("menu-open")));
 
   // active nav link
-  const sections = $$("#menu a:not([hidden])").map((a) => $(a.getAttribute("href"))).filter(Boolean);
+  const sections = $$("#menu a:not([hidden])").filter((a) => a.getAttribute("href").startsWith("#")).map((a) => $(a.getAttribute("href"))).filter(Boolean);
   window.addEventListener("scroll", () => {
     $(".header").classList.toggle("scrolled", scrollY > 40);
+    if (!sections.length) return;
     let cur = sections[0];
     sections.forEach((s) => { if (s.getBoundingClientRect().top < 140) cur = s; });
     $$("#menu a").forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + cur.id));
@@ -288,7 +334,7 @@ function setupInteractions(C, photos, LINKS) {
   {
     const items = $$(".mc-item");
     let i = 0;
-    setInterval(() => {
+    if (items.length > 1) setInterval(() => {
       items[i].classList.remove("is-on");
       i = (i + 1) % items.length;
       items[i].classList.add("is-on");
@@ -308,14 +354,16 @@ function setupInteractions(C, photos, LINKS) {
   }));
 
   // lightbox
-  const lb = $("#lightbox"), lbImg = $("img", lb);
+  const lb = $("#lightbox") || document.createElement("div"), lbImg = $("img", lb) || document.createElement("img");
   let cur = 0;
   const show = (i) => { cur = (i + photos.length) % photos.length; lbImg.src = `assets/img/gallery/${photos[cur].id}.jpg`; lbImg.alt = photos[cur].alt; };
   $$(".photo").forEach((p) => p.addEventListener("click", () => { show(+p.dataset.i); lb.hidden = false; document.body.classList.add("locked"); }));
   const closeLb = () => { lb.hidden = true; document.body.classList.remove("locked"); };
-  $(".lb-x", lb).onclick = closeLb;
-  $(".lb-prev", lb).onclick = () => show(cur - 1);
-  $(".lb-next", lb).onclick = () => show(cur + 1);
+  if ($(".lb-x", lb)) {
+    $(".lb-x", lb).onclick = closeLb;
+    $(".lb-prev", lb).onclick = () => show(cur - 1);
+    $(".lb-next", lb).onclick = () => show(cur + 1);
+  } else lb.hidden = true;
   lb.addEventListener("click", (e) => { if (e.target === lb) closeLb(); });
 
   // Instagram embeds report their height – resize each frame to fit
@@ -427,8 +475,8 @@ function setupInteractions(C, photos, LINKS) {
   const revIO = new IntersectionObserver((es) => es.forEach((e) => {
     if (e.isIntersecting) { e.target.classList.add("in"); revIO.unobserve(e.target); }
   }), { threshold: 0.12 });
-  $$(".head-center, .about-copy, .collage, .course, .ex-card, .portal-col, .perf, .why-card, .stat, .join-copy, .join-slider, .form-card, .contact-img, .live-box, .review")
+  $$(".head-center, .about-copy, .collage, .course, .ex-card, .portal-col, .perf, .ev-card, .why-card, .stat, .join-copy, .join-slider, .form-card, .contact-img, .live-box, .review")
     .forEach((el) => { el.classList.add("rv"); revIO.observe(el); });
 
-  $("#year").textContent = new Date().getFullYear();
+  const yr = $("#year"); if (yr) yr.textContent = new Date().getFullYear();
 }

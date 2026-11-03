@@ -115,6 +115,7 @@
   .lib-body .bar { padding: 6px 0 0; }
   .lib-body .bar small { color: var(--muted); font-size: .72rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .icon-btn:disabled { opacity: .35; cursor: default; }
+  .past-note { margin: 0 0 10px; padding: 6px 10px; border-radius: 8px; background: #fff4e0; color: #9a5b00; font-size: .8rem; }
   /* photo picker */
   .dialog.picker { width: min(920px, 100%); height: min(720px, calc(100vh - 32px)); display: flex; flex-direction: column; gap: 12px; }
   .pk-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -320,14 +321,15 @@ const MODULES = {
     images: [["exploreClasses", "Regular Classes card"], ["explorePerformances", "Performances card"], ["exploreEvents", "Upcoming Events card"], ["exploreWorkshops", "Workshops card"]],
     parts: [["explore.classes", "Regular Classes card"], ["explore.performances", "Performances card"], ["explore.events", "Upcoming Events card"], ["explore.workshops", "Workshops card"]],
     texts: [["upcomingEvents", "Text on the Upcoming Events card", 2]] },
-  workshops: { icon: "🧑‍🏫", label: "Workshops", section: "events", sectionLabel: "Workshops & Events section",
-    hint: "Upcoming workshops. Visitors press Register to send an enquiry. Switch off or delete a workshop once it is over.",
-    parts: [["events.workshops", "Workshops column"]] },
-  events: { icon: "📅", label: "Events", section: "events", sectionLabel: "Workshops & Events section",
-    hint: "Upcoming shows, festivals and programmes. Switch off or delete an event once it is over.",
-    parts: [["events.events", "Events column"]] },
-  live: { icon: "🎭", label: "Performance banner", section: "live",
-    hint: "“Bring Kathak to your event” banner and the list of recent performances.",
+  events: { icon: "📅", label: "Events", section: "events", sectionLabel: "“Workshops & Events” section on the home page",
+    hint: "Upcoming shows, festivals and programmes – shown on the Events page (sangeetmanjari.me/events.html) and the next 3 on the home page. Visitors press “Book your seat” to register; registrations arrive in your Google Sheet, email and WhatsApp. When the date has passed, an event moves to “Past performances” by itself.",
+    parts: [["events.events", "Home page – events column"], ["page.upcoming", "Events page – Upcoming events"], ["page.workshops", "Events page – Workshops"], ["page.past", "Events page – Past performances"], ["page.book", "Events page – “Bring Kathak to your event”"], ["page.jump", "Events page – quick links under the title"]],
+    texts: [["eventsIntro", "Line under the Events page title", 2]] },
+  workshops: { icon: "🧑‍🏫", label: "Workshops", section: "events", sectionLabel: "“Workshops & Events” section on the home page",
+    hint: "Workshops shown on the Events page and the next 3 on the home page. Visitors press “Register now”; registrations arrive in your Google Sheet, email and WhatsApp. Past workshops move to “Past performances” by themselves.",
+    parts: [["events.workshops", "Home page – workshops column"]] },
+  live: { icon: "🎭", label: "Performances", section: "live", sectionLabel: "“Bring Kathak to your event” banner on the home page",
+    hint: "Past performances (shown on the Events page under “Past performances”, latest 3 on the home page) and the “Bring Kathak to your event” banner. Past events and workshops are added to that list automatically.",
     images: [["live", "Banner photo"]], flip: true,
     parts: [["live.watch", "“Watch Performances” button"], ["live.tags", "“Available for events…” line"], ["live.performances", "Recent performances list"]] },
   why: { icon: "✨", label: "What sets us apart", section: "why",
@@ -779,7 +781,7 @@ const EXTRA = {
   },
   workshops(box) { listEditor(box, "workshops", WS_FIELDS, "workshop"); },
   events(box) { listEditor(box, "events", WS_FIELDS, "event"); },
-  live(box) { box.innerHTML = `<h3 style="margin:20px 0 4px">Recent performances</h3><p class="hint">Add a YouTube, Instagram or Drive link so visitors can watch.</p><div id="perf-box"></div>`; listEditor($("#perf-box"), "performances", PERF_FIELDS, "performance"); },
+  live(box) { box.innerHTML = `<h3 style="margin:20px 0 4px">Past performances</h3><p class="hint">Add a photo and a YouTube, Instagram or Drive link so visitors can watch.</p><div id="perf-box"></div>`; listEditor($("#perf-box"), "performances", PERF_FIELDS, "performance"); },
   photos(box) {
     box.innerHTML = `<div class="card"><h3>Photos in the gallery</h3>
       <p><button class="btn primary" id="mo-add">+ Add photos</button> <button class="btn sm" id="all-on">Show all</button> <button class="btn sm" id="all-off">Hide all</button></p>
@@ -874,17 +876,27 @@ const EXTRA = {
   },
 };
 
-const WS_FIELDS = [["title", "Title", "e.g. Abhinaya workshop"], ["date", "Date", "e.g. 14 Dec 2026"], ["place", "Venue / mode", "e.g. At the Kendra, Jaipur · or Online"], ["fee", "Fee (optional)", "e.g. ₹500"], ["details", "Details", "Timings, who it is for, what to bring…", true], ["link", "Link (optional) – registration form, poster or map", "https://…", true]];
-const PERF_FIELDS = [["title", "Title", "e.g. Bharat Utsav"], ["date", "Date", "e.g. 9 Aug 2026"], ["place", "Venue", "e.g. Jawahar Kala Kendra, Jaipur", true], ["link", "Video link (optional)", "https://youtube.com/… or https://instagram.com/…", true]];
+const WS_FIELDS = [["title", "Title", "e.g. Abhinaya workshop"], ["date", "Date", "", false, "date"], ["time", "Time (optional)", "e.g. 6:00 PM – 8:00 PM"], ["fee", "Fee (optional)", "e.g. ₹500 · Free entry"], ["place", "Venue / mode", "e.g. Jawahar Kala Kendra, Jaipur · or Online", true], ["photo", "Photo / poster", "", true, "photo"], ["details", "Details", "What it is, who it is for, what to bring…", true, "textarea"], ["link", "Link (optional) – registration form, poster or map", "https://…", true]];
+const PERF_FIELDS = [["title", "Title", "e.g. Bharat Utsav"], ["date", "Date", "", false, "date"], ["place", "Venue", "e.g. Jawahar Kala Kendra, Jaipur", true], ["photo", "Photo", "", true, "photo"], ["details", "A line about it (optional)", "e.g. Tarana and Krishna vandana with students", true, "textarea"], ["link", "Video link (optional)", "https://youtube.com/… or https://instagram.com/…", true]];
+const isoDate = (v) => /^\d{4}-\d{2}-\d{2}$/.test(v || "");
+const pastItem = (x) => { if (!isoDate(x.date)) return false; const t = new Date(); t.setHours(0, 0, 0, 0); return new Date(x.date + "T00:00:00") < t; };
 function listEditor(box, key, fields, noun) {
   const list = C[key];
+  const field = (x, [k, l, ph, full, type]) => {
+    if (type === "textarea") return `<label class="f full">${l}<textarea data-k="${k}" rows="2" placeholder="${esc(ph)}">${esc(x[k])}</textarea></label>`;
+    if (type === "date") return `<label class="f">${l}<input type="date" data-k="${k}" value="${isoDate(x[k]) ? esc(x[k]) : ""}">${x[k] && !isoDate(x[k]) ? `<small class="hint">Was: “${esc(x[k])}” – pick the date again</small>` : ""}</label>`;
+    if (type === "photo") return `<div class="f full"><div class="slot" data-pslot="${k}" style="border-top:0;padding:0">
+        <img src="${x[k] ? esc(thumb(x[k])) : ""}" alt="" ${x[k] ? "" : "hidden"}>
+        <div class="grow"><b>${l}</b><small>${x[k] ? esc(altOf(x[k]) || x[k]) : "No photo – a ghungroo illustration is shown"}</small></div>
+        <button class="btn sm" data-pick>${x[k] ? "Change" : "Choose / upload"}</button>${x[k] ? `<button class="icon-btn" data-unpick title="Remove photo">✕</button>` : ""}</div></div>`;
+    return `<label class="f ${full ? "full" : ""}">${l}<input data-k="${k}" value="${esc(x[k])}" placeholder="${esc(ph)}"></label>`;
+  };
   box.innerHTML = (list.length ? "" : `<div class="card"><p class="hint" style="margin:0">Nothing added yet. The site shows a friendly “coming soon” note with an enquiry button.</p></div>`) +
     list.map((x, i) => `
     <div class="card ${x.show === false ? "off" : ""}" data-i="${i}">
+      ${pastItem(x) && key !== "performances" ? `<p class="past-note">⏳ This date has passed – it now shows under “Past performances”.</p>` : ""}
       <div class="item-head" style="align-items:flex-start">
-        <div class="grow grid2">` + fields.map(([k, l, ph, full]) => k === "details"
-          ? `<label class="f full">${l}<textarea data-k="${k}" rows="2" placeholder="${esc(ph)}">${esc(x[k])}</textarea></label>`
-          : `<label class="f ${full ? "full" : ""}">${l}<input data-k="${k}" value="${esc(x[k])}" placeholder="${esc(ph)}"></label>`).join("") + `
+        <div class="grow grid2">` + fields.map((f) => field(x, f)).join("") + `
         </div>
         <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
           ${sw(x.show !== false, `data-show aria-label="Show ${noun}"`)}
@@ -899,11 +911,16 @@ function listEditor(box, key, fields, noun) {
     $("[data-up]", card).onclick = () => move(list, i, -1);
     $("[data-down]", card).onclick = () => move(list, i, 1);
     $("[data-del]", card).onclick = () => { if (confirm(`Delete this ${noun}?`)) { list.splice(i, 1); changed(); renderTab(); } };
-    $$("[data-k]", card).forEach((inp) => inp.oninput = () => { x[inp.dataset.k] = inp.value.trim(); changed(); });
+    $$("[data-k]", card).forEach((inp) => inp.oninput = inp.onchange = () => { x[inp.dataset.k] = inp.value.trim(); changed(); });
+    $$("[data-pslot]", card).forEach((sl) => {
+      const k = sl.dataset.pslot;
+      $("[data-pick]", sl).onclick = () => openPicker({ title: "Choose a photo or poster", current: x[k], onPick: ([id]) => { x[k] = id; changed(); renderTab(); } });
+      const un = $("[data-unpick]", sl); if (un) un.onclick = () => { x[k] = ""; changed(); renderTab(); };
+    });
   });
   $("[data-add-item]", box).onclick = () => {
-    list.push(Object.fromEntries([["show", true], ...fields.map(([k]) => [k, ""])]));
-    changed(); renderTab(); const cards = $$(".card[data-i]", box.isConnected ? box : $("#main")); $("input", cards[cards.length - 1])?.focus();
+    list.unshift(Object.fromEntries([["show", true], ...fields.map(([k]) => [k, ""])]));
+    changed(); renderTab(); $("#main .card[data-i] input")?.focus();
   };
 }
 function move(arr, i, d) { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; changed(); renderTab(); }

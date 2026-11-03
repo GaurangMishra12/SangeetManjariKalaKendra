@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body>
 
@@ -41,9 +41,9 @@
     <a href="#about">About</a>
     <a href="#guru">Guru</a>
     <a href="#courses">Courses</a>
-    <a href="#events">Events</a>
+    <a href="events.html">Events</a>
     <a href="#gallery">Gallery</a>
-    <a href="#performances">Performances</a>
+    <a href="events.html#past">Performances</a>
     <a href="#contact">Contact</a>
   </nav>
   <div class="header-right">
@@ -191,9 +191,9 @@
   </div>
   <div class="explore-grid">
     <a class="ex-card" href="#courses" data-part="explore.classes"><img data-img="exploreClasses" data-size="sm" src="assets/img/gallery/7766-sm.jpg" alt="" loading="lazy"><span class="ex-ico">♪</span><b>Regular Classes</b><p>Weekly batches for kids, beginners, intermediate and advanced students.</p><em>Explore more</em></a>
-    <a class="ex-card" href="#performances" data-part="explore.performances"><img data-img="explorePerformances" data-size="sm" src="assets/img/gallery/r01-sm.jpg" alt="" loading="lazy"><span class="ex-ico">★</span><b>Performances</b><p>Students on stage at festivals, programmes and the annual show.</p><em>Watch videos</em></a>
-    <a class="ex-card" href="#events" data-part="explore.events"><img data-img="exploreEvents" data-size="sm" src="assets/img/gallery/7828-sm.jpg" alt="" loading="lazy"><span class="ex-ico">◆</span><b>Upcoming Events</b><p data-text="upcomingEvents"></p><em>See events</em></a>
-    <a class="ex-card" href="#events" data-part="explore.workshops"><img data-img="exploreWorkshops" data-size="sm" src="assets/img/gallery/7795-sm.jpg" alt="" loading="lazy"><span class="ex-ico">✦</span><b>Workshops</b><p>Short intensives on abhinaya, layakari and choreography for schools and groups.</p><em>See workshops</em></a>
+    <a class="ex-card" href="events.html#past" data-part="explore.performances"><img data-img="explorePerformances" data-size="sm" src="assets/img/gallery/r01-sm.jpg" alt="" loading="lazy"><span class="ex-ico">★</span><b>Performances</b><p>Students on stage at festivals, programmes and the annual show.</p><em>See performances</em></a>
+    <a class="ex-card" href="events.html#upcoming" data-part="explore.events"><img data-img="exploreEvents" data-size="sm" src="assets/img/gallery/7828-sm.jpg" alt="" loading="lazy"><span class="ex-ico">◆</span><b>Upcoming Events</b><p data-text="upcomingEvents"></p><em>See events</em></a>
+    <a class="ex-card" href="events.html#workshops" data-part="explore.workshops"><img data-img="exploreWorkshops" data-size="sm" src="assets/img/gallery/7795-sm.jpg" alt="" loading="lazy"><span class="ex-ico">✦</span><b>Workshops</b><p>Short intensives on abhinaya, layakari and choreography for schools and groups.</p><em>See workshops</em></a>
   </div>
 </section>
 
@@ -214,6 +214,7 @@
       <div class="p-list" id="event-list"></div>
     </div>
   </div>
+  <p class="center-link"><a href="events.html" class="btn btn-red btn-sm">View all events &amp; workshops →</a></p>
 </section>
 
 <!-- ===== LIVE PERFORMANCE BANNER ===== -->
@@ -234,6 +235,7 @@
   <div class="perf-wrap" id="perf-wrap" data-part="live.performances" hidden>
     <h3 class="perf-head">Recent Performances</h3>
     <div class="perf-list" id="perf-list"></div>
+    <p class="center-link"><a href="events.html#past" class="btn btn-outline btn-sm">See all performances →</a></p>
   </div>
 </section>
 
@@ -314,7 +316,7 @@
       <p class="f-tag">Preserving Tradition,<br>Nurturing Dancers.</p>
       <div class="socials" data-socials data-part="footer.socials"></div>
     </div>
-    <div data-part="footer.links"><h4>Quick Links</h4><a href="#top">Home</a><a href="#about">About Us</a><a href="#courses">Courses</a><a href="#events">Workshops &amp; Events</a><a href="#gallery">Gallery</a><a href="#performances">Performances</a><a href="#contact">Contact</a></div>
+    <div data-part="footer.links"><h4>Quick Links</h4><a href="#top">Home</a><a href="#about">About Us</a><a href="#courses">Courses</a><a href="events.html">Workshops &amp; Events</a><a href="#gallery">Gallery</a><a href="events.html#past">Performances</a><a href="#contact">Contact</a></div>
     <div data-part="footer.courses"><h4>Courses</h4><div id="footer-courses"></div></div>
     <div><h4>Contact Info</h4>
       <p class="f-line">📍 <span data-site="address"></span></p>
@@ -365,6 +367,6 @@
   <button class="lb-next" aria-label="Next">›</button>
 </div>
 
-<script src="script.js?v=10"></script>
+<script src="script.js?v=11"></script>
 </body>
 </html>
