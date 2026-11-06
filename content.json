@@ -53,7 +53,7 @@
     "exploreWorkshops": "m13",
     "live": "7836",
     "liveFlip": true,
-    "contact": "umw572b6i60s",
+    "contact": "umw579e5enmq",
     "popup": "7836",
     "heroVideo": {
       "show": true,
@@ -391,6 +391,12 @@
   ],
   "reviews": [],
   "library": [
+    {
+      "id": "umw579e5enmq",
+      "alt": "1000484027",
+      "w": 599,
+      "h": 800
+    },
     {
       "id": "umw572b6i60s",
       "alt": "1000484020",
