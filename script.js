@@ -105,32 +105,23 @@ function render(C) {
 
   /* ---------- courses ---------- */
   const courses = (C.courses || []).filter((c) => c.show !== false);
-  const price = (v) => (v ? "₹" + esc(v) : "₹ —");
-  const priceRow = (c) => {
-    const hasPersonal = c.personal || c.personalNote;
-    const cols = [];
-    if (c.group || c.groupNote || !hasPersonal) cols.push([hasPersonal ? "Group Classes" : "Monthly Fee", c.group, c.groupNote]);
-    if (hasPersonal) cols.push(["Personal (One-on-One)", c.personal, c.personalNote]);
-    return `<div class="price-row${cols.length === 1 ? " one" : ""}">` + cols.map(([l, v, note]) =>
-      `<div><small class="pr-label">${l}</small><b class="${v ? "" : "ph"}">${price(v)}<i>/month</i></b><small>${esc(note)}</small></div>`).join("") + `</div>`;
-  };
-  put("#course-grid", courses.map((c) => `
-    <article class="course" data-cat="${esc(c.cat)}">
-      <div class="course-img"><img src="assets/img/gallery/${esc(c.img)}-sm.jpg" alt="" loading="lazy"><span class="course-badge">${esc(c.badge)}</span></div>
-      <div class="course-body">
+  const fee = (v) => (v ? "₹" + esc(v) : "Fee on request");
+  put("#course-grid", courses.map((c, i) => `
+    <li class="level" data-cat="${esc(c.cat)}">
+      <span class="level-step" aria-hidden="true">${i + 1}</span>
+      <div class="level-img"><img src="assets/img/gallery/${esc(c.img)}-sm.jpg" alt="" loading="lazy"></div>
+      <div class="level-body">
+        ${c.badge ? `<p class="level-tag">${esc(c.badge)}</p>` : ""}
         <h3>${esc(c.title)}</h3>
-        ${c.desc ? `<p class="course-desc">${esc(c.desc)}</p>` : ""}
-        ${c.duration ? `<p class="course-dur">🗓 Course duration: ${esc(c.duration)}</p>` : ""}
-        ${priceRow(c)}
-        <div class="course-btns">
-          <a href="#contact" class="btn btn-red btn-sm" data-open-enquiry data-course="${esc(c.title)}">Enroll now</a>
-          <a href="#contact" class="btn btn-outline btn-sm" data-open-enquiry data-course="${esc(c.title)}">Explore →</a>
-        </div>
+        ${c.desc ? `<p>${esc(c.desc)}</p>` : ""}
+        <p class="level-meta">${[c.groupNote, c.duration && "Duration: " + c.duration].filter(Boolean).map(esc).join(" · ")}</p>
       </div>
-    </article>`).join(""));
-  // only show filter tabs that have courses
-  const cats = new Set(courses.map((c) => c.cat));
-  $$("[data-filters] button").forEach((b) => { b.hidden = b.dataset.f !== "all" && !cats.has(b.dataset.f); });
+      <div class="level-fee">
+        <b class="${c.group ? "" : "ph"}">${fee(c.group)}</b><small>${c.group ? "per month" : ""}</small>
+        ${c.personal ? `<small>Private: ₹${esc(c.personal)} / month${c.personalNote ? " · " + esc(c.personalNote) : ""}</small>` : ""}
+        <a href="#contact" class="btn btn-solid btn-sm" data-open-enquiry data-course="${esc(c.title)}">Join this level</a>
+      </div>
+    </li>`).join(""));
   const home = document.body.dataset.page === "events" ? "index.html" : "";
   put("#footer-courses", courses.map((c) => `<a href="${home}#courses">${esc(c.title)}</a>`).join(""));
 
@@ -207,7 +198,7 @@ function render(C) {
   put("#ev-past", past.length ? past.map((x) => evCard(x, x.kind, true)).join("")
     : evEmpty("Our past performances will appear here.", "Performance booking", "Book a performance"));
 
-  const courseOptions = [...courses.map((c) => c.title), "Personal (One-to-One)", "Performance booking", ...ws.map((x) => "Workshop: " + x.title), "Workshops", ...ev.map((x) => "Event: " + x.title), "Upcoming events", "Not sure yet"];
+  const courseOptions = [...courses.map((c) => c.title), "Private lessons", "Online classes", "Trial class", "Performance booking", ...ws.map((x) => "Workshop: " + x.title), "Workshops", ...ev.map((x) => "Event: " + x.title), "Upcoming events", "Not sure yet"];
   $$("[data-course-select]").forEach((sel) => courseOptions.forEach((t) => sel.add(new Option(t, t))));
 
   /* ---------- photos ---------- */
@@ -239,7 +230,7 @@ function render(C) {
   const altOf = (id) => (C.library || []).find((p) => p.id === id)?.alt || "";
   $$("[data-img]").forEach((el) => {
     const id = IMG[el.dataset.img];
-    if (id) { el.src = gal(id, el.dataset.size === "sm"); if (!el.closest(".mentor, .live-box, .modal-box")) el.alt = altOf(id); }
+    if (id) { el.src = gal(id, el.dataset.size === "sm"); if (!el.closest(".private, .invite, .modal-box")) el.alt = altOf(id); }
   });
   $("#live-img")?.classList.toggle("flip", !!IMG.liveFlip);
   const slides = (list) => (Array.isArray(list) ? list.filter((x) => x.show !== false && x.id) : null);
@@ -459,8 +450,8 @@ function setupInteractions(C, photos, LINKS) {
         "Namaste! I'd like to enquire about Kathak classes.",
         "Name: " + d.get("name"),
         "Phone: " + d.get("phone"),
-        d.get("mode") && "Class mode: " + d.get("mode"),
-        d.get("course") && "Course: " + d.get("course"),
+        d.get("mode") && "Learn: " + d.get("mode"),
+        d.get("course") && "Interested in: " + d.get("course"),
         d.get("message") && "Message: " + d.get("message"),
       ].filter(Boolean).join("\n");
       window.open(LINKS.whatsappLink + "?text=" + encodeURIComponent(lines), "_blank", "noopener");
@@ -475,7 +466,7 @@ function setupInteractions(C, photos, LINKS) {
   const revIO = new IntersectionObserver((es) => es.forEach((e) => {
     if (e.isIntersecting) { e.target.classList.add("in"); revIO.unobserve(e.target); }
   }), { threshold: 0.12 });
-  $$(".head-center, .about-copy, .collage, .course, .ex-card, .portal-col, .perf, .ev-card, .why-card, .stat, .join-copy, .join-slider, .form-card, .contact-img, .live-box, .review")
+  $$(".sec-head, .story-text, .story-arches, .level, .private, .online-copy, .way-list li, .stat, .portal-col, .perf, .ev-card, .invite-photo, .invite-copy, .reach-info, .reach-form, .review, .guru-photo, .guru-copy")
     .forEach((el) => { el.classList.add("rv"); revIO.observe(el); });
 
   const yr = $("#year"); if (yr) yr.textContent = new Date().getFullYear();
