@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=27">
+  <link rel="stylesheet" href="styles.css?v=28">
 </head>
 <body>
 <div class="progress" aria-hidden="true"></div>
@@ -94,40 +94,50 @@
   <div class="mq-row mq-en"><div class="mq-track"><span>Footwork</span><i>·</i><span>Spins</span><i>·</i><span>Mudras</span><i>·</i><span>Expression</span><i>·</i><span>Rhythm</span><i>·</i><span>Bols</span><i>·</i><span>Tihai</span><i>·</i><span>Aamad</span><i>·</i><span>Tarana</span><i>·</i><span>Footwork</span><i>·</i><span>Spins</span><i>·</i><span>Mudras</span><i>·</i><span>Expression</span><i>·</i><span>Rhythm</span><i>·</i><span>Bols</span><i>·</i><span>Tihai</span><i>·</i><span>Aamad</span><i>·</i><span>Tarana</span><i>·</i></div></div>
 </div>
 
-<!-- ===== OUR STORY ===== -->
+<!-- ===== OUR STORY (scroll story) ===== -->
 <section class="story" id="about" data-section="about">
-  <div class="wrap story-grid">
-    <div class="bento">
-      <figure class="tile t-main"><img data-img="aboutTall" data-speed="-0.035" src="assets/img/gallery/7768.jpg" alt="" loading="lazy"></figure>
-      <figure class="tile t-a"><img data-img="aboutA" data-size="sm" data-speed="-0.03" src="assets/img/gallery/7809-sm.jpg" alt="" loading="lazy"></figure>
-      <div class="tile t-bol" data-part="about.badge">
-        <span class="ico" data-ico="tabla"></span>
-        <b lang="hi">धा धिं धिं धा</b>
-        <small>Teentaal – the first rhythm every student learns</small>
-      </div>
-      <figure class="tile t-b"><img data-img="aboutB" data-size="sm" data-speed="-0.03" src="assets/img/gallery/7726-sm.jpg" alt="" loading="lazy"></figure>
-      <div class="tile t-live">
-        <p class="live-dot"><span class="dot"></span> Admissions open</p>
-        <b>Batches online &amp; in Jaipur</b>
-        <a href="#courses" class="text-link">See levels →</a>
+  <div class="wrap scrolly">
+    <div class="stage-col">
+      <div class="stage" data-active="0">
+        <div class="stage-deck">
+          <figure class="card" data-i="0"><img data-img="aboutTall" src="assets/img/gallery/7768.jpg" alt=""><figcaption lang="hi">कथा</figcaption></figure>
+          <figure class="card" data-i="1" data-part="about.features"><img data-img="aboutA" src="assets/img/gallery/7809.jpg" alt=""><figcaption lang="hi">तत्कार</figcaption></figure>
+          <figure class="card" data-i="2" data-part="about.features"><img data-img="aboutB" src="assets/img/gallery/7726.jpg" alt=""><figcaption lang="hi">अभिनय</figcaption></figure>
+          <div class="card card-taal" data-i="3" data-part="about.badge">
+            <div class="taal-head"><span class="ico" data-ico="tabla"></span><div><b lang="hi">तीनताल</b><small>Teentaal · 16 beats · 4 vibhags</small></div></div>
+            <div class="taal-grid"><span class="beat vib"><em>X</em><b lang="hi">धा</b></span><span class="beat"><b lang="hi">धिं</b></span><span class="beat"><b lang="hi">धिं</b></span><span class="beat"><b lang="hi">धा</b></span><span class="beat vib"><em>2</em><b lang="hi">धा</b></span><span class="beat"><b lang="hi">धिं</b></span><span class="beat"><b lang="hi">धिं</b></span><span class="beat"><b lang="hi">धा</b></span><span class="beat vib"><em>0</em><b lang="hi">धा</b></span><span class="beat"><b lang="hi">तिं</b></span><span class="beat"><b lang="hi">तिं</b></span><span class="beat"><b lang="hi">ता</b></span><span class="beat vib"><em>3</em><b lang="hi">ता</b></span><span class="beat"><b lang="hi">धिं</b></span><span class="beat"><b lang="hi">धिं</b></span><span class="beat"><b lang="hi">धा</b></span></div>
+            <p class="taal-note"><em>X</em> sam &nbsp; <em>0</em> khali &nbsp; <em>2</em><em>3</em> tali</p>
+          </div>
+        </div>
+        <div class="stage-hud">
+          <span class="hud-count"><b class="hud-now">01</b> / <span class="hud-total">04</span></span>
+          <span class="hud-rail"><i></i></span>
+        </div>
       </div>
     </div>
-    <div class="story-text">
-      <p class="label"><span class="ico" data-ico="ghungroo"></span>Our story</p>
-      <h2><span class="deva" lang="hi">कथा कहे सो कथक</span>The dance that tells a story</h2>
-      <p class="lead" data-text="aboutText"></p>
-      <div class="learn" data-part="about.features">
-        <h3>What you will learn</h3>
-        <ul class="learn-list">
-          <li><b lang="hi">तत्कार</b><span>Tatkar – footwork and rhythm</span></li>
-          <li><b lang="hi">चक्कर</b><span>Chakkar – spins with balance</span></li>
-          <li><b lang="hi">हस्तक</b><span>Hastak – hands and mudras</span></li>
-          <li><b lang="hi">अभिनय</b><span>Abhinaya – expression</span></li>
-          <li><b lang="hi">लयकारी</b><span>Layakari – play with tempo</span></li>
-          <li><b lang="hi">पढ़न्त</b><span>Padhant – reciting the bols</span></li>
-        </ul>
-      </div>
-      <a href="#why" class="text-link" data-part="about.link">How we teach →</a>
+    <div class="steps">
+      <article class="step" data-step="0">
+        <p class="label"><span class="ico" data-ico="ghungroo"></span>Our story</p>
+        <h2><span class="deva" lang="hi">कथा कहे सो कथक</span>The dance that tells a story</h2>
+        <p class="lead" data-text="aboutText"></p>
+        <p class="scroll-hint">Scroll to walk through a Kathak class <span>↓</span></p>
+      </article>
+      <article class="step" data-step="1" data-part="about.features">
+        <p class="step-no">02 — Footwork &amp; spins</p>
+        <h3><span class="deva" lang="hi">तत्कार · चक्कर</span>Feet that keep time</h3>
+        <p>Tatkar builds clean, even footwork that lands exactly on the beat. Chakkar adds fast spins with balance and a steady finish on sam – the first beat of the cycle.</p>
+      </article>
+      <article class="step" data-step="2" data-part="about.features">
+        <p class="step-no">03 — Hands &amp; expression</p>
+        <h3><span class="deva" lang="hi">हस्तक · अभिनय</span>Telling the story</h3>
+        <p>Hastak and mudras shape the lines of the body, and abhinaya brings a story alive in the eyes and face – Krishna's mischief, Radha's longing, a festival in the village.</p>
+      </article>
+      <article class="step" data-step="3" data-part="about.badge">
+        <p class="step-no">04 — Rhythm &amp; recitation</p>
+        <h3><span class="deva" lang="hi">लयकारी · पढ़न्त</span>Living inside the taal</h3>
+        <p>Students recite the bols aloud before they dance them and learn to play with tempo. Watch teentaal's sixteen beats move around the cycle – clap on X, 2 and 3, wave on 0.</p>
+        <a href="#why" class="text-link" data-part="about.link">How we teach →</a>
+      </article>
     </div>
   </div>
 </section>
@@ -403,6 +413,6 @@
   <button class="lb-next" aria-label="Next">›</button>
 </div>
 
-<script src="script.js?v=27"></script>
+<script src="script.js?v=28"></script>
 </body>
 </html>

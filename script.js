@@ -334,6 +334,41 @@ function splitWords(el) {
   };
   walk(el);
 }
+function setupScrollStory(still) {
+  const stage = $(".stage");
+  if (!stage) return;
+  const cards = $$(".stage-deck .card").filter((c) => !c.hidden);
+  const steps = $$(".steps .step").filter((s) => !s.hidden);
+  const total = Math.max(1, steps.length);
+  $(".hud-total").textContent = String(total).padStart(2, "0");
+  let active = -1, beatTimer = null, beat = 0;
+  const beats = $$(".taal-grid .beat");
+  const tick = () => { beats.forEach((b, i) => b.classList.toggle("on", i === beat)); beat = (beat + 1) % beats.length; };
+  const setActive = (n) => {
+    if (n === active) return;
+    active = n;
+    const step = steps[n], key = step ? +step.dataset.step : 0;
+    const idx = Math.max(0, cards.findIndex((c) => +c.dataset.i === key));
+    cards.forEach((c, i) => { c.dataset.d = Math.max(-1, Math.min(3, i - idx)); });
+    steps.forEach((s, i) => s.classList.toggle("is-active", i === n));
+    $(".hud-now").textContent = String(n + 1).padStart(2, "0");
+    const taalOn = cards[idx]?.classList.contains("card-taal");
+    clearInterval(beatTimer); beatTimer = null;
+    if (taalOn && !still) { tick(); beatTimer = setInterval(tick, 420); }
+    else if (taalOn) beats[0]?.classList.add("on");
+  };
+  setActive(0);
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) setActive(steps.indexOf(e.target)); }), { rootMargin: "-45% 0px -45% 0px" });
+  steps.forEach((s) => io.observe(s));
+  const rail = $(".hud-rail i"), sec = $("#about");
+  const prog = () => {
+    const r = sec.getBoundingClientRect(), span = r.height - innerHeight * 0.6;
+    const p = Math.min(1, Math.max(0, (innerHeight * 0.3 - r.top) / Math.max(1, span)));
+    if (rail) rail.style.transform = `scaleY(${p.toFixed(3)})`;
+  };
+  addEventListener("scroll", prog, { passive: true }); prog();
+}
+
 function setupMotion() {
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
   document.documentElement.classList.add("motion-ready");
@@ -345,8 +380,7 @@ function setupMotion() {
   // images open from the bottom
   const iio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); iio.unobserve(e.target); } }), { threshold: 0.15 });
   $$(".guru-photo .arch, .invite-photo, .online-photos, .level-img, .private-img, .story-main .window").forEach((el) => { el.classList.add("rv-img"); iio.observe(el); });
-  const bento = $(".bento");
-  if (bento) new IntersectionObserver((es, o) => es.forEach((e) => { if (e.isIntersecting) { bento.classList.add("in"); o.disconnect(); } }), { threshold: 0.2 }).observe(bento);
+  setupScrollStory(still);
   if (still) return;
 
   // scroll-driven: progress line, growing banner card, parallax
@@ -376,7 +410,7 @@ function setupMotion() {
 
   // 3D tilt with a soft shine (mouse only)
   if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
-    const tiltSel = ".level, .ev-card, .perf, .private, .learn, .p-item, .way-list li";
+    const tiltSel = ".level, .ev-card, .perf, .private, .p-item, .way-list li";
     document.addEventListener("pointermove", (e) => {
       const card = e.target.closest?.(tiltSel);
       $$(".tilting").forEach((c) => { if (c !== card) { c.classList.remove("tilting"); c.style.transform = ""; } });
