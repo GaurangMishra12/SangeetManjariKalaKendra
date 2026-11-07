@@ -381,8 +381,22 @@ function setupMotion() {
   $$(".split").forEach((el) => (el.closest(".hero") ? requestAnimationFrame(() => el.classList.add("in")) : hio.observe(el)));
   document.body.classList.add("loaded");
   // images open from the bottom
-  const iio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); iio.unobserve(e.target); } }), { threshold: 0.15 });
-  $$(".guru-photo .arch, .invite-photo, .online-photos, .level-img, .private-img, .story-main .window").forEach((el) => { el.classList.add("rv-img"); iio.observe(el); });
+  // A fully clipped element never counts as "visible", so watch its (unclipped) parent instead,
+  // and always show the photo after a short while in case the observer never fires.
+  const reveal = new Map();
+  const iio = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    const img = reveal.get(e.target); if (img) img.classList.add("in");
+    iio.unobserve(e.target);
+  }), { threshold: 0.05 });
+  $$(".guru-photo .arch, .invite-photo, .online-photos, .level-img").forEach((el) => {
+    const watch = el.parentElement || el;
+    el.classList.add("rv-img");
+    reveal.set(watch, el); iio.observe(watch);
+  });
+  const showAll = () => $$(".rv-img:not(.in)").forEach((el) => { const r = el.parentElement.getBoundingClientRect(); if (r.top < innerHeight && r.bottom > 0) el.classList.add("in"); });
+  addEventListener("scroll", () => { clearTimeout(showAll.t); showAll.t = setTimeout(showAll, 1500); }, { passive: true });
+  setTimeout(() => $$(".rv-img").forEach((el) => el.classList.add("in")), 6000);
   setupScrollStory(still);
   if (still) return;
 
