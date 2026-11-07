@@ -308,6 +308,93 @@ function render(C) {
   });
 
   setupInteractions(C, photos, LINKS);
+  setupMotion();
+}
+
+
+/* ---------- motion: word reveals, scroll effects, tilt, magnetic buttons ---------- */
+function splitWords(el) {
+  if (el.dataset.split) return;
+  el.dataset.split = "1";
+  let i = 0;
+  const walk = (node) => {
+    [...node.childNodes].forEach((n) => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach((part) => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+          const w = document.createElement("span"); w.className = "w";
+          const inner = document.createElement("span"); inner.textContent = part; inner.style.setProperty("--i", i++);
+          w.appendChild(inner); frag.appendChild(w);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1 && !n.classList.contains("ico")) walk(n);
+    });
+  };
+  walk(el);
+}
+function setupMotion() {
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.documentElement.classList.add("motion-ready");
+  // headings rise word by word
+  $$(".split, main h2:not([data-guru]), .gate-head h2").forEach((el) => { el.classList.add("split"); splitWords(el); });
+  const hio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); hio.unobserve(e.target); } }), { threshold: 0.3 });
+  $$(".split").forEach((el) => (el.closest(".hero") ? requestAnimationFrame(() => el.classList.add("in")) : hio.observe(el)));
+  document.body.classList.add("loaded");
+  // images open from the bottom
+  const iio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); iio.unobserve(e.target); } }), { threshold: 0.15 });
+  $$(".guru-photo .arch, .invite-photo, .online-photos, .level-img, .private-img, .story-main .window").forEach((el) => { el.classList.add("rv-img"); iio.observe(el); });
+  if (still) return;
+
+  // scroll-driven: progress line, growing banner card, parallax
+  const bar = $(".progress"), grow = $("[data-grow]"), par = $$("[data-speed]");
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const vh = innerHeight, max = document.documentElement.scrollHeight - vh;
+    if (bar) bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+    if (grow) {
+      const r = grow.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, 1 - (r.top - vh * 0.1) / (vh * 0.7)));
+      grow.style.setProperty("--p", p.toFixed(3));
+    }
+    const small = innerWidth < 700;
+    par.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) return;
+      const off = (r.top + r.height / 2 - vh / 2) * -(+el.dataset.speed) * (small ? 0.5 : 1);
+      el.style.translate = `0 ${off.toFixed(1)}px`;
+    });
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  update();
+
+  // 3D tilt with a soft shine (mouse only)
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    const tiltSel = ".level, .ev-card, .perf, .private, .learn, .p-item, .way-list li";
+    document.addEventListener("pointermove", (e) => {
+      const card = e.target.closest?.(tiltSel);
+      $$(".tilting").forEach((c) => { if (c !== card) { c.classList.remove("tilting"); c.style.transform = ""; } });
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      card.classList.add("tilt", "tilting");
+      card.style.transform = `perspective(900px) rotateX(${((0.5 - y) * 6).toFixed(2)}deg) rotateY(${((x - 0.5) * 8).toFixed(2)}deg) translateY(-3px)`;
+      card.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
+      card.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+    }, { passive: true });
+    // magnetic buttons
+    $$(".magnetic").forEach((b) => {
+      b.addEventListener("pointermove", (e) => {
+        const r = b.getBoundingClientRect();
+        b.style.translate = `${((e.clientX - r.left - r.width / 2) * 0.25).toFixed(1)}px ${((e.clientY - r.top - r.height / 2) * 0.35).toFixed(1)}px`;
+      });
+      b.addEventListener("pointerleave", () => (b.style.translate = ""));
+    });
+  }
 }
 
 /* ================= interactions ================= */
