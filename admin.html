@@ -264,7 +264,6 @@ const SECTIONS = [
   ["about", "Our story", "Arch photos, story text and “What you will learn”"],
   ["guru", "Your guru", "Guru's photo, bio, qualifications and teachers"],
   ["courses", "Levels & fees", "The three levels with fees"],
-  ["mentor", "Private lessons", "Panel under the levels"],
   ["join", "Online classes", "Brown band “Learn from anywhere in the world” with photo slider"],
   ["why", "How we teach", "Four numbered points"],
   ["stats", "Numbers", "Students, years, performances…"],
@@ -307,9 +306,6 @@ const MODULES = {
   courses: { icon: "🎓", label: "Levels & fees", section: "courses",
     parts: [["courses.cert", "Diploma line above the levels"]],
     texts: [["coursesIntro", "Diploma line above the levels", 2]] },
-  mentor: { icon: "👤", label: "Private lessons", section: "mentor", sectionLabel: "the Private lessons panel",
-    images: [["mentor", "Photo"]],
-    parts: [["mentor.card", "“Ask about private lessons” button"]] },
   join: { icon: "🌐", label: "Online classes", section: "join",
     slides: ["join", "Photos in the arch (slideshow)"],
     parts: [["join.slider", "Photo arch"], ["join.buttons", "Buttons"]] },
@@ -746,8 +742,6 @@ const EXTRA = {
             <label class="f">Duration (optional)<input data-k="duration" value="${esc(c.duration)}"></label>
             <label class="f">Group fee per month (₹)<input data-k="group" value="${esc(c.group)}" placeholder="e.g. 2,000"></label>
             <label class="f">Group note<input data-k="groupNote" value="${esc(c.groupNote)}"></label>
-            <label class="f">One-on-one fee per month (₹) – leave both empty to hide<input data-k="personal" value="${esc(c.personal)}" placeholder="e.g. 3,500"></label>
-            <label class="f">One-on-one note<input data-k="personalNote" value="${esc(c.personalNote)}"></label>
           </div>
           <p style="margin:12px 0 0"><button class="btn sm danger" data-del>Delete course</button></p>
         </div>

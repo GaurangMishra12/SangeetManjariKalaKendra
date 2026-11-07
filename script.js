@@ -163,7 +163,6 @@ function render(C) {
       </div>
       <div class="level-fee">
         <b class="${c.group ? "" : "ph"}">${fee(c.group)}</b><small>${c.group ? "per month" : ""}</small>
-        ${c.personal ? `<small>Private: ₹${esc(c.personal)} / month${c.personalNote ? " · " + esc(c.personalNote) : ""}</small>` : ""}
         <a href="#contact" class="btn btn-solid btn-sm" data-open-enquiry data-course="${esc(c.title)}">Join this level</a>
       </div>
     </li>`).join(""));
@@ -243,7 +242,7 @@ function render(C) {
   put("#ev-past", past.length ? past.map((x) => evCard(x, x.kind, true)).join("")
     : evEmpty("Our past performances will appear here.", "Performance booking", "Book a performance"));
 
-  const courseOptions = [...courses.map((c) => c.title), "Private lessons", "Online classes", "Trial class", "Performance booking", ...ws.map((x) => "Workshop: " + x.title), "Workshops", ...ev.map((x) => "Event: " + x.title), "Upcoming events", "Not sure yet"];
+  const courseOptions = [...courses.map((c) => c.title), "Online classes", "Trial class", "Performance booking", ...ws.map((x) => "Workshop: " + x.title), "Workshops", ...ev.map((x) => "Event: " + x.title), "Upcoming events", "Not sure yet"];
   $$("[data-course-select]").forEach((sel) => courseOptions.forEach((t) => sel.add(new Option(t, t))));
 
   /* ---------- photos ---------- */

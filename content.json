@@ -5,7 +5,7 @@
     "guru": true,
     "join": true,
     "courses": true,
-    "mentor": true,
+    "mentor": false,
     "stats": false,
     "explore": true,
     "live": false,
