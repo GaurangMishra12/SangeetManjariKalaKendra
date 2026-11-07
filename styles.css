@@ -354,9 +354,10 @@ p { margin: 0 0 1em; }
 .modal-head p:last-child { margin: 0; color: var(--muted); font-size: .93rem; }
 .modal-grid { position: relative; display: grid; grid-template-columns: .75fr 1.25fr; gap: clamp(18px, 3vw, 30px); align-items: center; }
 .modal-grid:has(> .window-wrap[hidden]) { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
-.modal-window { margin: 8px 8px 30px; }
+.modal-window { margin: 12px 12px 58px; }
 .modal-window .window { background: var(--paper-2); }
-.modal-quote { position: absolute; left: 0; right: 0; bottom: -30px; margin: 0; text-align: center; color: var(--terracotta); font-size: 1rem; }
+.modal-quote { position: absolute; left: -12px; right: -12px; bottom: -50px; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--terracotta); font-size: 1.05rem; line-height: 1.4; white-space: nowrap; }
+.modal-quote::before, .modal-quote::after { content: ""; width: 22px; height: 1px; background: var(--gold); }
 .modal-form { position: relative; padding: 18px 20px 16px; gap: 9px; background: #fff; box-shadow: 0 18px 40px -26px rgba(63,26,8,.45); border: 1px solid var(--line); }
 .modal-form label { gap: 3px; }
 .modal-form input, .modal-form select, .modal-form textarea { padding: 9px 12px; background: var(--paper); }
