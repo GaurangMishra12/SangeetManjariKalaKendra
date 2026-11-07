@@ -306,8 +306,12 @@ function render(C) {
     const box = $(sel); if (box) box.style.setProperty("--n", Math.max(1, [...box.children].filter((c) => !c.hidden).length));
   });
 
+  renderFaq(C);
+  window.C_SECTIONS = C.sections || {};
   setupInteractions(C, photos, LINKS);
   setupMotion();
+  setupQuiz(C);
+  setupNudge();
 }
 
 
@@ -430,6 +434,90 @@ function setupMotion() {
       b.addEventListener("pointerleave", () => (b.style.translate = ""));
     });
   }
+}
+
+
+/* ---------- level quiz ---------- */
+function setupQuiz(C) {
+  const box = $("#quiz"); if (!box || box.hidden) return;
+  const Q = [
+    { q: "Who is going to learn?", a: [["A child (6–12)", 0, "child"], ["A teenager (13–17)", 0, "teen"], ["An adult", 0, "adult"]] },
+    { q: "Has the student learnt Kathak before?", a: [["Never – starting fresh", 0], ["Less than a year", 1], ["1 to 3 years", 2], ["More than 3 years", 3]] },
+    { q: "Which of these can they already do?", a: [["Nothing yet", 0], ["Tatkar in teentaal", 1], ["Chakkars and tihais", 2], ["Full pieces – thaat, aamad, tukde, abhinaya", 3]] },
+    { q: "What is the main goal?", a: [["Joy and fitness", 0, "fun"], ["Diploma exams", 0, "exam"], ["Performing on stage", 0, "stage"]] },
+  ];
+  const intro = $(".quiz-intro", box), qb = $(".quiz-box", box), res = $(".quiz-result", box);
+  let i = 0, ans = [];
+  const draw = () => {
+    $(".quiz-bar i", qb).style.width = (i / Q.length) * 100 + "%";
+    $(".quiz-step", qb).textContent = `Question ${i + 1} of ${Q.length}`;
+    $(".quiz-q", qb).textContent = Q[i].q;
+    $(".quiz-opts", qb).innerHTML = Q[i].a.map((o, k) => `<button type="button" data-k="${k}">${esc(o[0])}<span>→</span></button>`).join("");
+    $(".quiz-back", qb).hidden = i === 0;
+    $$(".quiz-opts button", qb).forEach((b) => b.onclick = () => { ans[i] = +b.dataset.k; i++; i < Q.length ? draw() : finish(); });
+    qb.classList.remove("swap"); void qb.offsetWidth; qb.classList.add("swap");
+  };
+  const finish = () => {
+    $(".quiz-bar i", qb).style.width = "100%";
+    const score = Q[1].a[ans[1]][1] + Q[2].a[ans[2]][1];
+    const cat = score >= 5 ? "advanced" : score >= 2 ? "intermediate" : "beginner";
+    const courses = (C.courses || []).filter((c) => c.show !== false);
+    const c = courses.find((x) => x.cat === cat) || courses[0] || { title: "Kathak", group: "" };
+    const goal = Q[3].a[ans[3]][2];
+    const note = { fun: "We'll keep it joyful – rhythm, grace and a little fitness every class.", exam: "We'll follow the diploma syllabus so your riyaz leads to a recognised certificate.", stage: "We'll prepare pieces for the stage, with chances to perform at our programmes." }[goal];
+    const summary = Q.map((q, k) => `${q.q} ${q.a[ans[k]][0]}`).join(" | ");
+    qb.hidden = true; res.hidden = false;
+    res.innerHTML = `
+      <div class="qr-card">
+        <img src="assets/img/gallery/${esc(c.img)}-sm.jpg" alt="">
+        <div>
+          <p class="qr-kicker">Our suggestion</p>
+          <h3>${esc(c.title)}</h3>
+          <p>${esc(c.desc || "")} ${note}</p>
+          <p class="qr-fee">${c.group ? `₹${esc(c.group)} <small>per month · ${esc(c.groupNote || "")}</small>` : ""}</p>
+          <div class="btn-row"><a href="#contact" class="btn btn-solid" data-quiz-book>Book a trial class</a><button class="btn btn-line" type="button" data-quiz-again>Try again</button></div>
+        </div>
+      </div>`;
+    $("[data-quiz-again]", res).onclick = () => { i = 0; ans = []; res.hidden = true; qb.hidden = false; draw(); };
+    $("[data-quiz-book]", res).onclick = (e) => {
+      e.preventDefault();
+      $$(".modal-form [name=message]").forEach((t) => (t.value = "Level quiz – " + summary));
+      const opener = document.createElement("a"); opener.dataset.openEnquiry = ""; opener.dataset.course = c.title;
+      window.openEnquiry ? window.openEnquiry(c.title) : null;
+    };
+  };
+  $("[data-quiz-start]", box).onclick = () => { intro.hidden = true; qb.hidden = false; i = 0; ans = []; draw(); };
+  $(".quiz-back", qb).onclick = () => { if (i > 0) { i--; draw(); } };
+}
+
+/* ---------- FAQ ---------- */
+function renderFaq(C) {
+  const list = (C.faqs || []).filter((f) => f.show !== false && f.q);
+  const el = $("#faq-list"); if (!el) return;
+  if (!list.length) { const sec = $("#faq"); if (sec) sec.hidden = true; return; }
+  el.innerHTML = list.map((f, i) => `<details class="faq-item"${i === 0 ? " open" : ""}><summary><span>${esc(f.q)}</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>${esc(f.a)}</p></div></details>`).join("");
+}
+
+/* ---------- smart nudge: invite engaged readers to the Riyaz Room ---------- */
+const C_SECTIONS_OFF = (k) => (window.C_SECTIONS || {})[k] === false;
+function setupNudge() {
+  const n = $("#nudge");
+  if (!n || C_SECTIONS_OFF("riyazNudge")) return;
+  let shown = false;
+  try { if (sessionStorage.getItem("smkk-nudge")) return; } catch (_) {}
+  const modalOpen = () => !$("#modal").hidden;
+  const show = () => {
+    if (shown || modalOpen()) return;
+    shown = true; n.hidden = false; requestAnimationFrame(() => n.classList.add("in"));
+    try { sessionStorage.setItem("smkk-nudge", "1"); } catch (_) {}
+  };
+  const hide = () => { n.classList.remove("in"); setTimeout(() => (n.hidden = true), 400); };
+  $(".nudge-x", n).onclick = hide;
+  setTimeout(show, 60000);                                              // reading for a minute
+  addEventListener("scroll", () => {                                    // reached the end of the page
+    if (scrollY + innerHeight > document.documentElement.scrollHeight - 700) show();
+  }, { passive: true });
+  document.addEventListener("mouseout", (e) => { if (!e.relatedTarget && e.clientY <= 0) show(); });   // about to leave (desktop)
 }
 
 /* ================= interactions ================= */
@@ -567,6 +655,7 @@ function setupInteractions(C, photos, LINKS) {
     document.body.classList.add("locked");
   };
   const closeModal = () => { modal.hidden = true; document.body.classList.remove("locked"); };
+  window.openEnquiry = openModal;
   $(".modal-x").onclick = closeModal;
   modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
   $$("[data-open-enquiry]").forEach((b) => b.addEventListener("click", (e) => {

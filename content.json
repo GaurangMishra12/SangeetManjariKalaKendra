@@ -16,7 +16,10 @@
     "reviews": false,
     "whatsappButton": true,
     "chatButton": true,
-    "events": false
+    "events": false,
+    "quiz": true,
+    "faq": true,
+    "riyazNudge": true
   },
   "parts": {
     "explore.workshops": false,
@@ -834,6 +837,48 @@
       "alt": "Performance still from a reel",
       "w": 540,
       "h": 960
+    }
+  ],
+  "faqs": [
+    {
+      "show": true,
+      "q": "Do I need any experience to join?",
+      "a": "No. The Beginner level starts from the very first steps – posture, tatkar and the first taal – so anyone can join."
+    },
+    {
+      "show": true,
+      "q": "From what age can children start?",
+      "a": "Children can usually start from around 6 years of age. Adults of any age are welcome – it is never too late to start Kathak."
+    },
+    {
+      "show": true,
+      "q": "Do you teach online?",
+      "a": "Yes. Live online classes run over video for students in India and abroad. You need a phone or laptop, a stable internet connection and a little floor space."
+    },
+    {
+      "show": true,
+      "q": "How many classes are there and what are the fees?",
+      "a": "Group classes run 12 times a month. Fees depend on the level – see Levels & fees above, or ask us for the current batch timings."
+    },
+    {
+      "show": true,
+      "q": "Which exams do you prepare students for?",
+      "a": "We prepare students for the diploma and advanced diploma examinations of Bhatkhande Sangeet Vidyapeeth and Pracheen Kala Kendra."
+    },
+    {
+      "show": true,
+      "q": "What should I wear, and do I need ghungroo?",
+      "a": "Comfortable practice wear with a dupatta is enough to begin. Ghungroo are added when your guru feels your footwork is ready."
+    },
+    {
+      "show": true,
+      "q": "Can I try a class before joining?",
+      "a": "Yes – ask for a trial class using the enquiry form or WhatsApp and we will fix a convenient time."
+    },
+    {
+      "show": true,
+      "q": "Where is the Kendra?",
+      "a": "Santosh Sagar Colony, Brahampuri, Jaipur 302002. Call or WhatsApp +91 84400 64551 for directions."
     }
   ]
 }

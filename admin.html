@@ -264,6 +264,7 @@ const SECTIONS = [
   ["about", "Our story", "Arch photos, story text and “What you will learn”"],
   ["guru", "Your guru", "Guru's photo, bio, qualifications and teachers"],
   ["courses", "Levels & fees", "The three levels with fees"],
+  ["quiz", "Find your level quiz", "Four-question quiz under the levels"],
   ["join", "Online classes", "Brown band “Learn from anywhere in the world” with photo slider"],
   ["why", "How we teach", "Four numbered points"],
   ["stats", "Numbers", "Students, years, performances…"],
@@ -272,7 +273,9 @@ const SECTIONS = [
   ["gallery", "Moments", "Sliding row of photos"],
   ["videos", "Videos", "Instagram reels"],
   ["reviews", "Kind words", "Student & parent reviews"],
+  ["faq", "FAQ", "Questions and answers before Contact"],
   ["contact", "Contact", "Contact details and enquiry form"],
+  ["riyazNudge", "Riyaz Room nudge", "Small card that invites engaged visitors (1 min reading, end of page or leaving) to the Virtual Riyaz Room – once per visit"],
   ["whatsappButton", "Floating WhatsApp button", "Green button in the corner (needs a phone/WhatsApp number)"],
   ["chatButton", "Floating enquiry button", "Opens the enquiry form"],
 ];
@@ -331,6 +334,7 @@ const MODULES = {
     parts: [["gallery.arrows", "← → arrow buttons"]] },
   videos: { icon: "🎬", label: "Videos", section: "videos",
     parts: [["videos.viewAll", "“Open Instagram” button"]] },
+  faq: { icon: "❓", label: "FAQ", section: "faq", hint: "Questions and answers shown before the Contact section. Keep answers short. Switch one off to hide it." },
   contact: { icon: "📇", label: "Contact & links", section: "contact", sectionLabel: "the Contact section",
     images: [["contact", "Arch photo under the contact details"]],
     parts: [["contact.image", "Arch photo under the contact details"], ["form.mode", "“Where would you like to learn?” (both forms)"], ["form.course", "“Interested in” (both forms)"], ["form.message", "Message box (both forms)"]] },
@@ -340,7 +344,7 @@ const MODULES = {
     images: [["popup", "Photo in the popup"]],
     parts: [["popup.image", "Photo"], ["popup.logo", "Logo"]] },
   layout: { icon: "📌", label: "Top strip, footer & buttons",
-    sectionList: ["topbar", "whatsappButton", "chatButton"],
+    sectionList: ["topbar", "riyazNudge", "whatsappButton", "chatButton"],
     parts: [["topbar.socials", "Top strip – social icons"], ["topbar.phone", "Top strip – phone"], ["topbar.email", "Top strip – email"], ["topbar.button", "Top strip – “Ask for a trial class”"], ["header.enroll", "“Enquire” button in the menu bar"], ["footer.links", "Footer – Explore links"], ["footer.courses", "Footer – Levels list"], ["footer.socials", "Footer – social icons"]] },
 };
 const TABS = [["sections", "👁 All sections"], ...Object.entries(MODULES).map(([k, M]) => [k, `${M.icon} ${M.label}`]), ["library", "📁 Photo library"]];
@@ -497,7 +501,7 @@ function renderSideCounts() {
   const counts = {
     sections: `${SECTIONS.filter(([k]) => C.sections[k] !== false).length}/${SECTIONS.length}`,
     hero: on(C.images.hero), join: on(C.images.join),
-    courses: on(C.courses), workshops: on(C.workshops), events: on(C.events), live: on(C.performances), photos: on(C.photos), videos: on(C.videos), reviews: on(C.reviews),
+    faq: on(C.faqs || []), courses: on(C.courses), workshops: on(C.workshops), events: on(C.events), live: on(C.performances), photos: on(C.photos), videos: on(C.videos), reviews: on(C.reviews),
     popup: C.popup.enabled ? "on" : "off", library: C.library.length + "",
   };
   $$("[data-count]").forEach((el) => (el.textContent = counts[el.dataset.count] || ""));
@@ -769,6 +773,7 @@ const EXTRA = {
     };
   },
   workshops(box) { listEditor(box, "workshops", WS_FIELDS, "workshop"); },
+  faq(box) { C.faqs ||= []; listEditor(box, "faqs", [["q", "Question", "e.g. Do you teach online?", true], ["a", "Answer", "Short, friendly answer", true, "textarea"]], "question"); },
   events(box) { listEditor(box, "events", WS_FIELDS, "event"); },
   live(box) { box.innerHTML = `<h3 style="margin:20px 0 4px">Past performances</h3><p class="hint">Add a photo and a YouTube, Instagram or Drive link so visitors can watch.</p><div id="perf-box"></div>`; listEditor($("#perf-box"), "performances", PERF_FIELDS, "performance"); },
   photos(box) {

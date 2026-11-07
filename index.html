@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=28">
+  <link rel="stylesheet" href="styles.css?v=30">
 </head>
 <body>
 <div class="progress" aria-hidden="true"></div>
@@ -48,6 +48,7 @@
       <a href="events.html">Events</a>
       <a href="#gallery">Moments</a>
       <a href="#videos">Videos</a>
+      <a href="riyaz.html" class="nav-new">Riyaz Room</a>
       <a href="#contact">Contact</a>
     </nav>
     <div class="header-right">
@@ -170,6 +171,23 @@
     </div>
     <p class="cert-note" data-part="courses.cert"><span class="cert-mark" aria-hidden="true">✦</span><span data-text="coursesIntro"></span></p>
     <ol class="level-list" id="course-grid"></ol>
+
+    <div class="quiz" id="quiz" data-section="quiz">
+      <div class="quiz-intro">
+        <p class="label"><span class="ico" data-ico="ghungroo"></span>Not sure where to start?</p>
+        <h3>Find your level in 30 seconds</h3>
+        <p>Answer four quick questions and we'll suggest the right level – then book a trial class with your answers already filled in.</p>
+        <button class="btn btn-solid" type="button" data-quiz-start>Start the quiz →</button>
+      </div>
+      <div class="quiz-box" hidden>
+        <div class="quiz-bar"><i></i></div>
+        <p class="quiz-step"></p>
+        <h4 class="quiz-q"></h4>
+        <div class="quiz-opts"></div>
+        <button class="quiz-back" type="button">← Back</button>
+      </div>
+      <div class="quiz-result" hidden></div>
+    </div>
 
   </div>
 </section>
@@ -296,6 +314,18 @@
   </div>
 </section>
 
+<!-- ===== FAQ ===== -->
+<section class="faq" id="faq" data-section="faq">
+  <div class="wrap faq-grid">
+    <div class="faq-head">
+      <p class="label"><span class="ico" data-ico="harmonium"></span>Questions</p>
+      <h2>Good to know</h2>
+      <p>Still wondering about something? <a href="#contact" class="text-link" data-open-enquiry>Ask us directly →</a></p>
+    </div>
+    <div class="faq-list" id="faq-list"></div>
+  </div>
+</section>
+
 <!-- ===== CONTACT ===== -->
 <section class="reach" id="contact" data-section="contact">
   <div class="wrap">
@@ -343,7 +373,7 @@
       <p class="f-tag">Kathak in the guru–shishya tradition – Jaipur and online.</p>
       <div class="socials" data-socials data-part="footer.socials"></div>
     </div>
-    <div data-part="footer.links"><h4>Explore</h4><a href="#about">Our story</a><a href="#guru">Guru</a><a href="#courses">Levels &amp; fees</a><a href="events.html">Events &amp; workshops</a><a href="#gallery">Moments</a><a href="#contact">Contact</a></div>
+    <div data-part="footer.links"><h4>Explore</h4><a href="#about">Our story</a><a href="#guru">Guru</a><a href="#courses">Levels &amp; fees</a><a href="events.html">Events &amp; workshops</a><a href="#gallery">Moments</a><a href="riyaz.html">Virtual Riyaz Room</a><a href="#contact">Contact</a></div>
     <div data-part="footer.courses"><h4>Levels</h4><div id="footer-courses"></div></div>
     <div><h4>Reach us</h4>
       <p class="f-line" data-site="address"></p>
@@ -396,6 +426,18 @@
   </div>
 </div>
 
+<!-- ===== RIYAZ NUDGE ===== -->
+<aside class="nudge" id="nudge" hidden aria-live="polite">
+  <button class="nudge-x" aria-label="Close">×</button>
+  <span class="ico nudge-ico" data-ico="tabla"></span>
+  <div>
+    <p class="nudge-kicker">Before you go</p>
+    <b>Step into our Virtual Riyaz Room</b>
+    <p>Play teentaal and five other taals with live tabla, tanpura and a tatkar guide – right in your browser.</p>
+    <a href="riyaz.html" class="btn btn-solid btn-sm">Play the taal →</a>
+  </div>
+</aside>
+
 <!-- ===== LIGHTBOX ===== -->
 <div class="lightbox" id="lightbox" hidden>
   <button class="lb-x" aria-label="Close">×</button>
@@ -404,6 +446,6 @@
   <button class="lb-next" aria-label="Next">›</button>
 </div>
 
-<script src="script.js?v=29"></script>
+<script src="script.js?v=30"></script>
 </body>
 </html>
