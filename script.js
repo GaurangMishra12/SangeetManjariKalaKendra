@@ -345,6 +345,8 @@ function setupMotion() {
   // images open from the bottom
   const iio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); iio.unobserve(e.target); } }), { threshold: 0.15 });
   $$(".guru-photo .arch, .invite-photo, .online-photos, .level-img, .private-img, .story-main .window").forEach((el) => { el.classList.add("rv-img"); iio.observe(el); });
+  const bento = $(".bento");
+  if (bento) new IntersectionObserver((es, o) => es.forEach((e) => { if (e.isIntersecting) { bento.classList.add("in"); o.disconnect(); } }), { threshold: 0.2 }).observe(bento);
   if (still) return;
 
   // scroll-driven: progress line, growing banner card, parallax

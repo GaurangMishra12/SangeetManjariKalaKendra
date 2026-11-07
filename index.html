@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=26">
+  <link rel="stylesheet" href="styles.css?v=27">
 </head>
 <body>
 <div class="progress" aria-hidden="true"></div>
@@ -61,22 +61,22 @@
 
 <!-- ===== OPENING ===== -->
 <section class="hero">
-  <div class="wrap hero-top hero-copy" data-part="hero.card">
-    <p class="hero-kicker intro" style="--d:0"><span lang="hi">कथक</span> · Sangeet Manjari Kala Kendra, Jaipur</p>
-    <h1 class="split">Kathak, learnt the <em>guru–shishya</em> way</h1>
-    <p class="hero-sub intro" style="--d:5" data-text="heroSubtitle"></p>
-    <div class="btn-row intro" style="--d:6">
-      <a href="#contact" class="btn btn-solid magnetic" data-open-enquiry data-part="hero.enquiry">Ask about classes</a>
-      <a href="#courses" class="btn btn-line magnetic" data-part="hero.courses">Levels &amp; fees</a>
+  <div class="wrap hero-grid">
+    <div class="hero-copy" data-part="hero.card">
+      <p class="hero-kicker"><span lang="hi">कथक</span> · Sangeet Manjari Kala Kendra, Jaipur</p>
+      <h1>Kathak, learnt the <em>guru–shishya</em> way</h1>
+      <p class="hero-sub" data-text="heroSubtitle"></p>
+      <div class="btn-row">
+        <a href="#contact" class="btn btn-solid" data-open-enquiry data-part="hero.enquiry">Ask about classes</a>
+        <a href="#courses" class="btn btn-line" data-part="hero.courses">Levels &amp; fees</a>
+      </div>
+      <ul class="hero-facts" data-part="hero.facts">
+        <li>Online &amp; at the Kendra</li>
+        <li>Diploma exam preparation</li>
+        <li>Indian &amp; international students</li>
+      </ul>
     </div>
-    <ul class="hero-facts intro" style="--d:7" data-part="hero.facts">
-      <li>Online &amp; at the Kendra</li>
-      <li>Diploma exam preparation</li>
-      <li>Indian &amp; international students</li>
-    </ul>
-  </div>
-  <div class="hero-stage">
-    <div class="hero-media" data-grow>
+    <div class="hero-media">
       <div class="arch hero-arch">
         <div class="hero-slides">
           <img src="assets/img/gallery/h01.jpg" alt="Kathak pose beneath a banyan tree" class="is-on">
@@ -97,15 +97,20 @@
 <!-- ===== OUR STORY ===== -->
 <section class="story" id="about" data-section="about">
   <div class="wrap story-grid">
-    <div class="story-art">
-      <div class="story-ring" aria-hidden="true"></div>
-      <div class="window-wrap story-main" data-speed="0.05">
-        <div class="window"><img data-img="aboutTall" src="assets/img/gallery/7768.jpg" alt="" loading="lazy"></div>
-        <svg class="window-line" viewBox="0 0 100 125" preserveAspectRatio="none" aria-hidden="true"><path d="M4.0 125 L4.0 65.8 A10.16 10.16 0 0 1 6.76 49.65 A9.16 9.16 0 0 1 13.2 36.35 A9.08 9.08 0 0 1 22.4 24.95 A9.47 9.47 0 0 1 34.36 15.45 A11.66 11.66 0 0 1 50.0 5.0 A11.66 11.66 0 0 1 65.64 15.45 A9.47 9.47 0 0 1 77.6 24.95 A9.08 9.08 0 0 1 86.8 36.35 A9.16 9.16 0 0 1 93.24 49.65 A10.16 10.16 0 0 1 96.0 65.8 L96.0 125 Z"/></svg>
+    <div class="bento">
+      <figure class="tile t-main"><img data-img="aboutTall" data-speed="-0.035" src="assets/img/gallery/7768.jpg" alt="" loading="lazy"></figure>
+      <figure class="tile t-a"><img data-img="aboutA" data-size="sm" data-speed="-0.03" src="assets/img/gallery/7809-sm.jpg" alt="" loading="lazy"></figure>
+      <div class="tile t-bol" data-part="about.badge">
+        <span class="ico" data-ico="tabla"></span>
+        <b lang="hi">धा धिं धिं धा</b>
+        <small>Teentaal – the first rhythm every student learns</small>
       </div>
-      <div class="medallion m1" data-speed="-0.12"><img data-img="aboutA" data-size="sm" src="assets/img/gallery/7809-sm.jpg" alt="" loading="lazy"></div>
-      <div class="medallion m2" data-speed="0.1"><img data-img="aboutB" data-size="sm" src="assets/img/gallery/7726-sm.jpg" alt="" loading="lazy"></div>
-      <div class="bol-card" data-part="about.badge" data-speed="0.07"><span lang="hi">धा धिं धिं धा</span><small>Teentaal – the first rhythm every student learns</small></div>
+      <figure class="tile t-b"><img data-img="aboutB" data-size="sm" data-speed="-0.03" src="assets/img/gallery/7726-sm.jpg" alt="" loading="lazy"></figure>
+      <div class="tile t-live">
+        <p class="live-dot"><span class="dot"></span> Admissions open</p>
+        <b>Batches online &amp; in Jaipur</b>
+        <a href="#courses" class="text-link">See levels →</a>
+      </div>
     </div>
     <div class="story-text">
       <p class="label"><span class="ico" data-ico="ghungroo"></span>Our story</p>
@@ -398,6 +403,6 @@
   <button class="lb-next" aria-label="Next">›</button>
 </div>
 
-<script src="script.js?v=26"></script>
+<script src="script.js?v=27"></script>
 </body>
 </html>
