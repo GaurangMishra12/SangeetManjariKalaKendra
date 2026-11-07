@@ -6,6 +6,51 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const put = (sel, html) => { const el = document.querySelector(sel); if (el) el.innerHTML = html; return el; };
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+/* ---------- animated classical instrument icons (line art, gold) ---------- */
+const INSTRUMENTS = {
+  tabla: `<svg viewBox="0 0 48 48" aria-hidden="true">
+    <g class="i-wave"><path d="M10 9q5-4 10 0"/><path d="M30 5q5-4 10 0"/></g>
+    <g class="t-l"><ellipse cx="15" cy="22" rx="11" ry="4"/><ellipse class="fill" cx="15" cy="22" rx="4" ry="1.5"/></g>
+    <path d="M4 22c0 15 22 15 22 0"/>
+    <g class="t-r"><ellipse cx="35" cy="15" rx="8" ry="3"/><ellipse class="fill" cx="35" cy="15" rx="3" ry="1.1"/></g>
+    <path d="M27 15l2 23q6 3 12 0l2-23"/><path class="thin" d="M30 18l1.5 19M34 18.5l.5 20M37 18.5l-.5 20M40 18l-1.5 19"/>
+  </svg>`,
+  ghungroo: `<svg viewBox="0 0 48 48" aria-hidden="true"><g class="g-swing">
+    <path d="M5 12q19 14 38 0"/>
+    <g class="bell b1"><circle cx="9" cy="19" r="3.4"/><path class="thin" d="M7.6 20h2.8"/></g>
+    <g class="bell b2"><circle cx="16" cy="23.5" r="3.4"/><path class="thin" d="M14.6 24.5h2.8"/></g>
+    <g class="bell b3"><circle cx="24" cy="25" r="3.4"/><path class="thin" d="M22.6 26h2.8"/></g>
+    <g class="bell b2"><circle cx="32" cy="23.5" r="3.4"/><path class="thin" d="M30.6 24.5h2.8"/></g>
+    <g class="bell b1"><circle cx="39" cy="19" r="3.4"/><path class="thin" d="M37.6 20h2.8"/></g>
+    <g class="bell b3"><circle cx="20" cy="33" r="3"/><circle cx="28" cy="33" r="3"/></g>
+  </g></svg>`,
+  sitar: `<svg viewBox="0 0 48 48" aria-hidden="true">
+    <circle cx="13" cy="36" r="9"/><circle cx="40" cy="8" r="3"/>
+    <path d="M19 30L38 10M21.5 32.5L40.5 12.5"/>
+    <path class="thin" d="M24 27l2 2M27 24l2 2M30 21l2 2M33 18l2 2"/>
+    <g class="s-str"><path class="thin" d="M10 39L39 9M12.5 40.5L40.5 11"/></g>
+    <g class="i-note n1"><ellipse class="fill" cx="31" cy="34" rx="2.4" ry="1.8"/><path d="M33.2 33.5V26q3 1 3 4"/></g>
+    <g class="i-note n2"><ellipse class="fill" cx="39" cy="28" rx="2" ry="1.5"/><path d="M40.8 27.6V21.5"/></g>
+  </svg>`,
+  bansuri: `<svg viewBox="0 0 48 48" aria-hidden="true">
+    <rect x="3" y="27" width="42" height="6" rx="3"/>
+    <path class="thin" d="M9 27v6M41 27v6"/>
+    <g class="fill"><circle cx="17" cy="30" r="1.1"/><circle cx="22" cy="30" r="1.1"/><circle cx="27" cy="30" r="1.1"/><circle cx="32" cy="30" r="1.1"/><circle cx="37" cy="30" r="1.1"/><circle cx="12.5" cy="30" r="1.3"/></g>
+    <g class="i-note n1"><ellipse class="fill" cx="16" cy="18" rx="2.4" ry="1.8"/><path d="M18.2 17.5V9q3 1 3 4"/></g>
+    <g class="i-note n2"><ellipse class="fill" cx="28" cy="16" rx="2.2" ry="1.7"/><path d="M30.2 15.5V8.5"/></g>
+    <g class="i-note n3"><ellipse class="fill" cx="37" cy="19" rx="2" ry="1.5"/><path d="M38.8 18.6V12q2.6 1 2.6 3.6"/></g>
+  </svg>`,
+  harmonium: `<svg viewBox="0 0 48 48" aria-hidden="true">
+    <g class="h-bel"><path d="M8 20l4-6 4 6 4-6 4 6 4-6 4 6 4-6 4 6"/></g>
+    <rect x="5" y="20" width="38" height="19" rx="2"/>
+    <rect x="9" y="29" width="30" height="7" rx="1"/>
+    <path class="thin" d="M13 29v7M17 29v7M21 29v7M25 29v7M29 29v7M33 29v7"/>
+    <g class="fill"><rect x="14.3" y="29" width="1.6" height="4"/><rect x="18.3" y="29" width="1.6" height="4"/><rect x="26.3" y="29" width="1.6" height="4"/><rect x="30.3" y="29" width="1.6" height="4"/></g>
+    <g class="fill"><circle cx="11" cy="24.5" r="1.2"/><circle cx="16" cy="24.5" r="1.2"/><circle cx="21" cy="24.5" r="1.2"/></g>
+  </svg>`,
+};
+$$("[data-ico]").forEach((el) => { if (INSTRUMENTS[el.dataset.ico]) el.innerHTML = INSTRUMENTS[el.dataset.ico]; });
+
 async function loadContent() {
   // ?preview=1 shows the unsaved draft from the admin panel (same browser only)
   if (new URLSearchParams(location.search).has("preview")) {
