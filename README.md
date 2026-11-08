@@ -24,6 +24,7 @@ Forgot it? Use “Reset this device” on the login screen and connect again wit
 - `index.html`, `styles.css`, `script.js` – the site
 - `admin.html` – the admin panel
 - `riyaz.html` + `riyaz.js` – Virtual Riyaz Room (taal player, synthesised tabla/tanpura, tatkar guide)
+- `terms.html`, `privacy.html` – Terms of use (copyright & trademark) and Privacy policy
 - `events.html` – Performances & Events page (same header/footer as `index.html`; keep both in sync when editing the menu or footer)
 - `assets/` – logo, photos, reels
 

@@ -869,3 +869,19 @@ p { margin: 0 0 1em; }
 .riyaz.tatkar .rz-foot[data-side="L"] { color: var(--terracotta); }
 @media (max-width: 900px) { .rz-grid { grid-template-columns: 1fr; } .rz-tips { grid-template-columns: 1fr; } }
 @media (max-width: 480px) { .rz-taals { grid-template-columns: repeat(2, 1fr); } .rz-bols { font-size: 1.05rem; } }
+
+/* ---------- trademark mark + legal pages ---------- */
+.logo { position: relative; display: inline-block; }
+.logo::after { content: "™"; position: absolute; top: 0; right: -14px; font: 600 .62rem var(--sans); color: var(--brown); }
+.footer .logo::after { color: var(--gold-soft); top: 2px; }
+.legal-links { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: .82rem; }
+.legal-links a { opacity: .85; border-bottom: 1px solid transparent; }
+.legal-links a:hover { opacity: 1; border-color: var(--gold); color: #fff; }
+.footer-bottom { flex-wrap: wrap; gap: 10px 20px; }
+.legal-hero { padding-bottom: clamp(26px, 4vw, 40px); }
+.legal { max-width: 820px; padding: clamp(36px, 6vw, 64px) 0 clamp(50px, 8vw, 90px); }
+.legal .lead { font-size: 1.1rem; color: #4a3d34; }
+.legal h2 { font-size: clamp(1.5rem, 2.6vw, 1.9rem); margin: 34px 0 10px; padding-top: 6px; scroll-margin-top: 100px; }
+.legal p, .legal li { color: #4a3d34; }
+.legal ul { padding-left: 20px; display: grid; gap: 6px; }
+.legal a { color: var(--brown); border-bottom: 1px solid var(--gold); }
