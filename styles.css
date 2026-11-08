@@ -948,6 +948,17 @@ p { margin: 0 0 1em; }
 .sy-foot p { margin: 0 0 16px; color: #4a3d34; font-size: .95rem; }
 .sy-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .cert-link { margin-left: 10px; font-weight: 600; color: var(--terracotta); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.sy-tabs { display: flex; gap: 10px; margin: 0 0 30px; padding: 6px; border-radius: 18px; background: var(--paper-2); width: fit-content; max-width: 100%; }
+.sy-tab { border: 0; background: transparent; border-radius: 13px; padding: 12px 22px; cursor: pointer; font: inherit; text-align: left; color: var(--brown-deep); transition: background .25s, color .25s, box-shadow .25s; }
+.sy-tab b { display: block; font: 600 1.15rem/1.15 var(--serif); }
+.sy-tab span { display: block; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.sy-tab.on { background: var(--brown); color: #fbf1df; box-shadow: 0 12px 26px -14px rgba(116,46,11,.8); }
+.sy-tab.on span { color: var(--gold-soft); }
+.sy-marks { display: flex; flex-wrap: wrap; gap: 8px; margin: -6px 0 20px; }
+.sy-marks span { font-size: .8rem; font-weight: 600; letter-spacing: .04em; padding: 5px 12px; border-radius: 8px; background: var(--brown-deep); color: var(--gold-soft); }
+.sy-note { margin: 18px 0 0; font-size: .9rem; color: #4a3d34; }
+@media (max-width: 640px) { .sy-tabs { width: 100%; } .sy-tab { flex: 1; padding: 10px 12px; } .sy-tab b { font-size: 1rem; } }
+@media print { .sy-tabs { display: none !important; } .sy-set[hidden] { display: none !important; } }
 @media (max-width: 900px) {
   .sy-path { grid-template-columns: 1fr 1fr; }
 }
