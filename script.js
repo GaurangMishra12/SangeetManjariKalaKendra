@@ -565,7 +565,7 @@ function setupCoverflow() {
   };
   const go = (k) => { cur = (k + n) % n; layout(); };
   const next = () => go(cur + 1), prev = () => go(cur - 1);
-  const play = () => { clearInterval(timer); if (!still && !paused && visible && n > 1) timer = setInterval(next, 3500); };
+  const play = () => { clearInterval(timer); if (!still && !paused && visible && n > 1) timer = setInterval(next, 1500); };
   // click a side photo to bring it forward; the front photo opens large (lightbox)
   box.addEventListener("click", (e) => {
     const sl = e.target.closest(".cf-slide"); if (!sl) return;
