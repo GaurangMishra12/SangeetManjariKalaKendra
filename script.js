@@ -247,8 +247,10 @@ function render(C) {
 
   /* ---------- photos ---------- */
   const photos = (C.photos || []).filter((p) => p.show !== false);
-  put("#photo-track", photos.map((p, i) =>
-    `<button class="photo" data-i="${i}" aria-label="Open photo: ${esc(p.alt)}"><img src="assets/img/gallery/${esc(p.id)}-sm.jpg" alt="${esc(p.alt)}"${p.w ? ` width="${+p.w}" height="${+p.h}"` : ""} loading="lazy"></button>`).join(""));
+  put("#photo-track", photos.map((p, i) => {
+    const src = `assets/img/gallery/${esc(p.id)}-sm.jpg`;
+    return `<button class="photo cf-slide" data-i="${i}" aria-label="Photo ${i + 1}: ${esc(p.alt)}"><span class="cf-blur" style="background-image:url('${src}')"></span><img src="${src}" alt="${esc(p.alt)}" loading="${i < 4 ? "eager" : "lazy"}"></button>`;
+  }).join(""));
 
   /* ---------- videos ---------- */
   const videos = (C.videos || []).filter((v) => v.show !== false);
@@ -311,6 +313,7 @@ function render(C) {
   setupInteractions(C, photos, LINKS);
   setupMotion();
   setupQuiz(C);
+  setupCoverflow();
   setupNudge();
 }
 
@@ -532,6 +535,56 @@ function setupNudge() {
     if (scrollY + innerHeight > document.documentElement.scrollHeight - 700) show();
   }, { passive: true });
   document.addEventListener("mouseout", (e) => { if (!e.relatedTarget && e.clientY <= 0) show(); });   // about to leave (desktop)
+}
+
+
+/* ---------- Moments: 3D coverflow that turns by itself ---------- */
+function setupCoverflow() {
+  const box = $(".cflow"); if (!box) return;
+  const slides = $$(".cf-slide", box); if (!slides.length) return;
+  const cap = $(".cf-caption"), now = $(".cf-count b"), tot = $(".cf-count span");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const n = slides.length; let cur = 0, timer = null, paused = false, visible = false;
+  tot.textContent = String(n).padStart(2, "0");
+  const layout = () => {
+    const small = innerWidth < 700, step = small ? 46 : 58, depth = small ? 90 : 140, turn = small ? 38 : 34;
+    slides.forEach((el, i) => {
+      let o = i - cur; if (o > n / 2) o -= n; if (o < -n / 2) o += n;          // shortest way round (loops)
+      const a = Math.abs(o);
+      el.style.transform = `translateX(${o * step}%) translateZ(${-a * depth}px) rotateY(${-Math.sign(o) * Math.min(a, 1) * turn}deg) scale(${1 - Math.min(a, 3) * 0.06})`;
+      el.style.zIndex = 20 - a;
+      el.style.opacity = a > 3 ? 0 : 1;
+      el.style.pointerEvents = a > 3 ? "none" : "";
+      el.style.setProperty("--shade", Math.min(a * 0.22, 0.6));
+      el.classList.toggle("is-active", o === 0);
+      el.tabIndex = o === 0 ? 0 : -1;
+    });
+    const img = $("img", slides[cur]);
+    cap.textContent = img ? img.alt : "";
+    now.textContent = String(cur + 1).padStart(2, "0");
+  };
+  const go = (k) => { cur = (k + n) % n; layout(); };
+  const next = () => go(cur + 1), prev = () => go(cur - 1);
+  const play = () => { clearInterval(timer); if (!still && !paused && visible && n > 1) timer = setInterval(next, 3500); };
+  // click a side photo to bring it forward; the front photo opens large (lightbox)
+  box.addEventListener("click", (e) => {
+    const sl = e.target.closest(".cf-slide"); if (!sl) return;
+    const i = +sl.dataset.i;
+    if (i !== cur) { e.stopPropagation(); e.preventDefault(); go(i); play(); }
+  }, true);
+  $$("[data-cf]").forEach((b) => b.addEventListener("click", () => { +b.dataset.cf > 0 ? next() : prev(); play(); }));
+  box.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") { next(); play(); } if (e.key === "ArrowLeft") { prev(); play(); } });
+  // swipe
+  let sx = null;
+  box.addEventListener("pointerdown", (e) => { sx = e.clientX; });
+  box.addEventListener("pointerup", (e) => { if (sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); play(); } });
+  // pause while the visitor is looking closely, and when the section is off screen
+  box.addEventListener("pointerenter", () => { paused = true; play(); });
+  box.addEventListener("pointerleave", () => { paused = false; play(); });
+  new IntersectionObserver((es) => es.forEach((e) => { visible = e.isIntersecting; play(); }), { threshold: 0.25 }).observe(box);
+  document.addEventListener("visibilitychange", () => { visible = !document.hidden && visible; play(); });
+  addEventListener("resize", layout);
+  layout();
 }
 
 /* ================= interactions ================= */

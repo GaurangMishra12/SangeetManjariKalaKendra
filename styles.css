@@ -885,3 +885,26 @@ p { margin: 0 0 1em; }
 .legal p, .legal li { color: #4a3d34; }
 .legal ul { padding-left: 20px; display: grid; gap: 6px; }
 .legal a { color: var(--brown); border-bottom: 1px solid var(--gold); }
+
+/* ---------- Moments: coverflow ---------- */
+.cflow { position: relative; height: clamp(360px, 40vw, 470px); perspective: 1400px; transform-style: preserve-3d; overflow: hidden; outline: none; margin-top: 6px; touch-action: pan-y; }
+.cf-slide { position: absolute; left: 50%; top: 4%; width: clamp(240px, 26vw, 340px); height: 88%; margin-left: calc(clamp(240px, 26vw, 340px) / -2);
+  padding: 0; border: 0; border-radius: 18px; overflow: hidden; cursor: pointer; background: var(--paper-2);
+  box-shadow: 0 30px 60px -30px rgba(36,26,20,.6); transform-style: preserve-3d; backface-visibility: hidden;
+  transition: transform .9s cubic-bezier(.2,.8,.2,1), opacity .6s ease, box-shadow .6s; }
+.cf-slide.is-active { cursor: zoom-in; box-shadow: 0 40px 80px -30px rgba(36,26,20,.7), 0 0 0 1.5px var(--gold); }
+.cf-blur { position: absolute; inset: -20px; background-size: cover; background-position: center; filter: blur(18px) saturate(1.1); transform: scale(1.1); opacity: .85; }
+.cf-slide img { position: relative; width: 100%; height: 100%; object-fit: contain; max-width: none; transition: transform .8s ease; }
+.cf-slide.is-active:hover img { transform: scale(1.03); }
+.cf-slide::after { content: ""; position: absolute; inset: 0; background: rgba(36,20,10,var(--shade, 0)); pointer-events: none; transition: background .6s; }
+.cf-slide:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.cf-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; margin-top: 10px; }
+.cf-caption { margin: 0; font: 600 1.25rem var(--serif); color: var(--brown-deep); min-height: 1.5em; }
+.cf-count { margin: 0; font: 600 .8rem var(--sans); letter-spacing: .16em; color: var(--muted); white-space: nowrap; }
+.cf-count b { color: var(--terracotta); }
+@media (max-width: 700px) {
+  .cflow { height: 380px; }
+  .cf-slide { width: 66vw; margin-left: -33vw; }
+  .cf-caption { font-size: 1.05rem; }
+}
+@media (prefers-reduced-motion: reduce) { .cf-slide { transition: none; } }
