@@ -154,7 +154,7 @@ function render(C) {
   put("#course-grid", courses.map((c, i) => `
     <li class="level" data-cat="${esc(c.cat)}">
       <span class="level-step" aria-hidden="true">${i + 1}</span>
-      <div class="level-img"><img src="assets/img/gallery/${esc(c.img)}-sm.jpg" alt="" loading="lazy"></div>
+      <div class="level-img"><img src="assets/img/gallery/${esc(c.img)}-sm.jpg" alt="${esc(c.title || "Kathak class")} – Sangeet Manjari Kala Kendra, Jaipur" loading="lazy"></div>
       <div class="level-body">
         ${c.badge ? `<p class="level-tag">${esc(c.badge)}</p>` : ""}
         <h3>${esc(c.title)}</h3>
@@ -242,6 +242,29 @@ function render(C) {
   put("#ev-past", past.length ? past.map((x) => evCard(x, x.kind, true)).join("")
     : evEmpty("Our past performances will appear here.", "Performance booking", "Book a performance"));
 
+  // events page: tell search engines about upcoming events and workshops (schema.org Event)
+  if (document.body.dataset.page === "events" && !document.getElementById("ev-ld")) {
+    const school = { "@type": "Organization", name: "Sangeet Manjari Kala Kendra", url: "https://sangeetmanjari.me/" };
+    const items = [...ev.map((x) => [x, "Event"]), ...ws.map((x) => [x, "Workshop"])].filter(([x]) => dt(x.date)).map(([x, kind]) => {
+      const online = /online|zoom|meet/i.test(x.place || "");
+      const o = {
+        "@type": "Event", name: x.title, startDate: x.date, eventStatus: "https://schema.org/EventScheduled",
+        eventAttendanceMode: online ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
+        location: online ? { "@type": "VirtualLocation", url: "https://sangeetmanjari.me/events.html" }
+          : { "@type": "Place", name: x.place || "Sangeet Manjari Kala Kendra", address: x.place || "Santosh Sagar Colony, Brahampuri, Jaipur 302002" },
+        image: [new URL(evImg(x), location.href).href], description: x.details || kind + " by Sangeet Manjari Kala Kendra",
+        organizer: school, performer: school,
+      };
+      if (x.fee) o.offers = { "@type": "Offer", url: "https://sangeetmanjari.me/events.html", priceCurrency: "INR", price: /free/i.test(x.fee) ? "0" : (String(x.fee).replace(/[^\d.]/g, "") || "0"), availability: "https://schema.org/InStock" };
+      return o;
+    });
+    if (items.length) {
+      const sc = document.createElement("script"); sc.type = "application/ld+json"; sc.id = "ev-ld";
+      sc.textContent = JSON.stringify({ "@context": "https://schema.org", "@graph": items });
+      document.head.appendChild(sc);
+    }
+  }
+
   const courseOptions = [...courses.map((c) => c.title), "Online classes", "Trial class", "Performance booking", ...ws.map((x) => "Workshop: " + x.title), "Workshops", ...ev.map((x) => "Event: " + x.title), "Upcoming events", "Not sure yet"];
   $$("[data-course-select]").forEach((sel) => courseOptions.forEach((t) => sel.add(new Option(t, t))));
 
@@ -273,7 +296,7 @@ function render(C) {
   /* ---------- photos chosen in the admin panel ---------- */
   const IMG = C.images || {};
   const gal = (id, sm) => `assets/img/gallery/${encodeURIComponent(id)}${sm ? "-sm" : ""}.jpg`;
-  const altOf = (id) => (C.library || []).find((p) => p.id === id)?.alt || "";
+  const altOf = (id) => (C.library || []).find((p) => p.id === id)?.alt || (C.photos || []).find((p) => p.id === id)?.alt || "Kathak at Sangeet Manjari Kala Kendra, Jaipur";
   $$("[data-img]").forEach((el) => {
     const id = IMG[el.dataset.img];
     if (id) { el.src = gal(id, el.dataset.size === "sm"); if (!el.closest(".private, .invite, .modal-box")) el.alt = altOf(id); }
